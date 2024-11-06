@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "0exDLJfydEyrVsr0vxPyPY"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "底边栏",
+      "rect": [
+        41,
+        40,
+        630,
+        626
+      ],
+      "offset": [
+        -4,
+        7
+      ],
+      "originalSize": [
+        720,
+        720
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "72UmbH2MRCXrdwUMcHZ/4F"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Image6",
+      "rect": [
+        69,
+        45,
+        160,
+        148
+      ],
+      "offset": [
+        1,
+        0.5
+      ],
+      "originalSize": [
+        296,
+        239
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "21yhzS0AlPQ7vJsFlRqbOY"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "土印记",
+      "rect": [
+        0,
+        0,
+        245,
+        256
+      ],
+      "offset": [
+        -5.5,
+        0
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

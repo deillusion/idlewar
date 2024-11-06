@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "a890OrpGhEabZ+ucs5odQq"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "log",
+      "rect": [
+        0,
+        1,
+        251,
+        255
+      ],
+      "offset": [
+        -2.5,
+        -0.5
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "f8OlRK8qtPvbWxNI0t9ICF"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Image52",
+      "rect": [
+        0,
+        0,
+        208,
+        200
+      ],
+      "offset": [
+        -10.5,
+        12.5
+      ],
+      "originalSize": [
+        229,
+        225
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

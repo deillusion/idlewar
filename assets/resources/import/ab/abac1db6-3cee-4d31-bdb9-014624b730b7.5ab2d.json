@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "c5tN7WaEBLA63C5xjCwBY0"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "魁首",
+      "rect": [
+        11,
+        8,
+        192,
+        94
+      ],
+      "offset": [
+        -1,
+        5
+      ],
+      "originalSize": [
+        216,
+        120
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

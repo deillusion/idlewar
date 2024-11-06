@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "74Hc5umiNMapNvolbVAUUC"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "item_sqaure",
+      "rect": [
+        13,
+        18,
+        220,
+        225
+      ],
+      "offset": [
+        -5,
+        -2.5
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        21,
+        21.5,
+        33,
+        27.5
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

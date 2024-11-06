@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "296aSAYhZJY7FCmEdQMSCp"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Image10",
+      "rect": [
+        1,
+        2,
+        170,
+        161
+      ],
+      "offset": [
+        -28.5,
+        30
+      ],
+      "originalSize": [
+        229,
+        225
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

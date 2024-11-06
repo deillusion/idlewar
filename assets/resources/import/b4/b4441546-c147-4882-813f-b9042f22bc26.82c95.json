@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "deBoxUgy1EuqbIBvqfQXUH"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Image4",
+      "rect": [
+        80,
+        54,
+        138,
+        130
+      ],
+      "offset": [
+        1,
+        0.5
+      ],
+      "originalSize": [
+        296,
+        239
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "32pxFacldMcq/lFP/bECP3"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Image13",
+      "rect": [
+        1,
+        2,
+        177,
+        169
+      ],
+      "offset": [
+        -25,
+        26
+      ],
+      "originalSize": [
+        229,
+        225
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

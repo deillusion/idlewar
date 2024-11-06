@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "71OnE3rg1EaodZj7aaewp6"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "亚圣",
+      "rect": [
+        22,
+        13,
+        178,
+        84
+      ],
+      "offset": [
+        3,
+        5
+      ],
+      "originalSize": [
+        216,
+        120
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

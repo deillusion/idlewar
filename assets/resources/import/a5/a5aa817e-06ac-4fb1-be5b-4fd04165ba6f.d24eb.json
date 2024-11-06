@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "49OdU5dPBIJbKhdlEL5jc7"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "lock",
+      "rect": [
+        0,
+        11,
+        256,
+        245
+      ],
+      "offset": [
+        0,
+        -5.5
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

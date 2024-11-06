@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "86G6FCp/ZNKI1Ooi2cMzaG"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "七曜",
+      "rect": [
+        0,
+        2,
+        247,
+        240
+      ],
+      "offset": [
+        -4.5,
+        6
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

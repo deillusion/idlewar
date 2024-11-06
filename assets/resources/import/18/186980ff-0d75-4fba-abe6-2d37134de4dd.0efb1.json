@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "319CvIPI5ChqGWzHctxXLU"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Paper (6)",
+      "rect": [
+        0,
+        0,
+        3307,
+        2339
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "originalSize": [
+        3307,
+        2339
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

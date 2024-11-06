@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "13Da/suY1GtprKxAK0OVmp"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "headphone",
+      "rect": [
+        59,
+        55,
+        141,
+        141
+      ],
+      "offset": [
+        1.5,
+        2.5
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

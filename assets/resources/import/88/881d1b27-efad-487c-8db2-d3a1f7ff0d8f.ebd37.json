@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "73rOjw9aZDs7QLDFoq5NRf"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "baseCoins",
+      "rect": [
+        0,
+        0,
+        1024,
+        996
+      ],
+      "offset": [
+        0,
+        14
+      ],
+      "originalSize": [
+        1024,
+        1024
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

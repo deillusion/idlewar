@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "ee1+WHX/ND4ognoxBEJ6Il"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "火纹灵狐",
+      "rect": [
+        24,
+        0,
+        998,
+        1024
+      ],
+      "offset": [
+        11,
+        0
+      ],
+      "originalSize": [
+        1024,
+        1024
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

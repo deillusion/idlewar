@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "43nHb6WtpJ86CVNKXbh/et"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "progress_bar",
+      "rect": [
+        0,
+        204,
+        600,
+        56
+      ],
+      "offset": [
+        0,
+        68
+      ],
+      "originalSize": [
+        600,
+        600
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "c94zoilRxEBYQ+SHrnLSjo"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "三才",
+      "rect": [
+        21,
+        11,
+        176,
+        89
+      ],
+      "offset": [
+        1,
+        4.5
+      ],
+      "originalSize": [
+        216,
+        120
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

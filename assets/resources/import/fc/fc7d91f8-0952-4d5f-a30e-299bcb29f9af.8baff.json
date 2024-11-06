@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "72huefKEBJKaTikbx5MwOt"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "mail",
+      "rect": [
+        58,
+        24,
+        167,
+        194
+      ],
+      "offset": [
+        13.5,
+        7
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

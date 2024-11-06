@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "82FqLwecBIQJS7L3jKHkvh"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "levelicon2",
+      "rect": [
+        219,
+        512,
+        684,
+        687
+      ],
+      "offset": [
+        21,
+        104.5
+      ],
+      "originalSize": [
+        1080,
+        1920
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

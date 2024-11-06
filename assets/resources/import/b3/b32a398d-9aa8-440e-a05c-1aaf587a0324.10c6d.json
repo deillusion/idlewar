@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "e90+SOhX5PvpPH4+ZSYhng"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "player_panel2",
+      "rect": [
+        182,
+        214,
+        335,
+        146
+      ],
+      "offset": [
+        49.5,
+        13
+      ],
+      "originalSize": [
+        600,
+        600
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

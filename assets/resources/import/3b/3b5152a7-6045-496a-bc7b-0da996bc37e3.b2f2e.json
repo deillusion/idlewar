@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "c4FSFucOREh5CMmbO7hUVi"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "涟漪纵痕",
+      "rect": [
+        0,
+        55,
+        600,
+        545
+      ],
+      "offset": [
+        0,
+        -27.5
+      ],
+      "originalSize": [
+        600,
+        600
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

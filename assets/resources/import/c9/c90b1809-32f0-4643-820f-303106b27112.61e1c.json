@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "b2uscJ3lVPq53Bah509OJl"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "topic",
+      "rect": [
+        1,
+        16,
+        996,
+        369
+      ],
+      "offset": [
+        -1,
+        -0.5
+      ],
+      "originalSize": [
+        1000,
+        400
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

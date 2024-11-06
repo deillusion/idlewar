@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "c2dBkzOKBJlIpS+gAwMPNk"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "pyroCoins",
+      "rect": [
+        0,
+        0,
+        1024,
+        1004
+      ],
+      "offset": [
+        0,
+        10
+      ],
+      "originalSize": [
+        1024,
+        1024
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

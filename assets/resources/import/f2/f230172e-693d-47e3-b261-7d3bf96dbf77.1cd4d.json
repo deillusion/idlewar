@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "98fGNkkwFIObdRS3UCGnm+"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "奇门logo",
+      "rect": [
+        24,
+        0,
+        573,
+        745
+      ],
+      "offset": [
+        10.5,
+        27.5
+      ],
+      "originalSize": [
+        600,
+        800
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

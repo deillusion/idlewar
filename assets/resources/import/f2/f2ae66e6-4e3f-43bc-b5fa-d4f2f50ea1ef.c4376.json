@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "61d7QlHmpEkICXve1Y6CsZ"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Image43",
+      "rect": [
+        0,
+        0,
+        204,
+        196
+      ],
+      "offset": [
+        -12.5,
+        14.5
+      ],
+      "originalSize": [
+        229,
+        225
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

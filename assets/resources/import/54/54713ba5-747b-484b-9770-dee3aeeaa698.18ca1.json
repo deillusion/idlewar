@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "03TROV+ptC1LnPc8860j3l"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "Image4",
+      "rect": [
+        1,
+        2,
+        126,
+        110
+      ],
+      "offset": [
+        -50.5,
+        55.5
+      ],
+      "originalSize": [
+        229,
+        225
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

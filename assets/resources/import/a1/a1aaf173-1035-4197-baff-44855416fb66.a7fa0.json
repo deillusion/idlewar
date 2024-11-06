@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "a0U1n0psFGqrQTDRaAphuJ"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "add_white",
+      "rect": [
+        223,
+        217,
+        579,
+        598
+      ],
+      "offset": [
+        0.5,
+        -4
+      ],
+      "originalSize": [
+        1024,
+        1024
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

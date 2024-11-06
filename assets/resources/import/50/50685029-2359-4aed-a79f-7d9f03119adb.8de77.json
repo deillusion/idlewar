@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "a6Oy4gSGVByYbVxkP7rCeE"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "烬火灵",
+      "rect": [
+        2,
+        0,
+        1022,
+        1024
+      ],
+      "offset": [
+        1,
+        0
+      ],
+      "originalSize": [
+        1024,
+        1024
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "b0+QdHynVA8Kv7zDS92jfa"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "map_frame_grid",
+      "rect": [
+        21,
+        23,
+        669,
+        660
+      ],
+      "offset": [
+        -4.5,
+        7
+      ],
+      "originalSize": [
+        720,
+        720
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

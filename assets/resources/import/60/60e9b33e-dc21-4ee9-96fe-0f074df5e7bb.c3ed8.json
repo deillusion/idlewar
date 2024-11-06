@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "0aItyT7RZCN6CukCgICAY8"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "绿三角",
+      "rect": [
+        126,
+        92,
+        24,
+        28
+      ],
+      "offset": [
+        18,
+        14
+      ],
+      "originalSize": [
+        240,
+        240
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "ca+LWQwrtLFqj246krZM3h"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "menu_block_frame",
+      "rect": [
+        0,
+        1,
+        580,
+        565
+      ],
+      "offset": [
+        -10,
+        16.5
+      ],
+      "originalSize": [
+        600,
+        600
+      ],
+      "capInsets": [
+        52,
+        45.5,
+        60,
+        0.5
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "8cWB9l/31M6LVn0rK8wC6o"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "auroCoins",
+      "rect": [
+        0,
+        14,
+        1024,
+        1010
+      ],
+      "offset": [
+        0,
+        -7
+      ],
+      "originalSize": [
+        1024,
+        1024
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

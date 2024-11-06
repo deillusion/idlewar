@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "76LYvnLH9Fu6HhD9C2yxvs"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "幻形兽",
+      "rect": [
+        0,
+        12,
+        256,
+        244
+      ],
+      "offset": [
+        0,
+        -6
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

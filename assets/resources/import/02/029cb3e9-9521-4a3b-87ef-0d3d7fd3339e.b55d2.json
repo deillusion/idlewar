@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "76wf2C2E5LuKaMMvuLA3bH"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "common_trimed",
+      "rect": [
+        10,
+        74,
+        236,
+        108
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "originalSize": [
+        256,
+        256
+      ],
+      "capInsets": [
+        36,
+        18,
+        39,
+        22
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "098SpLZN5J8bw9fQGuzDsg"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "七昧真火",
+      "rect": [
+        2,
+        0,
+        598,
+        600
+      ],
+      "offset": [
+        1,
+        0
+      ],
+      "originalSize": [
+        600,
+        600
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]
