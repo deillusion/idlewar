@@ -8884,6 +8884,10 @@ window.__require = function e(t, n, r) {
     }(SpellItem);
     DisplaceToPetSpell.id = 16;
     DisplaceToPetSpell.size = 0;
+    DisplaceToPetSpell.spellName = "\u7075\u9e64\xb7\u5f52\u9014";
+    DisplaceToPetSpell.description = function() {
+      return "\u79fb\u52a8\u81f3\u4efb\u610f\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
+    };
     DisplaceToPetSpell.validLocations = function(player) {
       var spell = new DisplaceToPetSpell();
       spell.owner = player;
