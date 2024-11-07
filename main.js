@@ -1,38 +1,3 @@
-// 在 main.js 的开头添加如下代码
-(function () {
-    if (typeof window.jsb === 'object') {
-        var hotUpdateSearchPaths = localStorage.getItem('HotUpdateSearchPaths');
-        if (hotUpdateSearchPaths) {
-            var paths = JSON.parse(hotUpdateSearchPaths);
-            jsb.fileUtils.setSearchPaths(paths);
-
-            var fileList = [];
-            var storagePath = paths[0] || '';
-            var tempPath = storagePath + '_temp/';
-            var baseOffset = tempPath.length;
-
-            if (jsb.fileUtils.isDirectoryExist(tempPath) && !jsb.fileUtils.isFileExist(tempPath + 'project.manifest.temp')) {
-                jsb.fileUtils.listFilesRecursively(tempPath, fileList);
-                fileList.forEach(srcPath => {
-                    var relativePath = srcPath.substr(baseOffset);
-                    var dstPath = storagePath + relativePath;
-
-                    if (srcPath[srcPath.length] == '/') {
-                        cc.fileUtils.createDirectory(dstPath)
-                    }
-                    else {
-                        if (cc.fileUtils.isFileExist(dstPath)) {
-                            cc.fileUtils.removeFile(dstPath)
-                        }
-                        cc.fileUtils.renameFile(srcPath, dstPath);
-                    }
-                })
-                cc.fileUtils.removeDirectory(tempPath);
-            }
-        }
-    }
-})();
-//> node version_generator.js -v 1.0.0 -u https://deillusion.github.io/idlewar/ -s build/jsb-link/ -d assets/
 window.boot = function () {
     var settings = window._CCSettings;
     window._CCSettings = undefined;
@@ -158,7 +123,7 @@ window.boot = function () {
 if (window.jsb) {
     var isRuntime = (typeof loadRuntime === 'function');
     if (isRuntime) {
-        require('src/settings.ce740.js');
+        require('src/settings.69a89.js');
         require('src/cocos2d-runtime.js');
         if (CC_PHYSICS_BUILTIN || CC_PHYSICS_CANNON) {
             require('src/physics.js');
@@ -166,7 +131,7 @@ if (window.jsb) {
         require('jsb-adapter/engine/index.js');
     }
     else {
-        require('src/settings.ce740.js');
+        require('src/settings.69a89.js');
         require('src/cocos2d-jsb.32df2.js');
         if (CC_PHYSICS_BUILTIN || CC_PHYSICS_CANNON) {
             require('src/physics.js');

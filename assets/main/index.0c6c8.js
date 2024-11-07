@@ -1006,9 +1006,7 @@ window.__require = function e(t, n, r) {
     };
     function runTaptapAds(spaceName, data, callback) {
       var placementId = SPACES[spaceName].placementId;
-      console.log("VillV placementId: ", placementId);
       jsb.reflection.callStaticMethod("org/cocos2dx/javascript/TapADNActivity", "fetchAds", "(ILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V", placementId, "", 0, data, Globals_1.user.userid.toString());
-      console.log("VillV: adn played ");
       var fn = function() {
         var o = jsb.reflection.callStaticMethod("org/cocos2dx/javascript/TapADNActivity", "getPlayAdsResult", "()Ljava/lang/String;");
         if (!o || 0 == o.length) {
@@ -6833,6 +6831,7 @@ window.__require = function e(t, n, r) {
     "use strict";
     var _require = require("./Globals"), config = _require.config, auth = _require.auth, user = _require.user;
     var http = require("./http");
+    var _require2 = require("./otherComponents/uiUtils"), alertError = _require2.alertError, alertComponent = _require2.alertComponent;
     var variables = {
       _loadedProgess: 0
     };
@@ -6845,7 +6844,15 @@ window.__require = function e(t, n, r) {
         _stateStr: "",
         _progress: 0,
         _splash: null,
-        _isLoading: false
+        _isLoading: false,
+        _updating: false,
+        _canRetry: false,
+        _storagePath: "",
+        _am: null,
+        manifestUrl: {
+          type: cc.Asset,
+          default: null
+        }
       },
       onLoad: function onLoad() {
         if (!cc.sys.isNative && cc.sys.isMobile) {
@@ -6881,6 +6888,7 @@ window.__require = function e(t, n, r) {
         setTimeout(fn, 33);
         setTimeout(self.loadResources, 0);
         self.checkLoginStatus();
+        self.handleHotUpdate();
       },
       loadResources: function loadResources() {
         var files = cc.resources.getDirWithPath("", cc.Asset).map(function(item) {
@@ -6898,6 +6906,7 @@ window.__require = function e(t, n, r) {
           return cc.resources.load(item.path, item.type, function(err, res) {
             loadedNum++;
             variables._loadedProgess = loadedNum / size;
+            if (!res) return;
             res.addRef();
           });
         });
@@ -6905,19 +6914,21 @@ window.__require = function e(t, n, r) {
       Loading: function Loading() {
         this.byteProgress.progress = 0;
         var self = this;
-        var fn2 = function fn2() {
+        var intervalId = setInterval(function() {
+          if (!self._canRetry) return;
           var _loadedProgess = variables._loadedProgess ? variables._loadedProgess : 1;
           if (!self.byteProgress) return;
           var progress = self.byteProgress.progress;
-          progress >= 1 && cc.director.loadScene(self.nextSceneName);
+          if (progress >= 1) {
+            clearInterval(intervalId);
+            cc.director.loadScene(self.nextSceneName);
+          }
           if (progress < _loadedProgess && (progress < .9 || self.nextSceneName)) {
             progress += .01;
             self.byteProgress.progress = progress;
-            self.label.string = Math.round(100 * progress) + "%";
+            self.label.string = "\u52a0\u8f7d\u4e2d " + Math.round(100 * progress) + "%";
           }
-          setTimeout(fn2, 10);
-        };
-        setTimeout(fn2, 10);
+        }, 10);
       },
       checkLoginStatus: function checkLoginStatus() {
         var self = this;
@@ -6932,12 +6943,109 @@ window.__require = function e(t, n, r) {
             noLoadingView: true
           });
         } else this.nextSceneName = "Login";
+      },
+      handleHotUpdate: function handleHotUpdate() {
+        if (!cc.sys.isNative) {
+          this._canRetry = true;
+          return;
+        }
+        this._storagePath = (jsb.fileUtils ? jsb.fileUtils.getWritablePath() : "/") + "blackjack-remote-asset";
+        cc.log("Storage path for remote asset : " + this._storagePath);
+        this.versionCompareHandle = function(versionA, versionB) {
+          cc.log("JS Custom Version Compare: version A is " + versionA + ", version B is " + versionB);
+          var vA = versionA.split(".");
+          var vB = versionB.split(".");
+          for (var i = 0; i < vA.length; ++i) {
+            var a = parseInt(vA[i]);
+            var b = parseInt(vB[i] || 0);
+            if (a === b) continue;
+            return a - b;
+          }
+          return vB.length > vA.length ? -1 : 0;
+        };
+        this._am = new jsb.AssetsManager("", this._storagePath, this.versionCompareHandle);
+        cc.sys.os === cc.sys.OS_ANDROID && this._am.setMaxConcurrentTask(8);
+        this.byteProgress.progress = 0;
+        this.hotUpdate();
+      },
+      hotUpdate: function hotUpdate() {
+        console.log("VillV am:", this._am);
+        if (this._am && !this._updating) {
+          this._am.setEventCallback(this.updateCb.bind(this));
+          console.log("VillV callback set");
+          if (this._am.getState() === jsb.AssetsManager.State.UNINITED) {
+            var url = this.manifestUrl.nativeUrl;
+            cc.loader.md5Pipe && (url = cc.loader.md5Pipe.transformURL(url));
+            this._am.loadLocalManifest(url);
+          }
+          this._failCount = 0;
+          this._am.update();
+          this._updating = true;
+        }
+      },
+      updateCb: function updateCb(event) {
+        var needRestart = false;
+        var failed = false;
+        switch (event.getEventCode()) {
+         case jsb.EventAssetsManager.UPDATE_PROGRESSION:
+          this.byteProgress.progress = event.getPercentByFile();
+          this.label.string = "\u66f4\u65b0\u4e2d\uff1a " + event.getDownloadedFiles() + "/" + event.getTotalFiles();
+          break;
+
+         case jsb.EventAssetsManager.UPDATE_FINISHED:
+          needRestart = true;
+          break;
+
+         case jsb.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
+         case jsb.EventAssetsManager.ERROR_PARSE_MANIFEST:
+         case jsb.EventAssetsManager.UPDATE_FAILED:
+         case jsb.EventAssetsManager.ERROR_UPDATING:
+         case jsb.EventAssetsManager.ERROR_DECOMPRESS:
+         case jsb.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
+          console.log("VillV: error message", event.getMessage());
+          failed = true;
+          break;
+
+         case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
+          console.log("VillV: no updating required");
+
+         default:
+          this._updating = false;
+          this._canRetry = true;
+        }
+        if (failed) {
+          this._am.setEventCallback(null);
+          this._updateListener = null;
+          this._updating = false;
+          alertComponent().setCallback(function() {
+            cc.game.restart();
+          });
+          alertError("\u66f4\u65b0\u5931\u8d25\uff0c\u8bf7\u91cd\u65b0\u8fdb\u5165\u6e38\u620f");
+        }
+        if (needRestart) {
+          this._am.setEventCallback(null);
+          this._updateListener = null;
+          var searchPaths = jsb.fileUtils.getSearchPaths();
+          var newPaths = this._am.getLocalManifest().getSearchPaths();
+          console.log(JSON.stringify(newPaths));
+          for (var i = 0; i < newPaths.length; i++) -1 == searchPaths.indexOf(newPaths[i]) && Array.prototype.unshift.apply(searchPaths, [ newPaths[i] ]);
+          cc.sys.localStorage.setItem("HotUpdateSearchPaths", JSON.stringify(searchPaths));
+          jsb.fileUtils.setSearchPaths(searchPaths);
+          cc.audioEngine.stopAll();
+          cc.game.restart();
+        }
+        if (this._canRetry) {
+          this._am.setEventCallback(null);
+          this._updateListener = null;
+          this.byteProgress.progress = 0;
+        }
       }
     });
     cc._RF.pop();
   }, {
     "./Globals": "Globals",
-    "./http": "http"
+    "./http": "http",
+    "./otherComponents/uiUtils": "uiUtils"
   } ],
   Login: [ function(require, module, exports) {
     "use strict";
@@ -13173,9 +13281,9 @@ window.__require = function e(t, n, r) {
         game: require("./classic-v0.0.1/main/Game").Game,
         typeDict: require("./classic-v0.0.1/main/wheels/TypeDict"),
         routers: require("./classic-v0.0.1/gameLogicRoutes"),
-        constants: Object.assign(require("./classic-v0.0.1/main/constants/gameConstants"), require("./classic-v0.0.1/main/constants/timeConstants"))
+        constants: require("./classic-v0.0.1/main/constants/gameConstants")
       },
-      VALID_VERSION_LIST: [ "classic-v0.0.1", "classic-v0.0.2" ]
+      VALID_VERSION_LIST: [ "classic-v0.0.1" ]
     };
     module.exports = self;
     var _require = require("./classic-v0.0.1/main/Game"), Game = _require.Game;
@@ -13189,7 +13297,6 @@ window.__require = function e(t, n, r) {
     "./classic-v0.0.1/gameLogicRoutes": "gameLogicRoutes",
     "./classic-v0.0.1/main/Game": "Game",
     "./classic-v0.0.1/main/constants/gameConstants": "gameConstants",
-    "./classic-v0.0.1/main/constants/timeConstants": "timeConstants",
     "./classic-v0.0.1/main/objects/Coin": "Coin",
     "./classic-v0.0.1/main/templates/EquipItems": "EquipItems",
     "./classic-v0.0.1/main/templates/Listeners": "Listeners",
