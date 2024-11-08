@@ -9929,7 +9929,7 @@ window.__require = function e(t, n, r) {
     };
     exports.user = user;
     var auth = {
-      userid: 273,
+      userid: 0,
       token: "kMgoQ1KnQ8CIz/cfmfhRNQ=="
     };
     exports.auth = auth;
@@ -22832,19 +22832,19 @@ window.__require = function e(t, n, r) {
         game: require("./classic-latest/main/Game").Game,
         typeDict: require("./classic-latest/main/wheels/TypeDict"),
         routers: require("./classic-latest/gameLogicRoutes"),
-        constants: require("./classic-latest/main/constants/gameConstants")
+        constants: Object.assign(require("./classic-latest/main/constants/gameConstants"), require("./classic-latest/main/constants/timeConstants"))
       },
       "classic-v0.0.1": {
         game: require("./classic-v0.0.1/main/Game-clas0.0.1").Game,
         typeDict: require("./classic-v0.0.1/main/wheels/TypeDict-clas0.0.1"),
         routers: require("./classic-v0.0.1/gameLogicRoutes-clas0.0.1"),
-        constants: require("./classic-v0.0.1/main/constants/gameConstants-clas0.0.1")
+        constants: Object.assign(require("./classic-v0.0.1/main/constants/gameConstants-clas0.0.1"), require("./classic-v0.0.1/main/constants/timeConstants-clas0.0.1"))
       },
       "classic-v0.0.2": {
         game: require("./classic-v0.0.2/main/Game-clas0.0.2").Game,
         typeDict: require("./classic-v0.0.2/main/wheels/TypeDict-clas0.0.2"),
         routers: require("./classic-v0.0.2/gameLogicRoutes-clas0.0.2"),
-        constants: require("./classic-v0.0.2/main/constants/gameConstants-clas0.0.2")
+        constants: Object.assign(require("./classic-v0.0.2/main/constants/gameConstants-clas0.0.2"), require("./classic-v0.0.2/main/constants/timeConstants-clas0.0.2"))
       },
       VALID_VERSION_LIST: [ "classic-v0.0.1", "classic-v0.0.2" ]
     };
@@ -22858,6 +22858,7 @@ window.__require = function e(t, n, r) {
     "./classic-latest/gameLogicRoutes": "gameLogicRoutes",
     "./classic-latest/main/Game": "Game",
     "./classic-latest/main/constants/gameConstants": "gameConstants",
+    "./classic-latest/main/constants/timeConstants": "timeConstants",
     "./classic-latest/main/templates/EquipItems": "EquipItems",
     "./classic-latest/main/templates/Listeners": "Listeners",
     "./classic-latest/main/templates/PetsItems": "PetsItems",
@@ -22866,10 +22867,12 @@ window.__require = function e(t, n, r) {
     "./classic-v0.0.1/gameLogicRoutes-clas0.0.1": "gameLogicRoutes-clas0.0.1",
     "./classic-v0.0.1/main/Game-clas0.0.1": "Game-clas0.0.1",
     "./classic-v0.0.1/main/constants/gameConstants-clas0.0.1": "gameConstants-clas0.0.1",
+    "./classic-v0.0.1/main/constants/timeConstants-clas0.0.1": "timeConstants-clas0.0.1",
     "./classic-v0.0.1/main/wheels/TypeDict-clas0.0.1": "TypeDict-clas0.0.1",
     "./classic-v0.0.2/gameLogicRoutes-clas0.0.2": "gameLogicRoutes-clas0.0.2",
     "./classic-v0.0.2/main/Game-clas0.0.2": "Game-clas0.0.2",
     "./classic-v0.0.2/main/constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
+    "./classic-v0.0.2/main/constants/timeConstants-clas0.0.2": "timeConstants-clas0.0.2",
     "./classic-v0.0.2/main/wheels/TypeDict-clas0.0.2": "TypeDict-clas0.0.2"
   } ],
   inkRenderManager: [ function(require, module, exports) {
