@@ -871,6 +871,15 @@
             "buttons/setting",
             "cc.Texture2D"
         ],
+        "7f78dN341O/IRDLCeOIALV": [
+            "buttons/taptapLogin",
+            "cc.SpriteFrame",
+            1
+        ],
+        "ef709SbiRDfb7If1U5jJaP": [
+            "buttons/taptapLogin",
+            "cc.Texture2D"
+        ],
         "c4hGdPheRBcoGLgY3CenB8": [
             "buttons/三角",
             "cc.SpriteFrame",
@@ -2301,6 +2310,7 @@
         "7ekEbiHYRBi6taveAaD+mS",
         "7fI9plQ29DpJzeMP3MiD8/",
         "7fKVpD9HhNZpDzLCWlyLz4",
+        "7f78dN341O/IRDLCeOIALV",
         "81kmtrpLZN3rmPE8WIfsch",
         "81mEzmrOlOurcULm2Wcx0L",
         "82FqLwecBIQJS7L3jKHkvh",
@@ -2512,6 +2522,7 @@
         "ee445TqyFOmK09pCqh8dMn",
         "efaSJV+PFA8p6iqZqaOnLv",
         "efbqTQZwxCn5vHWaA5gcFw",
+        "ef709SbiRDfb7If1U5jJaP",
         "f0MtZKH7tBW5XzDvIWoVLn",
         "f0NmlpVT5O7b3d8HqTQZQU",
         "f17vfX75xLKZ4yVxdAzsHJ",
@@ -3000,6 +3011,8 @@
             "7be92",
             "7fKVpD9HhNZpDzLCWlyLz4",
             "7be92",
+            "7f78dN341O/IRDLCeOIALV",
+            "c1520",
             "81kmtrpLZN3rmPE8WIfsch",
             "378ae",
             "81mEzmrOlOurcULm2Wcx0L",
@@ -3421,6 +3434,8 @@
             "efaSJV+PFA8p6iqZqaOnLv",
             "a6d42",
             "efbqTQZwxCn5vHWaA5gcFw",
+            "7be92",
+            "ef709SbiRDfb7If1U5jJaP",
             "7be92",
             "f0MtZKH7tBW5XzDvIWoVLn",
             "745c3",
@@ -3928,6 +3943,8 @@
             "514bd",
             "efbqTQZwxCn5vHWaA5gcFw",
             "ac650",
+            "ef709SbiRDfb7If1U5jJaP",
+            "59003",
             "f17vfX75xLKZ4yVxdAzsHJ",
             "0d41c",
             "f2XkX17Q1J6Zn22zFlC6rU",
