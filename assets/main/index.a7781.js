@@ -11229,12 +11229,13 @@ window.__require = function e(t, n, r) {
           break;
 
          case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
+          this._updating = false;
+          this._canRetry = true;
           console.log("VillV: no updating required");
+          break;
 
          default:
           console.log("VillV event code: ", event.getEventCode());
-          this._updating = false;
-          this._canRetry = true;
         }
         if (failed) {
           this._am.setEventCallback(null);
@@ -11324,6 +11325,7 @@ window.__require = function e(t, n, r) {
          default:
           this.loginTestAccount();
         }
+        jsb.EventAssetsManager.ALREADY_UP_TO_DATE;
       };
       NewClass.prototype.loginByAndroid = function() {
         var _this = this;
@@ -15094,7 +15096,7 @@ window.__require = function e(t, n, r) {
     });
     GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
     GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
     };
     var HydroCoreSpell = function(_SpellItem6) {
       _inheritsLoose(HydroCoreSpell, _SpellItem6);
@@ -16160,7 +16162,7 @@ window.__require = function e(t, n, r) {
     });
     GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
     GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
     };
     var HydroCoreSpell = function(_SpellItem6) {
       _inheritsLoose(HydroCoreSpell, _SpellItem6);
