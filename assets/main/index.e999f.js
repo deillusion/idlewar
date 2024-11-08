@@ -11210,9 +11210,11 @@ window.__require = function e(t, n, r) {
          case jsb.EventAssetsManager.UPDATE_PROGRESSION:
           this.byteProgress.progress = event.getPercentByFile();
           this.label.string = "\u66f4\u65b0\u4e2d\uff1a " + event.getDownloadedFiles() + "/" + event.getTotalFiles();
+          console.log("VillV: ", this.label.string);
           break;
 
          case jsb.EventAssetsManager.UPDATE_FINISHED:
+          console.log("VillV: update finished");
           needRestart = true;
           break;
 
@@ -11230,6 +11232,7 @@ window.__require = function e(t, n, r) {
           console.log("VillV: no updating required");
 
          default:
+          console.log("VillV event code: ", event.getEventCode());
           this._updating = false;
           this._canRetry = true;
         }
