@@ -16,10 +16,5 @@ window._CCSettings = {
     orientation: "",
     server: "",
     debug: true,
-    jsList: [],
-    bundleVers: {
-        internal: "4210e",
-        resources: "6009e",
-        main: "88616"
-    }
+    jsList: []
 };
