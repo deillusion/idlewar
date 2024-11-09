@@ -11082,6 +11082,7 @@ window.__require = function e(t, n, r) {
         }
         var localConfig = JSON.parse(cc.sys.localStorage.getItem("config"));
         Object.assign(config, localConfig);
+        console.log("Vill V: hotupdate code successfully run!!");
         this._splash = cc.find("\u521d\u59cb\u753b\u9762/logo");
         cc.find("\u521d\u59cb\u753b\u9762").active = true;
         this.nextSceneName = null;
