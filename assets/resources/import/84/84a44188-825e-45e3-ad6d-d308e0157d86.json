@@ -1,7 +1,7 @@
 [
   1,
   [
-    "6fFfyuHrJK+6RUPrTNR0Fz"
+    "baIhM/wsFNxK5cW7o1ojne"
   ],
   [
     "_textureSetter"
@@ -12,26 +12,26 @@
   0,
   [
     {
-      "name": "item_block_frame",
+      "name": "calculator",
       "rect": [
         0,
-        0,
-        150,
-        150
+        3,
+        105,
+        106
       ],
       "offset": [
-        0,
-        0
+        -7.5,
+        4
       ],
       "originalSize": [
-        150,
-        150
+        120,
+        120
       ],
       "capInsets": [
-        11,
-        11,
-        12,
-        11
+        0,
+        0,
+        0,
+        0
       ]
     }
   ],

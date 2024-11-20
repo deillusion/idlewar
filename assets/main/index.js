@@ -2471,7 +2471,7 @@ window.__require = function e(t, n, r) {
       var _proto = Creature.prototype;
       _proto.init = function init(x, y, source) {
         _Item.prototype.init.call(this, source);
-        this._power = 7;
+        this._power = 1;
         this._level = 2;
         this._aspd = 7;
         this._scope = 1;
@@ -2663,7 +2663,7 @@ window.__require = function e(t, n, r) {
       var _proto = Creature.prototype;
       _proto.init = function init(x, y, source) {
         _Item.prototype.init.call(this, source);
-        this._power = 7;
+        this._power = 1;
         this._level = 2;
         this._aspd = 7;
         this._scope = 1;
@@ -8390,11 +8390,1899 @@ window.__require = function e(t, n, r) {
     "./core": 5
   } ],
   38: [ function(require, module, exports) {
+    (function(globalScope) {
+      "use strict";
+      var EXP_LIMIT = 9e15, MAX_DIGITS = 1e9, NUMERALS = "0123456789abcdef", LN10 = "2.3025850929940456840179914546843642076011014886287729760333279009675726096773524802359972050895982983419677840422862486334095254650828067566662873690987816894829072083255546808437998948262331985283935053089653777326288461633662222876982198867465436674744042432743651550489343149393914796194044002221051017141748003688084012647080685567743216228355220114804663715659121373450747856947683463616792101806445070648000277502684916746550586856935673420670581136429224554405758925724208241314695689016758940256776311356919292033376587141660230105703089634572075440370847469940168269282808481184289314848524948644871927809676271275775397027668605952496716674183485704422507197965004714951050492214776567636938662976979522110718264549734772662425709429322582798502585509785265383207606726317164309505995087807523710333101197857547331541421808427543863591778117054309827482385045648019095610299291824318237525357709750539565187697510374970888692180205189339507238539205144634197265287286965110862571492198849978748873771345686209167058", PI = "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989380952572010654858632789", DEFAULTS = {
+        precision: 20,
+        rounding: 4,
+        modulo: 1,
+        toExpNeg: -7,
+        toExpPos: 21,
+        minE: -EXP_LIMIT,
+        maxE: EXP_LIMIT,
+        crypto: false
+      }, Decimal, inexact, noConflict, quadrant, external = true, decimalError = "[DecimalError] ", invalidArgument = decimalError + "Invalid argument: ", precisionLimitExceeded = decimalError + "Precision limit exceeded", cryptoUnavailable = decimalError + "crypto unavailable", tag = "[object Decimal]", mathfloor = Math.floor, mathpow = Math.pow, isBinary = /^0b([01]+(\.[01]*)?|\.[01]+)(p[+-]?\d+)?$/i, isHex = /^0x([0-9a-f]+(\.[0-9a-f]*)?|\.[0-9a-f]+)(p[+-]?\d+)?$/i, isOctal = /^0o([0-7]+(\.[0-7]*)?|\.[0-7]+)(p[+-]?\d+)?$/i, isDecimal = /^(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i, BASE = 1e7, LOG_BASE = 7, MAX_SAFE_INTEGER = 9007199254740991, LN10_PRECISION = LN10.length - 1, PI_PRECISION = PI.length - 1, P = {
+        toStringTag: tag
+      };
+      P.absoluteValue = P.abs = function() {
+        var x = new this.constructor(this);
+        x.s < 0 && (x.s = 1);
+        return finalise(x);
+      };
+      P.ceil = function() {
+        return finalise(new this.constructor(this), this.e + 1, 2);
+      };
+      P.clampedTo = P.clamp = function(min, max) {
+        var k, x = this, Ctor = x.constructor;
+        min = new Ctor(min);
+        max = new Ctor(max);
+        if (!min.s || !max.s) return new Ctor(NaN);
+        if (min.gt(max)) throw Error(invalidArgument + max);
+        k = x.cmp(min);
+        return k < 0 ? min : x.cmp(max) > 0 ? max : new Ctor(x);
+      };
+      P.comparedTo = P.cmp = function(y) {
+        var i, j, xdL, ydL, x = this, xd = x.d, yd = (y = new x.constructor(y)).d, xs = x.s, ys = y.s;
+        if (!xd || !yd) return xs && ys ? xs !== ys ? xs : xd === yd ? 0 : !xd ^ xs < 0 ? 1 : -1 : NaN;
+        if (!xd[0] || !yd[0]) return xd[0] ? xs : yd[0] ? -ys : 0;
+        if (xs !== ys) return xs;
+        if (x.e !== y.e) return x.e > y.e ^ xs < 0 ? 1 : -1;
+        xdL = xd.length;
+        ydL = yd.length;
+        for (i = 0, j = xdL < ydL ? xdL : ydL; i < j; ++i) if (xd[i] !== yd[i]) return xd[i] > yd[i] ^ xs < 0 ? 1 : -1;
+        return xdL === ydL ? 0 : xdL > ydL ^ xs < 0 ? 1 : -1;
+      };
+      P.cosine = P.cos = function() {
+        var pr, rm, x = this, Ctor = x.constructor;
+        if (!x.d) return new Ctor(NaN);
+        if (!x.d[0]) return new Ctor(1);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
+        Ctor.rounding = 1;
+        x = cosine(Ctor, toLessThanHalfPi(Ctor, x));
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return finalise(2 == quadrant || 3 == quadrant ? x.neg() : x, pr, rm, true);
+      };
+      P.cubeRoot = P.cbrt = function() {
+        var e, m, n, r, rep, s, sd, t, t3, t3plusx, x = this, Ctor = x.constructor;
+        if (!x.isFinite() || x.isZero()) return new Ctor(x);
+        external = false;
+        s = x.s * mathpow(x.s * x, 1 / 3);
+        if (s && Math.abs(s) != 1 / 0) r = new Ctor(s.toString()); else {
+          n = digitsToString(x.d);
+          e = x.e;
+          (s = (e - n.length + 1) % 3) && (n += 1 == s || -2 == s ? "0" : "00");
+          s = mathpow(n, 1 / 3);
+          e = mathfloor((e + 1) / 3) - (e % 3 == (e < 0 ? -1 : 2));
+          if (s == 1 / 0) n = "5e" + e; else {
+            n = s.toExponential();
+            n = n.slice(0, n.indexOf("e") + 1) + e;
+          }
+          r = new Ctor(n);
+          r.s = x.s;
+        }
+        sd = (e = Ctor.precision) + 3;
+        for (;;) {
+          t = r;
+          t3 = t.times(t).times(t);
+          t3plusx = t3.plus(x);
+          r = divide(t3plusx.plus(x).times(t), t3plusx.plus(t3), sd + 2, 1);
+          if (digitsToString(t.d).slice(0, sd) === (n = digitsToString(r.d)).slice(0, sd)) {
+            n = n.slice(sd - 3, sd + 1);
+            if ("9999" != n && (rep || "4999" != n)) {
+              if (!+n || !+n.slice(1) && "5" == n.charAt(0)) {
+                finalise(r, e + 1, 1);
+                m = !r.times(r).times(r).eq(x);
+              }
+              break;
+            }
+            if (!rep) {
+              finalise(t, e + 1, 0);
+              if (t.times(t).times(t).eq(x)) {
+                r = t;
+                break;
+              }
+            }
+            sd += 4;
+            rep = 1;
+          }
+        }
+        external = true;
+        return finalise(r, e, Ctor.rounding, m);
+      };
+      P.decimalPlaces = P.dp = function() {
+        var w, d = this.d, n = NaN;
+        if (d) {
+          w = d.length - 1;
+          n = (w - mathfloor(this.e / LOG_BASE)) * LOG_BASE;
+          w = d[w];
+          if (w) for (;w % 10 == 0; w /= 10) n--;
+          n < 0 && (n = 0);
+        }
+        return n;
+      };
+      P.dividedBy = P.div = function(y) {
+        return divide(this, new this.constructor(y));
+      };
+      P.dividedToIntegerBy = P.divToInt = function(y) {
+        var x = this, Ctor = x.constructor;
+        return finalise(divide(x, new Ctor(y), 0, 1, 1), Ctor.precision, Ctor.rounding);
+      };
+      P.equals = P.eq = function(y) {
+        return 0 === this.cmp(y);
+      };
+      P.floor = function() {
+        return finalise(new this.constructor(this), this.e + 1, 3);
+      };
+      P.greaterThan = P.gt = function(y) {
+        return this.cmp(y) > 0;
+      };
+      P.greaterThanOrEqualTo = P.gte = function(y) {
+        var k = this.cmp(y);
+        return 1 == k || 0 === k;
+      };
+      P.hyperbolicCosine = P.cosh = function() {
+        var k, n, pr, rm, len, x = this, Ctor = x.constructor, one = new Ctor(1);
+        if (!x.isFinite()) return new Ctor(x.s ? 1 / 0 : NaN);
+        if (x.isZero()) return one;
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
+        Ctor.rounding = 1;
+        len = x.d.length;
+        if (len < 32) {
+          k = Math.ceil(len / 3);
+          n = (1 / tinyPow(4, k)).toString();
+        } else {
+          k = 16;
+          n = "2.3283064365386962890625e-10";
+        }
+        x = taylorSeries(Ctor, 1, x.times(n), new Ctor(1), true);
+        var cosh2_x, i = k, d8 = new Ctor(8);
+        for (;i--; ) {
+          cosh2_x = x.times(x);
+          x = one.minus(cosh2_x.times(d8.minus(cosh2_x.times(d8))));
+        }
+        return finalise(x, Ctor.precision = pr, Ctor.rounding = rm, true);
+      };
+      P.hyperbolicSine = P.sinh = function() {
+        var k, pr, rm, len, x = this, Ctor = x.constructor;
+        if (!x.isFinite() || x.isZero()) return new Ctor(x);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
+        Ctor.rounding = 1;
+        len = x.d.length;
+        if (len < 3) x = taylorSeries(Ctor, 2, x, x, true); else {
+          k = 1.4 * Math.sqrt(len);
+          k = k > 16 ? 16 : 0 | k;
+          x = x.times(1 / tinyPow(5, k));
+          x = taylorSeries(Ctor, 2, x, x, true);
+          var sinh2_x, d5 = new Ctor(5), d16 = new Ctor(16), d20 = new Ctor(20);
+          for (;k--; ) {
+            sinh2_x = x.times(x);
+            x = x.times(d5.plus(sinh2_x.times(d16.times(sinh2_x).plus(d20))));
+          }
+        }
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return finalise(x, pr, rm, true);
+      };
+      P.hyperbolicTangent = P.tanh = function() {
+        var pr, rm, x = this, Ctor = x.constructor;
+        if (!x.isFinite()) return new Ctor(x.s);
+        if (x.isZero()) return new Ctor(x);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + 7;
+        Ctor.rounding = 1;
+        return divide(x.sinh(), x.cosh(), Ctor.precision = pr, Ctor.rounding = rm);
+      };
+      P.inverseCosine = P.acos = function() {
+        var halfPi, x = this, Ctor = x.constructor, k = x.abs().cmp(1), pr = Ctor.precision, rm = Ctor.rounding;
+        if (-1 !== k) return 0 === k ? x.isNeg() ? getPi(Ctor, pr, rm) : new Ctor(0) : new Ctor(NaN);
+        if (x.isZero()) return getPi(Ctor, pr + 4, rm).times(.5);
+        Ctor.precision = pr + 6;
+        Ctor.rounding = 1;
+        x = x.asin();
+        halfPi = getPi(Ctor, pr + 4, rm).times(.5);
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return halfPi.minus(x);
+      };
+      P.inverseHyperbolicCosine = P.acosh = function() {
+        var pr, rm, x = this, Ctor = x.constructor;
+        if (x.lte(1)) return new Ctor(x.eq(1) ? 0 : NaN);
+        if (!x.isFinite()) return new Ctor(x);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + Math.max(Math.abs(x.e), x.sd()) + 4;
+        Ctor.rounding = 1;
+        external = false;
+        x = x.times(x).minus(1).sqrt().plus(x);
+        external = true;
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return x.ln();
+      };
+      P.inverseHyperbolicSine = P.asinh = function() {
+        var pr, rm, x = this, Ctor = x.constructor;
+        if (!x.isFinite() || x.isZero()) return new Ctor(x);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + 2 * Math.max(Math.abs(x.e), x.sd()) + 6;
+        Ctor.rounding = 1;
+        external = false;
+        x = x.times(x).plus(1).sqrt().plus(x);
+        external = true;
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return x.ln();
+      };
+      P.inverseHyperbolicTangent = P.atanh = function() {
+        var pr, rm, wpr, xsd, x = this, Ctor = x.constructor;
+        if (!x.isFinite()) return new Ctor(NaN);
+        if (x.e >= 0) return new Ctor(x.abs().eq(1) ? x.s / 0 : x.isZero() ? x : NaN);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        xsd = x.sd();
+        if (Math.max(xsd, pr) < 2 * -x.e - 1) return finalise(new Ctor(x), pr, rm, true);
+        Ctor.precision = wpr = xsd - x.e;
+        x = divide(x.plus(1), new Ctor(1).minus(x), wpr + pr, 1);
+        Ctor.precision = pr + 4;
+        Ctor.rounding = 1;
+        x = x.ln();
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return x.times(.5);
+      };
+      P.inverseSine = P.asin = function() {
+        var halfPi, k, pr, rm, x = this, Ctor = x.constructor;
+        if (x.isZero()) return new Ctor(x);
+        k = x.abs().cmp(1);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        if (-1 !== k) {
+          if (0 === k) {
+            halfPi = getPi(Ctor, pr + 4, rm).times(.5);
+            halfPi.s = x.s;
+            return halfPi;
+          }
+          return new Ctor(NaN);
+        }
+        Ctor.precision = pr + 6;
+        Ctor.rounding = 1;
+        x = x.div(new Ctor(1).minus(x.times(x)).sqrt().plus(1)).atan();
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return x.times(2);
+      };
+      P.inverseTangent = P.atan = function() {
+        var i, j, k, n, px, t, r, wpr, x2, x = this, Ctor = x.constructor, pr = Ctor.precision, rm = Ctor.rounding;
+        if (x.isFinite()) {
+          if (x.isZero()) return new Ctor(x);
+          if (x.abs().eq(1) && pr + 4 <= PI_PRECISION) {
+            r = getPi(Ctor, pr + 4, rm).times(.25);
+            r.s = x.s;
+            return r;
+          }
+        } else {
+          if (!x.s) return new Ctor(NaN);
+          if (pr + 4 <= PI_PRECISION) {
+            r = getPi(Ctor, pr + 4, rm).times(.5);
+            r.s = x.s;
+            return r;
+          }
+        }
+        Ctor.precision = wpr = pr + 10;
+        Ctor.rounding = 1;
+        k = Math.min(28, wpr / LOG_BASE + 2 | 0);
+        for (i = k; i; --i) x = x.div(x.times(x).plus(1).sqrt().plus(1));
+        external = false;
+        j = Math.ceil(wpr / LOG_BASE);
+        n = 1;
+        x2 = x.times(x);
+        r = new Ctor(x);
+        px = x;
+        for (;-1 !== i; ) {
+          px = px.times(x2);
+          t = r.minus(px.div(n += 2));
+          px = px.times(x2);
+          r = t.plus(px.div(n += 2));
+          if (void 0 !== r.d[j]) for (i = j; r.d[i] === t.d[i] && i--; ) ;
+        }
+        k && (r = r.times(2 << k - 1));
+        external = true;
+        return finalise(r, Ctor.precision = pr, Ctor.rounding = rm, true);
+      };
+      P.isFinite = function() {
+        return !!this.d;
+      };
+      P.isInteger = P.isInt = function() {
+        return !!this.d && mathfloor(this.e / LOG_BASE) > this.d.length - 2;
+      };
+      P.isNaN = function() {
+        return !this.s;
+      };
+      P.isNegative = P.isNeg = function() {
+        return this.s < 0;
+      };
+      P.isPositive = P.isPos = function() {
+        return this.s > 0;
+      };
+      P.isZero = function() {
+        return !!this.d && 0 === this.d[0];
+      };
+      P.lessThan = P.lt = function(y) {
+        return this.cmp(y) < 0;
+      };
+      P.lessThanOrEqualTo = P.lte = function(y) {
+        return this.cmp(y) < 1;
+      };
+      P.logarithm = P.log = function(base) {
+        var isBase10, d, denominator, k, inf, num, sd, r, arg = this, Ctor = arg.constructor, pr = Ctor.precision, rm = Ctor.rounding, guard = 5;
+        if (null == base) {
+          base = new Ctor(10);
+          isBase10 = true;
+        } else {
+          base = new Ctor(base);
+          d = base.d;
+          if (base.s < 0 || !d || !d[0] || base.eq(1)) return new Ctor(NaN);
+          isBase10 = base.eq(10);
+        }
+        d = arg.d;
+        if (arg.s < 0 || !d || !d[0] || arg.eq(1)) return new Ctor(d && !d[0] ? -1 / 0 : 1 != arg.s ? NaN : d ? 0 : 1 / 0);
+        if (isBase10) if (d.length > 1) inf = true; else {
+          for (k = d[0]; k % 10 === 0; ) k /= 10;
+          inf = 1 !== k;
+        }
+        external = false;
+        sd = pr + guard;
+        num = naturalLogarithm(arg, sd);
+        denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
+        r = divide(num, denominator, sd, 1);
+        if (checkRoundingDigits(r.d, k = pr, rm)) do {
+          sd += 10;
+          num = naturalLogarithm(arg, sd);
+          denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
+          r = divide(num, denominator, sd, 1);
+          if (!inf) {
+            +digitsToString(r.d).slice(k + 1, k + 15) + 1 == 1e14 && (r = finalise(r, pr + 1, 0));
+            break;
+          }
+        } while (checkRoundingDigits(r.d, k += 10, rm));
+        external = true;
+        return finalise(r, pr, rm);
+      };
+      P.minus = P.sub = function(y) {
+        var d, e, i, j, k, len, pr, rm, xd, xe, xLTy, yd, x = this, Ctor = x.constructor;
+        y = new Ctor(y);
+        if (!x.d || !y.d) {
+          x.s && y.s ? x.d ? y.s = -y.s : y = new Ctor(y.d || x.s !== y.s ? x : NaN) : y = new Ctor(NaN);
+          return y;
+        }
+        if (x.s != y.s) {
+          y.s = -y.s;
+          return x.plus(y);
+        }
+        xd = x.d;
+        yd = y.d;
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        if (!xd[0] || !yd[0]) {
+          if (yd[0]) y.s = -y.s; else {
+            if (!xd[0]) return new Ctor(3 === rm ? -0 : 0);
+            y = new Ctor(x);
+          }
+          return external ? finalise(y, pr, rm) : y;
+        }
+        e = mathfloor(y.e / LOG_BASE);
+        xe = mathfloor(x.e / LOG_BASE);
+        xd = xd.slice();
+        k = xe - e;
+        if (k) {
+          xLTy = k < 0;
+          if (xLTy) {
+            d = xd;
+            k = -k;
+            len = yd.length;
+          } else {
+            d = yd;
+            e = xe;
+            len = xd.length;
+          }
+          i = Math.max(Math.ceil(pr / LOG_BASE), len) + 2;
+          if (k > i) {
+            k = i;
+            d.length = 1;
+          }
+          d.reverse();
+          for (i = k; i--; ) d.push(0);
+          d.reverse();
+        } else {
+          i = xd.length;
+          len = yd.length;
+          xLTy = i < len;
+          xLTy && (len = i);
+          for (i = 0; i < len; i++) if (xd[i] != yd[i]) {
+            xLTy = xd[i] < yd[i];
+            break;
+          }
+          k = 0;
+        }
+        if (xLTy) {
+          d = xd;
+          xd = yd;
+          yd = d;
+          y.s = -y.s;
+        }
+        len = xd.length;
+        for (i = yd.length - len; i > 0; --i) xd[len++] = 0;
+        for (i = yd.length; i > k; ) {
+          if (xd[--i] < yd[i]) {
+            for (j = i; j && 0 === xd[--j]; ) xd[j] = BASE - 1;
+            --xd[j];
+            xd[i] += BASE;
+          }
+          xd[i] -= yd[i];
+        }
+        for (;0 === xd[--len]; ) xd.pop();
+        for (;0 === xd[0]; xd.shift()) --e;
+        if (!xd[0]) return new Ctor(3 === rm ? -0 : 0);
+        y.d = xd;
+        y.e = getBase10Exponent(xd, e);
+        return external ? finalise(y, pr, rm) : y;
+      };
+      P.modulo = P.mod = function(y) {
+        var q, x = this, Ctor = x.constructor;
+        y = new Ctor(y);
+        if (!x.d || !y.s || y.d && !y.d[0]) return new Ctor(NaN);
+        if (!y.d || x.d && !x.d[0]) return finalise(new Ctor(x), Ctor.precision, Ctor.rounding);
+        external = false;
+        if (9 == Ctor.modulo) {
+          q = divide(x, y.abs(), 0, 3, 1);
+          q.s *= y.s;
+        } else q = divide(x, y, 0, Ctor.modulo, 1);
+        q = q.times(y);
+        external = true;
+        return x.minus(q);
+      };
+      P.naturalExponential = P.exp = function() {
+        return naturalExponential(this);
+      };
+      P.naturalLogarithm = P.ln = function() {
+        return naturalLogarithm(this);
+      };
+      P.negated = P.neg = function() {
+        var x = new this.constructor(this);
+        x.s = -x.s;
+        return finalise(x);
+      };
+      P.plus = P.add = function(y) {
+        var carry, d, e, i, k, len, pr, rm, xd, yd, x = this, Ctor = x.constructor;
+        y = new Ctor(y);
+        if (!x.d || !y.d) {
+          x.s && y.s ? x.d || (y = new Ctor(y.d || x.s === y.s ? x : NaN)) : y = new Ctor(NaN);
+          return y;
+        }
+        if (x.s != y.s) {
+          y.s = -y.s;
+          return x.minus(y);
+        }
+        xd = x.d;
+        yd = y.d;
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        if (!xd[0] || !yd[0]) {
+          yd[0] || (y = new Ctor(x));
+          return external ? finalise(y, pr, rm) : y;
+        }
+        k = mathfloor(x.e / LOG_BASE);
+        e = mathfloor(y.e / LOG_BASE);
+        xd = xd.slice();
+        i = k - e;
+        if (i) {
+          if (i < 0) {
+            d = xd;
+            i = -i;
+            len = yd.length;
+          } else {
+            d = yd;
+            e = k;
+            len = xd.length;
+          }
+          k = Math.ceil(pr / LOG_BASE);
+          len = k > len ? k + 1 : len + 1;
+          if (i > len) {
+            i = len;
+            d.length = 1;
+          }
+          d.reverse();
+          for (;i--; ) d.push(0);
+          d.reverse();
+        }
+        len = xd.length;
+        i = yd.length;
+        if (len - i < 0) {
+          i = len;
+          d = yd;
+          yd = xd;
+          xd = d;
+        }
+        for (carry = 0; i; ) {
+          carry = (xd[--i] = xd[i] + yd[i] + carry) / BASE | 0;
+          xd[i] %= BASE;
+        }
+        if (carry) {
+          xd.unshift(carry);
+          ++e;
+        }
+        for (len = xd.length; 0 == xd[--len]; ) xd.pop();
+        y.d = xd;
+        y.e = getBase10Exponent(xd, e);
+        return external ? finalise(y, pr, rm) : y;
+      };
+      P.precision = P.sd = function(z) {
+        var k, x = this;
+        if (void 0 !== z && z !== !!z && 1 !== z && 0 !== z) throw Error(invalidArgument + z);
+        if (x.d) {
+          k = getPrecision(x.d);
+          z && x.e + 1 > k && (k = x.e + 1);
+        } else k = NaN;
+        return k;
+      };
+      P.round = function() {
+        var x = this, Ctor = x.constructor;
+        return finalise(new Ctor(x), x.e + 1, Ctor.rounding);
+      };
+      P.sine = P.sin = function() {
+        var pr, rm, x = this, Ctor = x.constructor;
+        if (!x.isFinite()) return new Ctor(NaN);
+        if (x.isZero()) return new Ctor(x);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
+        Ctor.rounding = 1;
+        x = sine(Ctor, toLessThanHalfPi(Ctor, x));
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return finalise(quadrant > 2 ? x.neg() : x, pr, rm, true);
+      };
+      P.squareRoot = P.sqrt = function() {
+        var m, n, sd, r, rep, t, x = this, d = x.d, e = x.e, s = x.s, Ctor = x.constructor;
+        if (1 !== s || !d || !d[0]) return new Ctor(!s || s < 0 && (!d || d[0]) ? NaN : d ? x : 1 / 0);
+        external = false;
+        s = Math.sqrt(+x);
+        if (0 == s || s == 1 / 0) {
+          n = digitsToString(d);
+          (n.length + e) % 2 == 0 && (n += "0");
+          s = Math.sqrt(n);
+          e = mathfloor((e + 1) / 2) - (e < 0 || e % 2);
+          if (s == 1 / 0) n = "5e" + e; else {
+            n = s.toExponential();
+            n = n.slice(0, n.indexOf("e") + 1) + e;
+          }
+          r = new Ctor(n);
+        } else r = new Ctor(s.toString());
+        sd = (e = Ctor.precision) + 3;
+        for (;;) {
+          t = r;
+          r = t.plus(divide(x, t, sd + 2, 1)).times(.5);
+          if (digitsToString(t.d).slice(0, sd) === (n = digitsToString(r.d)).slice(0, sd)) {
+            n = n.slice(sd - 3, sd + 1);
+            if ("9999" != n && (rep || "4999" != n)) {
+              if (!+n || !+n.slice(1) && "5" == n.charAt(0)) {
+                finalise(r, e + 1, 1);
+                m = !r.times(r).eq(x);
+              }
+              break;
+            }
+            if (!rep) {
+              finalise(t, e + 1, 0);
+              if (t.times(t).eq(x)) {
+                r = t;
+                break;
+              }
+            }
+            sd += 4;
+            rep = 1;
+          }
+        }
+        external = true;
+        return finalise(r, e, Ctor.rounding, m);
+      };
+      P.tangent = P.tan = function() {
+        var pr, rm, x = this, Ctor = x.constructor;
+        if (!x.isFinite()) return new Ctor(NaN);
+        if (x.isZero()) return new Ctor(x);
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        Ctor.precision = pr + 10;
+        Ctor.rounding = 1;
+        x = x.sin();
+        x.s = 1;
+        x = divide(x, new Ctor(1).minus(x.times(x)).sqrt(), pr + 10, 0);
+        Ctor.precision = pr;
+        Ctor.rounding = rm;
+        return finalise(2 == quadrant || 4 == quadrant ? x.neg() : x, pr, rm, true);
+      };
+      P.times = P.mul = function(y) {
+        var carry, e, i, k, r, rL, t, xdL, ydL, x = this, Ctor = x.constructor, xd = x.d, yd = (y = new Ctor(y)).d;
+        y.s *= x.s;
+        if (!xd || !xd[0] || !yd || !yd[0]) return new Ctor(!y.s || xd && !xd[0] && !yd || yd && !yd[0] && !xd ? NaN : xd && yd ? 0 * y.s : y.s / 0);
+        e = mathfloor(x.e / LOG_BASE) + mathfloor(y.e / LOG_BASE);
+        xdL = xd.length;
+        ydL = yd.length;
+        if (xdL < ydL) {
+          r = xd;
+          xd = yd;
+          yd = r;
+          rL = xdL;
+          xdL = ydL;
+          ydL = rL;
+        }
+        r = [];
+        rL = xdL + ydL;
+        for (i = rL; i--; ) r.push(0);
+        for (i = ydL; --i >= 0; ) {
+          carry = 0;
+          for (k = xdL + i; k > i; ) {
+            t = r[k] + yd[i] * xd[k - i - 1] + carry;
+            r[k--] = t % BASE | 0;
+            carry = t / BASE | 0;
+          }
+          r[k] = (r[k] + carry) % BASE | 0;
+        }
+        for (;!r[--rL]; ) r.pop();
+        carry ? ++e : r.shift();
+        y.d = r;
+        y.e = getBase10Exponent(r, e);
+        return external ? finalise(y, Ctor.precision, Ctor.rounding) : y;
+      };
+      P.toBinary = function(sd, rm) {
+        return toStringBinary(this, 2, sd, rm);
+      };
+      P.toDecimalPlaces = P.toDP = function(dp, rm) {
+        var x = this, Ctor = x.constructor;
+        x = new Ctor(x);
+        if (void 0 === dp) return x;
+        checkInt32(dp, 0, MAX_DIGITS);
+        void 0 === rm ? rm = Ctor.rounding : checkInt32(rm, 0, 8);
+        return finalise(x, dp + x.e + 1, rm);
+      };
+      P.toExponential = function(dp, rm) {
+        var str, x = this, Ctor = x.constructor;
+        if (void 0 === dp) str = finiteToString(x, true); else {
+          checkInt32(dp, 0, MAX_DIGITS);
+          void 0 === rm ? rm = Ctor.rounding : checkInt32(rm, 0, 8);
+          x = finalise(new Ctor(x), dp + 1, rm);
+          str = finiteToString(x, true, dp + 1);
+        }
+        return x.isNeg() && !x.isZero() ? "-" + str : str;
+      };
+      P.toFixed = function(dp, rm) {
+        var str, y, x = this, Ctor = x.constructor;
+        if (void 0 === dp) str = finiteToString(x); else {
+          checkInt32(dp, 0, MAX_DIGITS);
+          void 0 === rm ? rm = Ctor.rounding : checkInt32(rm, 0, 8);
+          y = finalise(new Ctor(x), dp + x.e + 1, rm);
+          str = finiteToString(y, false, dp + y.e + 1);
+        }
+        return x.isNeg() && !x.isZero() ? "-" + str : str;
+      };
+      P.toFraction = function(maxD) {
+        var d, d0, d1, d2, e, k, n, n0, n1, pr, q, r, x = this, xd = x.d, Ctor = x.constructor;
+        if (!xd) return new Ctor(x);
+        n1 = d0 = new Ctor(1);
+        d1 = n0 = new Ctor(0);
+        d = new Ctor(d1);
+        e = d.e = getPrecision(xd) - x.e - 1;
+        k = e % LOG_BASE;
+        d.d[0] = mathpow(10, k < 0 ? LOG_BASE + k : k);
+        if (null == maxD) maxD = e > 0 ? d : n1; else {
+          n = new Ctor(maxD);
+          if (!n.isInt() || n.lt(n1)) throw Error(invalidArgument + n);
+          maxD = n.gt(d) ? e > 0 ? d : n1 : n;
+        }
+        external = false;
+        n = new Ctor(digitsToString(xd));
+        pr = Ctor.precision;
+        Ctor.precision = e = xd.length * LOG_BASE * 2;
+        for (;;) {
+          q = divide(n, d, 0, 1, 1);
+          d2 = d0.plus(q.times(d1));
+          if (1 == d2.cmp(maxD)) break;
+          d0 = d1;
+          d1 = d2;
+          d2 = n1;
+          n1 = n0.plus(q.times(d2));
+          n0 = d2;
+          d2 = d;
+          d = n.minus(q.times(d2));
+          n = d2;
+        }
+        d2 = divide(maxD.minus(d0), d1, 0, 1, 1);
+        n0 = n0.plus(d2.times(n1));
+        d0 = d0.plus(d2.times(d1));
+        n0.s = n1.s = x.s;
+        r = divide(n1, d1, e, 1).minus(x).abs().cmp(divide(n0, d0, e, 1).minus(x).abs()) < 1 ? [ n1, d1 ] : [ n0, d0 ];
+        Ctor.precision = pr;
+        external = true;
+        return r;
+      };
+      P.toHexadecimal = P.toHex = function(sd, rm) {
+        return toStringBinary(this, 16, sd, rm);
+      };
+      P.toNearest = function(y, rm) {
+        var x = this, Ctor = x.constructor;
+        x = new Ctor(x);
+        if (null == y) {
+          if (!x.d) return x;
+          y = new Ctor(1);
+          rm = Ctor.rounding;
+        } else {
+          y = new Ctor(y);
+          void 0 === rm ? rm = Ctor.rounding : checkInt32(rm, 0, 8);
+          if (!x.d) return y.s ? x : y;
+          if (!y.d) {
+            y.s && (y.s = x.s);
+            return y;
+          }
+        }
+        if (y.d[0]) {
+          external = false;
+          x = divide(x, y, 0, rm, 1).times(y);
+          external = true;
+          finalise(x);
+        } else {
+          y.s = x.s;
+          x = y;
+        }
+        return x;
+      };
+      P.toNumber = function() {
+        return +this;
+      };
+      P.toOctal = function(sd, rm) {
+        return toStringBinary(this, 8, sd, rm);
+      };
+      P.toPower = P.pow = function(y) {
+        var e, k, pr, r, rm, s, x = this, Ctor = x.constructor, yn = +(y = new Ctor(y));
+        if (!x.d || !y.d || !x.d[0] || !y.d[0]) return new Ctor(mathpow(+x, yn));
+        x = new Ctor(x);
+        if (x.eq(1)) return x;
+        pr = Ctor.precision;
+        rm = Ctor.rounding;
+        if (y.eq(1)) return finalise(x, pr, rm);
+        e = mathfloor(y.e / LOG_BASE);
+        if (e >= y.d.length - 1 && (k = yn < 0 ? -yn : yn) <= MAX_SAFE_INTEGER) {
+          r = intPow(Ctor, x, k, pr);
+          return y.s < 0 ? new Ctor(1).div(r) : finalise(r, pr, rm);
+        }
+        s = x.s;
+        if (s < 0) {
+          if (e < y.d.length - 1) return new Ctor(NaN);
+          0 == (1 & y.d[e]) && (s = 1);
+          if (0 == x.e && 1 == x.d[0] && 1 == x.d.length) {
+            x.s = s;
+            return x;
+          }
+        }
+        k = mathpow(+x, yn);
+        e = 0 != k && isFinite(k) ? new Ctor(k + "").e : mathfloor(yn * (Math.log("0." + digitsToString(x.d)) / Math.LN10 + x.e + 1));
+        if (e > Ctor.maxE + 1 || e < Ctor.minE - 1) return new Ctor(e > 0 ? s / 0 : 0);
+        external = false;
+        Ctor.rounding = x.s = 1;
+        k = Math.min(12, (e + "").length);
+        r = naturalExponential(y.times(naturalLogarithm(x, pr + k)), pr);
+        if (r.d) {
+          r = finalise(r, pr + 5, 1);
+          if (checkRoundingDigits(r.d, pr, rm)) {
+            e = pr + 10;
+            r = finalise(naturalExponential(y.times(naturalLogarithm(x, e + k)), e), e + 5, 1);
+            +digitsToString(r.d).slice(pr + 1, pr + 15) + 1 == 1e14 && (r = finalise(r, pr + 1, 0));
+          }
+        }
+        r.s = s;
+        external = true;
+        Ctor.rounding = rm;
+        return finalise(r, pr, rm);
+      };
+      P.toPrecision = function(sd, rm) {
+        var str, x = this, Ctor = x.constructor;
+        if (void 0 === sd) str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos); else {
+          checkInt32(sd, 1, MAX_DIGITS);
+          void 0 === rm ? rm = Ctor.rounding : checkInt32(rm, 0, 8);
+          x = finalise(new Ctor(x), sd, rm);
+          str = finiteToString(x, sd <= x.e || x.e <= Ctor.toExpNeg, sd);
+        }
+        return x.isNeg() && !x.isZero() ? "-" + str : str;
+      };
+      P.toSignificantDigits = P.toSD = function(sd, rm) {
+        var x = this, Ctor = x.constructor;
+        if (void 0 === sd) {
+          sd = Ctor.precision;
+          rm = Ctor.rounding;
+        } else {
+          checkInt32(sd, 1, MAX_DIGITS);
+          void 0 === rm ? rm = Ctor.rounding : checkInt32(rm, 0, 8);
+        }
+        return finalise(new Ctor(x), sd, rm);
+      };
+      P.toString = function() {
+        var x = this, Ctor = x.constructor, str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
+        return x.isNeg() && !x.isZero() ? "-" + str : str;
+      };
+      P.truncated = P.trunc = function() {
+        return finalise(new this.constructor(this), this.e + 1, 1);
+      };
+      P.valueOf = P.toJSON = function() {
+        var x = this, Ctor = x.constructor, str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
+        return x.isNeg() ? "-" + str : str;
+      };
+      function digitsToString(d) {
+        var i, k, ws, indexOfLastWord = d.length - 1, str = "", w = d[0];
+        if (indexOfLastWord > 0) {
+          str += w;
+          for (i = 1; i < indexOfLastWord; i++) {
+            ws = d[i] + "";
+            k = LOG_BASE - ws.length;
+            k && (str += getZeroString(k));
+            str += ws;
+          }
+          w = d[i];
+          ws = w + "";
+          k = LOG_BASE - ws.length;
+          k && (str += getZeroString(k));
+        } else if (0 === w) return "0";
+        for (;w % 10 === 0; ) w /= 10;
+        return str + w;
+      }
+      function checkInt32(i, min, max) {
+        if (i !== ~~i || i < min || i > max) throw Error(invalidArgument + i);
+      }
+      function checkRoundingDigits(d, i, rm, repeating) {
+        var di, k, r, rd;
+        for (k = d[0]; k >= 10; k /= 10) --i;
+        if (--i < 0) {
+          i += LOG_BASE;
+          di = 0;
+        } else {
+          di = Math.ceil((i + 1) / LOG_BASE);
+          i %= LOG_BASE;
+        }
+        k = mathpow(10, LOG_BASE - i);
+        rd = d[di] % k | 0;
+        if (null == repeating) if (i < 3) {
+          0 == i ? rd = rd / 100 | 0 : 1 == i && (rd = rd / 10 | 0);
+          r = rm < 4 && 99999 == rd || rm > 3 && 49999 == rd || 5e4 == rd || 0 == rd;
+        } else r = (rm < 4 && rd + 1 == k || rm > 3 && rd + 1 == k / 2) && (d[di + 1] / k / 100 | 0) == mathpow(10, i - 2) - 1 || (rd == k / 2 || 0 == rd) && 0 == (d[di + 1] / k / 100 | 0); else if (i < 4) {
+          0 == i ? rd = rd / 1e3 | 0 : 1 == i ? rd = rd / 100 | 0 : 2 == i && (rd = rd / 10 | 0);
+          r = (repeating || rm < 4) && 9999 == rd || !repeating && rm > 3 && 4999 == rd;
+        } else r = ((repeating || rm < 4) && rd + 1 == k || !repeating && rm > 3 && rd + 1 == k / 2) && (d[di + 1] / k / 1e3 | 0) == mathpow(10, i - 3) - 1;
+        return r;
+      }
+      function convertBase(str, baseIn, baseOut) {
+        var j, arr = [ 0 ], arrL, i = 0, strL = str.length;
+        for (;i < strL; ) {
+          for (arrL = arr.length; arrL--; ) arr[arrL] *= baseIn;
+          arr[0] += NUMERALS.indexOf(str.charAt(i++));
+          for (j = 0; j < arr.length; j++) if (arr[j] > baseOut - 1) {
+            void 0 === arr[j + 1] && (arr[j + 1] = 0);
+            arr[j + 1] += arr[j] / baseOut | 0;
+            arr[j] %= baseOut;
+          }
+        }
+        return arr.reverse();
+      }
+      function cosine(Ctor, x) {
+        var k, len, y;
+        if (x.isZero()) return x;
+        len = x.d.length;
+        if (len < 32) {
+          k = Math.ceil(len / 3);
+          y = (1 / tinyPow(4, k)).toString();
+        } else {
+          k = 16;
+          y = "2.3283064365386962890625e-10";
+        }
+        Ctor.precision += k;
+        x = taylorSeries(Ctor, 1, x.times(y), new Ctor(1));
+        for (var i = k; i--; ) {
+          var cos2x = x.times(x);
+          x = cos2x.times(cos2x).minus(cos2x).times(8).plus(1);
+        }
+        Ctor.precision -= k;
+        return x;
+      }
+      var divide = function() {
+        function multiplyInteger(x, k, base) {
+          var temp, carry = 0, i = x.length;
+          for (x = x.slice(); i--; ) {
+            temp = x[i] * k + carry;
+            x[i] = temp % base | 0;
+            carry = temp / base | 0;
+          }
+          carry && x.unshift(carry);
+          return x;
+        }
+        function compare(a, b, aL, bL) {
+          var i, r;
+          if (aL != bL) r = aL > bL ? 1 : -1; else for (i = r = 0; i < aL; i++) if (a[i] != b[i]) {
+            r = a[i] > b[i] ? 1 : -1;
+            break;
+          }
+          return r;
+        }
+        function subtract(a, b, aL, base) {
+          var i = 0;
+          for (;aL--; ) {
+            a[aL] -= i;
+            i = a[aL] < b[aL] ? 1 : 0;
+            a[aL] = i * base + a[aL] - b[aL];
+          }
+          for (;!a[0] && a.length > 1; ) a.shift();
+        }
+        return function(x, y, pr, rm, dp, base) {
+          var cmp, e, i, k, logBase, more, prod, prodL, q, qd, rem, remL, rem0, sd, t, xi, xL, yd0, yL, yz, Ctor = x.constructor, sign = x.s == y.s ? 1 : -1, xd = x.d, yd = y.d;
+          if (!xd || !xd[0] || !yd || !yd[0]) return new Ctor(x.s && y.s && (xd ? !yd || xd[0] != yd[0] : yd) ? xd && 0 == xd[0] || !yd ? 0 * sign : sign / 0 : NaN);
+          if (base) {
+            logBase = 1;
+            e = x.e - y.e;
+          } else {
+            base = BASE;
+            logBase = LOG_BASE;
+            e = mathfloor(x.e / logBase) - mathfloor(y.e / logBase);
+          }
+          yL = yd.length;
+          xL = xd.length;
+          q = new Ctor(sign);
+          qd = q.d = [];
+          for (i = 0; yd[i] == (xd[i] || 0); i++) ;
+          yd[i] > (xd[i] || 0) && e--;
+          if (null == pr) {
+            sd = pr = Ctor.precision;
+            rm = Ctor.rounding;
+          } else sd = dp ? pr + (x.e - y.e) + 1 : pr;
+          if (sd < 0) {
+            qd.push(1);
+            more = true;
+          } else {
+            sd = sd / logBase + 2 | 0;
+            i = 0;
+            if (1 == yL) {
+              k = 0;
+              yd = yd[0];
+              sd++;
+              for (;(i < xL || k) && sd--; i++) {
+                t = k * base + (xd[i] || 0);
+                qd[i] = t / yd | 0;
+                k = t % yd | 0;
+              }
+              more = k || i < xL;
+            } else {
+              k = base / (yd[0] + 1) | 0;
+              if (k > 1) {
+                yd = multiplyInteger(yd, k, base);
+                xd = multiplyInteger(xd, k, base);
+                yL = yd.length;
+                xL = xd.length;
+              }
+              xi = yL;
+              rem = xd.slice(0, yL);
+              remL = rem.length;
+              for (;remL < yL; ) rem[remL++] = 0;
+              yz = yd.slice();
+              yz.unshift(0);
+              yd0 = yd[0];
+              yd[1] >= base / 2 && ++yd0;
+              do {
+                k = 0;
+                cmp = compare(yd, rem, yL, remL);
+                if (cmp < 0) {
+                  rem0 = rem[0];
+                  yL != remL && (rem0 = rem0 * base + (rem[1] || 0));
+                  k = rem0 / yd0 | 0;
+                  if (k > 1) {
+                    k >= base && (k = base - 1);
+                    prod = multiplyInteger(yd, k, base);
+                    prodL = prod.length;
+                    remL = rem.length;
+                    cmp = compare(prod, rem, prodL, remL);
+                    if (1 == cmp) {
+                      k--;
+                      subtract(prod, yL < prodL ? yz : yd, prodL, base);
+                    }
+                  } else {
+                    0 == k && (cmp = k = 1);
+                    prod = yd.slice();
+                  }
+                  prodL = prod.length;
+                  prodL < remL && prod.unshift(0);
+                  subtract(rem, prod, remL, base);
+                  if (-1 == cmp) {
+                    remL = rem.length;
+                    cmp = compare(yd, rem, yL, remL);
+                    if (cmp < 1) {
+                      k++;
+                      subtract(rem, yL < remL ? yz : yd, remL, base);
+                    }
+                  }
+                  remL = rem.length;
+                } else if (0 === cmp) {
+                  k++;
+                  rem = [ 0 ];
+                }
+                qd[i++] = k;
+                if (cmp && rem[0]) rem[remL++] = xd[xi] || 0; else {
+                  rem = [ xd[xi] ];
+                  remL = 1;
+                }
+              } while ((xi++ < xL || void 0 !== rem[0]) && sd--);
+              more = void 0 !== rem[0];
+            }
+            qd[0] || qd.shift();
+          }
+          if (1 == logBase) {
+            q.e = e;
+            inexact = more;
+          } else {
+            for (i = 1, k = qd[0]; k >= 10; k /= 10) i++;
+            q.e = i + e * logBase - 1;
+            finalise(q, dp ? pr + q.e + 1 : pr, rm, more);
+          }
+          return q;
+        };
+      }();
+      function finalise(x, sd, rm, isTruncated) {
+        var digits, i, j, k, rd, roundUp, w, xd, xdi, Ctor = x.constructor;
+        out: if (null != sd) {
+          xd = x.d;
+          if (!xd) return x;
+          for (digits = 1, k = xd[0]; k >= 10; k /= 10) digits++;
+          i = sd - digits;
+          if (i < 0) {
+            i += LOG_BASE;
+            j = sd;
+            w = xd[xdi = 0];
+            rd = w / mathpow(10, digits - j - 1) % 10 | 0;
+          } else {
+            xdi = Math.ceil((i + 1) / LOG_BASE);
+            k = xd.length;
+            if (xdi >= k) {
+              if (!isTruncated) break out;
+              for (;k++ <= xdi; ) xd.push(0);
+              w = rd = 0;
+              digits = 1;
+              i %= LOG_BASE;
+              j = i - LOG_BASE + 1;
+            } else {
+              w = k = xd[xdi];
+              for (digits = 1; k >= 10; k /= 10) digits++;
+              i %= LOG_BASE;
+              j = i - LOG_BASE + digits;
+              rd = j < 0 ? 0 : w / mathpow(10, digits - j - 1) % 10 | 0;
+            }
+          }
+          isTruncated = isTruncated || sd < 0 || void 0 !== xd[xdi + 1] || (j < 0 ? w : w % mathpow(10, digits - j - 1));
+          roundUp = rm < 4 ? (rd || isTruncated) && (0 == rm || rm == (x.s < 0 ? 3 : 2)) : rd > 5 || 5 == rd && (4 == rm || isTruncated || 6 == rm && (i > 0 ? j > 0 ? w / mathpow(10, digits - j) : 0 : xd[xdi - 1]) % 10 & 1 || rm == (x.s < 0 ? 8 : 7));
+          if (sd < 1 || !xd[0]) {
+            xd.length = 0;
+            if (roundUp) {
+              sd -= x.e + 1;
+              xd[0] = mathpow(10, (LOG_BASE - sd % LOG_BASE) % LOG_BASE);
+              x.e = -sd || 0;
+            } else xd[0] = x.e = 0;
+            return x;
+          }
+          if (0 == i) {
+            xd.length = xdi;
+            k = 1;
+            xdi--;
+          } else {
+            xd.length = xdi + 1;
+            k = mathpow(10, LOG_BASE - i);
+            xd[xdi] = j > 0 ? (w / mathpow(10, digits - j) % mathpow(10, j) | 0) * k : 0;
+          }
+          if (roundUp) for (;;) {
+            if (0 == xdi) {
+              for (i = 1, j = xd[0]; j >= 10; j /= 10) i++;
+              j = xd[0] += k;
+              for (k = 1; j >= 10; j /= 10) k++;
+              if (i != k) {
+                x.e++;
+                xd[0] == BASE && (xd[0] = 1);
+              }
+              break;
+            }
+            xd[xdi] += k;
+            if (xd[xdi] != BASE) break;
+            xd[xdi--] = 0;
+            k = 1;
+          }
+          for (i = xd.length; 0 === xd[--i]; ) xd.pop();
+        }
+        if (external) if (x.e > Ctor.maxE) {
+          x.d = null;
+          x.e = NaN;
+        } else if (x.e < Ctor.minE) {
+          x.e = 0;
+          x.d = [ 0 ];
+        }
+        return x;
+      }
+      function finiteToString(x, isExp, sd) {
+        if (!x.isFinite()) return nonFiniteToString(x);
+        var k, e = x.e, str = digitsToString(x.d), len = str.length;
+        if (isExp) {
+          sd && (k = sd - len) > 0 ? str = str.charAt(0) + "." + str.slice(1) + getZeroString(k) : len > 1 && (str = str.charAt(0) + "." + str.slice(1));
+          str = str + (x.e < 0 ? "e" : "e+") + x.e;
+        } else if (e < 0) {
+          str = "0." + getZeroString(-e - 1) + str;
+          sd && (k = sd - len) > 0 && (str += getZeroString(k));
+        } else if (e >= len) {
+          str += getZeroString(e + 1 - len);
+          sd && (k = sd - e - 1) > 0 && (str = str + "." + getZeroString(k));
+        } else {
+          (k = e + 1) < len && (str = str.slice(0, k) + "." + str.slice(k));
+          if (sd && (k = sd - len) > 0) {
+            e + 1 === len && (str += ".");
+            str += getZeroString(k);
+          }
+        }
+        return str;
+      }
+      function getBase10Exponent(digits, e) {
+        var w = digits[0];
+        for (e *= LOG_BASE; w >= 10; w /= 10) e++;
+        return e;
+      }
+      function getLn10(Ctor, sd, pr) {
+        if (sd > LN10_PRECISION) {
+          external = true;
+          pr && (Ctor.precision = pr);
+          throw Error(precisionLimitExceeded);
+        }
+        return finalise(new Ctor(LN10), sd, 1, true);
+      }
+      function getPi(Ctor, sd, rm) {
+        if (sd > PI_PRECISION) throw Error(precisionLimitExceeded);
+        return finalise(new Ctor(PI), sd, rm, true);
+      }
+      function getPrecision(digits) {
+        var w = digits.length - 1, len = w * LOG_BASE + 1;
+        w = digits[w];
+        if (w) {
+          for (;w % 10 == 0; w /= 10) len--;
+          for (w = digits[0]; w >= 10; w /= 10) len++;
+        }
+        return len;
+      }
+      function getZeroString(k) {
+        var zs = "";
+        for (;k--; ) zs += "0";
+        return zs;
+      }
+      function intPow(Ctor, x, n, pr) {
+        var isTruncated, r = new Ctor(1), k = Math.ceil(pr / LOG_BASE + 4);
+        external = false;
+        for (;;) {
+          if (n % 2) {
+            r = r.times(x);
+            truncate(r.d, k) && (isTruncated = true);
+          }
+          n = mathfloor(n / 2);
+          if (0 === n) {
+            n = r.d.length - 1;
+            isTruncated && 0 === r.d[n] && ++r.d[n];
+            break;
+          }
+          x = x.times(x);
+          truncate(x.d, k);
+        }
+        external = true;
+        return r;
+      }
+      function isOdd(n) {
+        return 1 & n.d[n.d.length - 1];
+      }
+      function maxOrMin(Ctor, args, ltgt) {
+        var y, x = new Ctor(args[0]), i = 0;
+        for (;++i < args.length; ) {
+          y = new Ctor(args[i]);
+          if (!y.s) {
+            x = y;
+            break;
+          }
+          x[ltgt](y) && (x = y);
+        }
+        return x;
+      }
+      function naturalExponential(x, sd) {
+        var denominator, guard, j, pow, sum, t, wpr, rep = 0, i = 0, k = 0, Ctor = x.constructor, rm = Ctor.rounding, pr = Ctor.precision;
+        if (!x.d || !x.d[0] || x.e > 17) return new Ctor(x.d ? x.d[0] ? x.s < 0 ? 0 : 1 / 0 : 1 : x.s ? x.s < 0 ? 0 : x : NaN);
+        if (null == sd) {
+          external = false;
+          wpr = pr;
+        } else wpr = sd;
+        t = new Ctor(.03125);
+        while (x.e > -2) {
+          x = x.times(t);
+          k += 5;
+        }
+        guard = Math.log(mathpow(2, k)) / Math.LN10 * 2 + 5 | 0;
+        wpr += guard;
+        denominator = pow = sum = new Ctor(1);
+        Ctor.precision = wpr;
+        for (;;) {
+          pow = finalise(pow.times(x), wpr, 1);
+          denominator = denominator.times(++i);
+          t = sum.plus(divide(pow, denominator, wpr, 1));
+          if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
+            j = k;
+            while (j--) sum = finalise(sum.times(sum), wpr, 1);
+            if (null != sd) {
+              Ctor.precision = pr;
+              return sum;
+            }
+            if (!(rep < 3 && checkRoundingDigits(sum.d, wpr - guard, rm, rep))) return finalise(sum, Ctor.precision = pr, rm, external = true);
+            Ctor.precision = wpr += 10;
+            denominator = pow = t = new Ctor(1);
+            i = 0;
+            rep++;
+          }
+          sum = t;
+        }
+      }
+      function naturalLogarithm(y, sd) {
+        var c, c0, denominator, e, numerator, rep, sum, t, wpr, x1, x2, n = 1, guard = 10, x = y, xd = x.d, Ctor = x.constructor, rm = Ctor.rounding, pr = Ctor.precision;
+        if (x.s < 0 || !xd || !xd[0] || !x.e && 1 == xd[0] && 1 == xd.length) return new Ctor(xd && !xd[0] ? -1 / 0 : 1 != x.s ? NaN : xd ? 0 : x);
+        if (null == sd) {
+          external = false;
+          wpr = pr;
+        } else wpr = sd;
+        Ctor.precision = wpr += guard;
+        c = digitsToString(xd);
+        c0 = c.charAt(0);
+        if (!(Math.abs(e = x.e) < 15e14)) {
+          t = getLn10(Ctor, wpr + 2, pr).times(e + "");
+          x = naturalLogarithm(new Ctor(c0 + "." + c.slice(1)), wpr - guard).plus(t);
+          Ctor.precision = pr;
+          return null == sd ? finalise(x, pr, rm, external = true) : x;
+        }
+        while (c0 < 7 && 1 != c0 || 1 == c0 && c.charAt(1) > 3) {
+          x = x.times(y);
+          c = digitsToString(x.d);
+          c0 = c.charAt(0);
+          n++;
+        }
+        e = x.e;
+        if (c0 > 1) {
+          x = new Ctor("0." + c);
+          e++;
+        } else x = new Ctor(c0 + "." + c.slice(1));
+        x1 = x;
+        sum = numerator = x = divide(x.minus(1), x.plus(1), wpr, 1);
+        x2 = finalise(x.times(x), wpr, 1);
+        denominator = 3;
+        for (;;) {
+          numerator = finalise(numerator.times(x2), wpr, 1);
+          t = sum.plus(divide(numerator, new Ctor(denominator), wpr, 1));
+          if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
+            sum = sum.times(2);
+            0 !== e && (sum = sum.plus(getLn10(Ctor, wpr + 2, pr).times(e + "")));
+            sum = divide(sum, new Ctor(n), wpr, 1);
+            if (null != sd) {
+              Ctor.precision = pr;
+              return sum;
+            }
+            if (!checkRoundingDigits(sum.d, wpr - guard, rm, rep)) return finalise(sum, Ctor.precision = pr, rm, external = true);
+            Ctor.precision = wpr += guard;
+            t = numerator = x = divide(x1.minus(1), x1.plus(1), wpr, 1);
+            x2 = finalise(x.times(x), wpr, 1);
+            denominator = rep = 1;
+          }
+          sum = t;
+          denominator += 2;
+        }
+      }
+      function nonFiniteToString(x) {
+        return String(x.s * x.s / 0);
+      }
+      function parseDecimal(x, str) {
+        var e, i, len;
+        (e = str.indexOf(".")) > -1 && (str = str.replace(".", ""));
+        if ((i = str.search(/e/i)) > 0) {
+          e < 0 && (e = i);
+          e += +str.slice(i + 1);
+          str = str.substring(0, i);
+        } else e < 0 && (e = str.length);
+        for (i = 0; 48 === str.charCodeAt(i); i++) ;
+        for (len = str.length; 48 === str.charCodeAt(len - 1); --len) ;
+        str = str.slice(i, len);
+        if (str) {
+          len -= i;
+          x.e = e = e - i - 1;
+          x.d = [];
+          i = (e + 1) % LOG_BASE;
+          e < 0 && (i += LOG_BASE);
+          if (i < len) {
+            i && x.d.push(+str.slice(0, i));
+            for (len -= LOG_BASE; i < len; ) x.d.push(+str.slice(i, i += LOG_BASE));
+            str = str.slice(i);
+            i = LOG_BASE - str.length;
+          } else i -= len;
+          for (;i--; ) str += "0";
+          x.d.push(+str);
+          if (external) if (x.e > x.constructor.maxE) {
+            x.d = null;
+            x.e = NaN;
+          } else if (x.e < x.constructor.minE) {
+            x.e = 0;
+            x.d = [ 0 ];
+          }
+        } else {
+          x.e = 0;
+          x.d = [ 0 ];
+        }
+        return x;
+      }
+      function parseOther(x, str) {
+        var base, Ctor, divisor, i, isFloat, len, p, xd, xe;
+        if (str.indexOf("_") > -1) {
+          str = str.replace(/(\d)_(?=\d)/g, "$1");
+          if (isDecimal.test(str)) return parseDecimal(x, str);
+        } else if ("Infinity" === str || "NaN" === str) {
+          +str || (x.s = NaN);
+          x.e = NaN;
+          x.d = null;
+          return x;
+        }
+        if (isHex.test(str)) {
+          base = 16;
+          str = str.toLowerCase();
+        } else if (isBinary.test(str)) base = 2; else {
+          if (!isOctal.test(str)) throw Error(invalidArgument + str);
+          base = 8;
+        }
+        i = str.search(/p/i);
+        if (i > 0) {
+          p = +str.slice(i + 1);
+          str = str.substring(2, i);
+        } else str = str.slice(2);
+        i = str.indexOf(".");
+        isFloat = i >= 0;
+        Ctor = x.constructor;
+        if (isFloat) {
+          str = str.replace(".", "");
+          len = str.length;
+          i = len - i;
+          divisor = intPow(Ctor, new Ctor(base), i, 2 * i);
+        }
+        xd = convertBase(str, base, BASE);
+        xe = xd.length - 1;
+        for (i = xe; 0 === xd[i]; --i) xd.pop();
+        if (i < 0) return new Ctor(0 * x.s);
+        x.e = getBase10Exponent(xd, xe);
+        x.d = xd;
+        external = false;
+        isFloat && (x = divide(x, divisor, 4 * len));
+        p && (x = x.times(Math.abs(p) < 54 ? mathpow(2, p) : Decimal.pow(2, p)));
+        external = true;
+        return x;
+      }
+      function sine(Ctor, x) {
+        var k, len = x.d.length;
+        if (len < 3) return x.isZero() ? x : taylorSeries(Ctor, 2, x, x);
+        k = 1.4 * Math.sqrt(len);
+        k = k > 16 ? 16 : 0 | k;
+        x = x.times(1 / tinyPow(5, k));
+        x = taylorSeries(Ctor, 2, x, x);
+        var sin2_x, d5 = new Ctor(5), d16 = new Ctor(16), d20 = new Ctor(20);
+        for (;k--; ) {
+          sin2_x = x.times(x);
+          x = x.times(d5.plus(sin2_x.times(d16.times(sin2_x).minus(d20))));
+        }
+        return x;
+      }
+      function taylorSeries(Ctor, n, x, y, isHyperbolic) {
+        var j, t, u, x2, i = 1, pr = Ctor.precision, k = Math.ceil(pr / LOG_BASE);
+        external = false;
+        x2 = x.times(x);
+        u = new Ctor(y);
+        for (;;) {
+          t = divide(u.times(x2), new Ctor(n++ * n++), pr, 1);
+          u = isHyperbolic ? y.plus(t) : y.minus(t);
+          y = divide(t.times(x2), new Ctor(n++ * n++), pr, 1);
+          t = u.plus(y);
+          if (void 0 !== t.d[k]) {
+            for (j = k; t.d[j] === u.d[j] && j--; ) ;
+            if (-1 == j) break;
+          }
+          j = u;
+          u = y;
+          y = t;
+          t = j;
+          i++;
+        }
+        external = true;
+        t.d.length = k + 1;
+        return t;
+      }
+      function tinyPow(b, e) {
+        var n = b;
+        while (--e) n *= b;
+        return n;
+      }
+      function toLessThanHalfPi(Ctor, x) {
+        var t, isNeg = x.s < 0, pi = getPi(Ctor, Ctor.precision, 1), halfPi = pi.times(.5);
+        x = x.abs();
+        if (x.lte(halfPi)) {
+          quadrant = isNeg ? 4 : 1;
+          return x;
+        }
+        t = x.divToInt(pi);
+        if (t.isZero()) quadrant = isNeg ? 3 : 2; else {
+          x = x.minus(t.times(pi));
+          if (x.lte(halfPi)) {
+            quadrant = isOdd(t) ? isNeg ? 2 : 3 : isNeg ? 4 : 1;
+            return x;
+          }
+          quadrant = isOdd(t) ? isNeg ? 1 : 4 : isNeg ? 3 : 2;
+        }
+        return x.minus(pi).abs();
+      }
+      function toStringBinary(x, baseOut, sd, rm) {
+        var base, e, i, k, len, roundUp, str, xd, y, Ctor = x.constructor, isExp = void 0 !== sd;
+        if (isExp) {
+          checkInt32(sd, 1, MAX_DIGITS);
+          void 0 === rm ? rm = Ctor.rounding : checkInt32(rm, 0, 8);
+        } else {
+          sd = Ctor.precision;
+          rm = Ctor.rounding;
+        }
+        if (x.isFinite()) {
+          str = finiteToString(x);
+          i = str.indexOf(".");
+          if (isExp) {
+            base = 2;
+            16 == baseOut ? sd = 4 * sd - 3 : 8 == baseOut && (sd = 3 * sd - 2);
+          } else base = baseOut;
+          if (i >= 0) {
+            str = str.replace(".", "");
+            y = new Ctor(1);
+            y.e = str.length - i;
+            y.d = convertBase(finiteToString(y), 10, base);
+            y.e = y.d.length;
+          }
+          xd = convertBase(str, 10, base);
+          e = len = xd.length;
+          for (;0 == xd[--len]; ) xd.pop();
+          if (xd[0]) {
+            if (i < 0) e--; else {
+              x = new Ctor(x);
+              x.d = xd;
+              x.e = e;
+              x = divide(x, y, sd, rm, 0, base);
+              xd = x.d;
+              e = x.e;
+              roundUp = inexact;
+            }
+            i = xd[sd];
+            k = base / 2;
+            roundUp = roundUp || void 0 !== xd[sd + 1];
+            roundUp = rm < 4 ? (void 0 !== i || roundUp) && (0 === rm || rm === (x.s < 0 ? 3 : 2)) : i > k || i === k && (4 === rm || roundUp || 6 === rm && 1 & xd[sd - 1] || rm === (x.s < 0 ? 8 : 7));
+            xd.length = sd;
+            if (roundUp) for (;++xd[--sd] > base - 1; ) {
+              xd[sd] = 0;
+              if (!sd) {
+                ++e;
+                xd.unshift(1);
+              }
+            }
+            for (len = xd.length; !xd[len - 1]; --len) ;
+            for (i = 0, str = ""; i < len; i++) str += NUMERALS.charAt(xd[i]);
+            if (isExp) {
+              if (len > 1) if (16 == baseOut || 8 == baseOut) {
+                i = 16 == baseOut ? 4 : 3;
+                for (--len; len % i; len++) str += "0";
+                xd = convertBase(str, base, baseOut);
+                for (len = xd.length; !xd[len - 1]; --len) ;
+                for (i = 1, str = "1."; i < len; i++) str += NUMERALS.charAt(xd[i]);
+              } else str = str.charAt(0) + "." + str.slice(1);
+              str = str + (e < 0 ? "p" : "p+") + e;
+            } else if (e < 0) {
+              for (;++e; ) str = "0" + str;
+              str = "0." + str;
+            } else if (++e > len) for (e -= len; e--; ) str += "0"; else e < len && (str = str.slice(0, e) + "." + str.slice(e));
+          } else str = isExp ? "0p+0" : "0";
+          str = (16 == baseOut ? "0x" : 2 == baseOut ? "0b" : 8 == baseOut ? "0o" : "") + str;
+        } else str = nonFiniteToString(x);
+        return x.s < 0 ? "-" + str : str;
+      }
+      function truncate(arr, len) {
+        if (arr.length > len) {
+          arr.length = len;
+          return true;
+        }
+      }
+      function abs(x) {
+        return new this(x).abs();
+      }
+      function acos(x) {
+        return new this(x).acos();
+      }
+      function acosh(x) {
+        return new this(x).acosh();
+      }
+      function add(x, y) {
+        return new this(x).plus(y);
+      }
+      function asin(x) {
+        return new this(x).asin();
+      }
+      function asinh(x) {
+        return new this(x).asinh();
+      }
+      function atan(x) {
+        return new this(x).atan();
+      }
+      function atanh(x) {
+        return new this(x).atanh();
+      }
+      function atan2(y, x) {
+        y = new this(y);
+        x = new this(x);
+        var r, pr = this.precision, rm = this.rounding, wpr = pr + 4;
+        if (y.s && x.s) if (y.d || x.d) if (!x.d || y.isZero()) {
+          r = x.s < 0 ? getPi(this, pr, rm) : new this(0);
+          r.s = y.s;
+        } else if (!y.d || x.isZero()) {
+          r = getPi(this, wpr, 1).times(.5);
+          r.s = y.s;
+        } else if (x.s < 0) {
+          this.precision = wpr;
+          this.rounding = 1;
+          r = this.atan(divide(y, x, wpr, 1));
+          x = getPi(this, wpr, 1);
+          this.precision = pr;
+          this.rounding = rm;
+          r = y.s < 0 ? r.minus(x) : r.plus(x);
+        } else r = this.atan(divide(y, x, wpr, 1)); else {
+          r = getPi(this, wpr, 1).times(x.s > 0 ? .25 : .75);
+          r.s = y.s;
+        } else r = new this(NaN);
+        return r;
+      }
+      function cbrt(x) {
+        return new this(x).cbrt();
+      }
+      function ceil(x) {
+        return finalise(x = new this(x), x.e + 1, 2);
+      }
+      function clamp(x, min, max) {
+        return new this(x).clamp(min, max);
+      }
+      function config(obj) {
+        if (!obj || "object" !== typeof obj) throw Error(decimalError + "Object expected");
+        var i, p, v, useDefaults = true === obj.defaults, ps = [ "precision", 1, MAX_DIGITS, "rounding", 0, 8, "toExpNeg", -EXP_LIMIT, 0, "toExpPos", 0, EXP_LIMIT, "maxE", 0, EXP_LIMIT, "minE", -EXP_LIMIT, 0, "modulo", 0, 9 ];
+        for (i = 0; i < ps.length; i += 3) {
+          (p = ps[i], useDefaults) && (this[p] = DEFAULTS[p]);
+          if (void 0 !== (v = obj[p])) {
+            if (!(mathfloor(v) === v && v >= ps[i + 1] && v <= ps[i + 2])) throw Error(invalidArgument + p + ": " + v);
+            this[p] = v;
+          }
+        }
+        (p = "crypto", useDefaults) && (this[p] = DEFAULTS[p]);
+        if (void 0 !== (v = obj[p])) {
+          if (true !== v && false !== v && 0 !== v && 1 !== v) throw Error(invalidArgument + p + ": " + v);
+          if (v) {
+            if ("undefined" == typeof crypto || !crypto || !crypto.getRandomValues && !crypto.randomBytes) throw Error(cryptoUnavailable);
+            this[p] = true;
+          } else this[p] = false;
+        }
+        return this;
+      }
+      function cos(x) {
+        return new this(x).cos();
+      }
+      function cosh(x) {
+        return new this(x).cosh();
+      }
+      function clone(obj) {
+        var i, p, ps;
+        function Decimal(v) {
+          var e, i, t, x = this;
+          if (!(x instanceof Decimal)) return new Decimal(v);
+          x.constructor = Decimal;
+          if (isDecimalInstance(v)) {
+            x.s = v.s;
+            if (external) if (!v.d || v.e > Decimal.maxE) {
+              x.e = NaN;
+              x.d = null;
+            } else if (v.e < Decimal.minE) {
+              x.e = 0;
+              x.d = [ 0 ];
+            } else {
+              x.e = v.e;
+              x.d = v.d.slice();
+            } else {
+              x.e = v.e;
+              x.d = v.d ? v.d.slice() : v.d;
+            }
+            return;
+          }
+          t = typeof v;
+          if ("number" === t) {
+            if (0 === v) {
+              x.s = 1 / v < 0 ? -1 : 1;
+              x.e = 0;
+              x.d = [ 0 ];
+              return;
+            }
+            if (v < 0) {
+              v = -v;
+              x.s = -1;
+            } else x.s = 1;
+            if (v === ~~v && v < 1e7) {
+              for (e = 0, i = v; i >= 10; i /= 10) e++;
+              if (external) if (e > Decimal.maxE) {
+                x.e = NaN;
+                x.d = null;
+              } else if (e < Decimal.minE) {
+                x.e = 0;
+                x.d = [ 0 ];
+              } else {
+                x.e = e;
+                x.d = [ v ];
+              } else {
+                x.e = e;
+                x.d = [ v ];
+              }
+              return;
+            }
+            if (0 * v !== 0) {
+              v || (x.s = NaN);
+              x.e = NaN;
+              x.d = null;
+              return;
+            }
+            return parseDecimal(x, v.toString());
+          }
+          if ("string" !== t) throw Error(invalidArgument + v);
+          if (45 === (i = v.charCodeAt(0))) {
+            v = v.slice(1);
+            x.s = -1;
+          } else {
+            43 === i && (v = v.slice(1));
+            x.s = 1;
+          }
+          return isDecimal.test(v) ? parseDecimal(x, v) : parseOther(x, v);
+        }
+        Decimal.prototype = P;
+        Decimal.ROUND_UP = 0;
+        Decimal.ROUND_DOWN = 1;
+        Decimal.ROUND_CEIL = 2;
+        Decimal.ROUND_FLOOR = 3;
+        Decimal.ROUND_HALF_UP = 4;
+        Decimal.ROUND_HALF_DOWN = 5;
+        Decimal.ROUND_HALF_EVEN = 6;
+        Decimal.ROUND_HALF_CEIL = 7;
+        Decimal.ROUND_HALF_FLOOR = 8;
+        Decimal.EUCLID = 9;
+        Decimal.config = Decimal.set = config;
+        Decimal.clone = clone;
+        Decimal.isDecimal = isDecimalInstance;
+        Decimal.abs = abs;
+        Decimal.acos = acos;
+        Decimal.acosh = acosh;
+        Decimal.add = add;
+        Decimal.asin = asin;
+        Decimal.asinh = asinh;
+        Decimal.atan = atan;
+        Decimal.atanh = atanh;
+        Decimal.atan2 = atan2;
+        Decimal.cbrt = cbrt;
+        Decimal.ceil = ceil;
+        Decimal.clamp = clamp;
+        Decimal.cos = cos;
+        Decimal.cosh = cosh;
+        Decimal.div = div;
+        Decimal.exp = exp;
+        Decimal.floor = floor;
+        Decimal.hypot = hypot;
+        Decimal.ln = ln;
+        Decimal.log = log;
+        Decimal.log10 = log10;
+        Decimal.log2 = log2;
+        Decimal.max = max;
+        Decimal.min = min;
+        Decimal.mod = mod;
+        Decimal.mul = mul;
+        Decimal.pow = pow;
+        Decimal.random = random;
+        Decimal.round = round;
+        Decimal.sign = sign;
+        Decimal.sin = sin;
+        Decimal.sinh = sinh;
+        Decimal.sqrt = sqrt;
+        Decimal.sub = sub;
+        Decimal.sum = sum;
+        Decimal.tan = tan;
+        Decimal.tanh = tanh;
+        Decimal.trunc = trunc;
+        void 0 === obj && (obj = {});
+        if (obj && true !== obj.defaults) {
+          ps = [ "precision", "rounding", "toExpNeg", "toExpPos", "maxE", "minE", "modulo", "crypto" ];
+          for (i = 0; i < ps.length; ) obj.hasOwnProperty(p = ps[i++]) || (obj[p] = this[p]);
+        }
+        Decimal.config(obj);
+        return Decimal;
+      }
+      function div(x, y) {
+        return new this(x).div(y);
+      }
+      function exp(x) {
+        return new this(x).exp();
+      }
+      function floor(x) {
+        return finalise(x = new this(x), x.e + 1, 3);
+      }
+      function hypot() {
+        var i, n, t = new this(0);
+        external = false;
+        for (i = 0; i < arguments.length; ) {
+          n = new this(arguments[i++]);
+          if (n.d) t.d && (t = t.plus(n.times(n))); else {
+            if (n.s) {
+              external = true;
+              return new this(1 / 0);
+            }
+            t = n;
+          }
+        }
+        external = true;
+        return t.sqrt();
+      }
+      function isDecimalInstance(obj) {
+        return obj instanceof Decimal || obj && obj.toStringTag === tag || false;
+      }
+      function ln(x) {
+        return new this(x).ln();
+      }
+      function log(x, y) {
+        return new this(x).log(y);
+      }
+      function log2(x) {
+        return new this(x).log(2);
+      }
+      function log10(x) {
+        return new this(x).log(10);
+      }
+      function max() {
+        return maxOrMin(this, arguments, "lt");
+      }
+      function min() {
+        return maxOrMin(this, arguments, "gt");
+      }
+      function mod(x, y) {
+        return new this(x).mod(y);
+      }
+      function mul(x, y) {
+        return new this(x).mul(y);
+      }
+      function pow(x, y) {
+        return new this(x).pow(y);
+      }
+      function random(sd) {
+        var d, e, k, n, i = 0, r = new this(1), rd = [];
+        void 0 === sd ? sd = this.precision : checkInt32(sd, 1, MAX_DIGITS);
+        k = Math.ceil(sd / LOG_BASE);
+        if (this.crypto) if (crypto.getRandomValues) {
+          d = crypto.getRandomValues(new Uint32Array(k));
+          for (;i < k; ) {
+            n = d[i];
+            n >= 429e7 ? d[i] = crypto.getRandomValues(new Uint32Array(1))[0] : rd[i++] = n % 1e7;
+          }
+        } else {
+          if (!crypto.randomBytes) throw Error(cryptoUnavailable);
+          d = crypto.randomBytes(k *= 4);
+          for (;i < k; ) {
+            n = d[i] + (d[i + 1] << 8) + (d[i + 2] << 16) + ((127 & d[i + 3]) << 24);
+            if (n >= 214e7) crypto.randomBytes(4).copy(d, i); else {
+              rd.push(n % 1e7);
+              i += 4;
+            }
+          }
+          i = k / 4;
+        } else for (;i < k; ) rd[i++] = 1e7 * Math.random() | 0;
+        k = rd[--i];
+        sd %= LOG_BASE;
+        if (k && sd) {
+          n = mathpow(10, LOG_BASE - sd);
+          rd[i] = (k / n | 0) * n;
+        }
+        for (;0 === rd[i]; i--) rd.pop();
+        if (i < 0) {
+          e = 0;
+          rd = [ 0 ];
+        } else {
+          e = -1;
+          for (;0 === rd[0]; e -= LOG_BASE) rd.shift();
+          for (k = 1, n = rd[0]; n >= 10; n /= 10) k++;
+          k < LOG_BASE && (e -= LOG_BASE - k);
+        }
+        r.e = e;
+        r.d = rd;
+        return r;
+      }
+      function round(x) {
+        return finalise(x = new this(x), x.e + 1, this.rounding);
+      }
+      function sign(x) {
+        x = new this(x);
+        return x.d ? x.d[0] ? x.s : 0 * x.s : x.s || NaN;
+      }
+      function sin(x) {
+        return new this(x).sin();
+      }
+      function sinh(x) {
+        return new this(x).sinh();
+      }
+      function sqrt(x) {
+        return new this(x).sqrt();
+      }
+      function sub(x, y) {
+        return new this(x).sub(y);
+      }
+      function sum() {
+        var i = 0, args = arguments, x = new this(args[i]);
+        external = false;
+        for (;x.s && ++i < args.length; ) x = x.plus(args[i]);
+        external = true;
+        return finalise(x, this.precision, this.rounding);
+      }
+      function tan(x) {
+        return new this(x).tan();
+      }
+      function tanh(x) {
+        return new this(x).tanh();
+      }
+      function trunc(x) {
+        return finalise(x = new this(x), x.e + 1, 1);
+      }
+      Decimal = clone(DEFAULTS);
+      Decimal.prototype.constructor = Decimal;
+      Decimal["default"] = Decimal.Decimal = Decimal;
+      LN10 = new Decimal(LN10);
+      PI = new Decimal(PI);
+      if ("function" == typeof define && define.amd) define(function() {
+        return Decimal;
+      }); else if ("undefined" != typeof module && module.exports) {
+        if ("function" == typeof Symbol && "symbol" == typeof Symbol.iterator) {
+          P[Symbol["for"]("nodejs.util.inspect.custom")] = P.toString;
+          P[Symbol.toStringTag] = "Decimal";
+        }
+        module.exports = Decimal;
+      } else {
+        globalScope || (globalScope = "undefined" != typeof self && self && self.self == self ? self : window);
+        noConflict = globalScope.Decimal;
+        Decimal.noConflict = function() {
+          globalScope.Decimal = noConflict;
+          return Decimal;
+        };
+        globalScope.Decimal = Decimal;
+      }
+    })(this);
+  }, {} ],
+  39: [ function(require, module, exports) {
     module.exports = require("./lib/heap");
   }, {
-    "./lib/heap": 39
+    "./lib/heap": 40
   } ],
-  39: [ function(require, module, exports) {
+  40: [ function(require, module, exports) {
     (function() {
       var Heap, defaultCmp, floor, heapify, heappop, heappush, heappushpop, heapreplace, insort, min, nlargest, nsmallest, updateItem, _siftdown, _siftup;
       floor = Math.floor, min = Math.min;
@@ -8609,6 +10497,182 @@ window.__require = function e(t, n, r) {
       });
     }).call(this);
   }, {} ],
+  "ForgeListeners-clas0.0.2": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "2951cCEDyVB4o5/Fa/1m+j2", "ForgeListeners-clas0.0.2");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../templates/Listeners-clas0.0.2"), Listener = _require.Listener;
+    var ForgeListener = function(_Listener) {
+      _inheritsLoose(ForgeListener, _Listener);
+      function ForgeListener() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto = ForgeListener.prototype;
+      _proto.init = function init(owner, item) {
+        _Listener.prototype.init.call(this, owner, 30 * ONE_MINUTES);
+        this.item = item;
+      };
+      return ForgeListener;
+    }(Listener);
+    var UpgradeEquipListener = function(_ForgeListener) {
+      _inheritsLoose(UpgradeEquipListener, _ForgeListener);
+      function UpgradeEquipListener() {
+        return _ForgeListener.apply(this, arguments) || this;
+      }
+      var _proto2 = UpgradeEquipListener.prototype;
+      _proto2.expire = function expire() {
+        var equip = this.item;
+        var clazz = typeDict[equip.type];
+        this.game.addLog(logItem(this) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 1);
+        equip.upgrade();
+        equip.level in clazz.evolve_level && equip.evolve();
+      };
+      return UpgradeEquipListener;
+    }(ForgeListener);
+    var ForgeSpellListener = function(_ForgeListener2) {
+      _inheritsLoose(ForgeSpellListener, _ForgeListener2);
+      function ForgeSpellListener() {
+        return _ForgeListener2.apply(this, arguments) || this;
+      }
+      var _proto3 = ForgeSpellListener.prototype;
+      _proto3.expire = function expire() {
+        var clazz = typeDict[this.item.type];
+        this.game.addLog(logItem(this) + "\u7684\u7b26\u7b93\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 1);
+        this.item.num++;
+      };
+      return ForgeSpellListener;
+    }(ForgeListener);
+    var ForgeEquipListener = function(_ForgeListener3) {
+      _inheritsLoose(ForgeEquipListener, _ForgeListener3);
+      function ForgeEquipListener() {
+        return _ForgeListener3.apply(this, arguments) || this;
+      }
+      var _proto4 = ForgeEquipListener.prototype;
+      _proto4.expire = function expire() {
+        var clazz = typeDict[this.item];
+        this.game.addLog(logItem(this) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 1);
+        var equip = new clazz(this.owner);
+        this.owner.equipList.push(equip);
+        equip.upgrade();
+        equip.level in clazz.evolve_level && equip.evolve();
+      };
+      return ForgeEquipListener;
+    }(ForgeListener);
+    module.exports = {
+      UpgradeEquipListener: UpgradeEquipListener,
+      ForgeSpellListener: ForgeSpellListener,
+      ForgeEquipListener: ForgeEquipListener
+    };
+    var _require2 = require("../wheels/TypeDict-clas0.0.2"), Equips = _require2.Equips, typeDict = _require2.typeDict;
+    var _require3 = require("../constants/timeConstants-clas0.0.2"), ENTER_TIME = _require3.ENTER_TIME, ONE_MINUTES = _require3.ONE_MINUTES;
+    var _require4 = require("../loggers/logUtils-clas0.0.2"), logItem = _require4.logItem;
+    cc._RF.pop();
+  }, {
+    "../constants/timeConstants-clas0.0.2": "timeConstants-clas0.0.2",
+    "../loggers/logUtils-clas0.0.2": "logUtils-clas0.0.2",
+    "../templates/Listeners-clas0.0.2": "Listeners-clas0.0.2",
+    "../wheels/TypeDict-clas0.0.2": "TypeDict-clas0.0.2"
+  } ],
+  ForgeListeners: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "6a5d3bJ0kRPPr/I5vLPAzZ+", "ForgeListeners");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../templates/Listeners"), Listener = _require.Listener;
+    var ForgeListener = function(_Listener) {
+      _inheritsLoose(ForgeListener, _Listener);
+      function ForgeListener() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto = ForgeListener.prototype;
+      _proto.init = function init(owner, item) {
+        _Listener.prototype.init.call(this, owner, 30 * ONE_MINUTES);
+        this.item = item;
+      };
+      return ForgeListener;
+    }(Listener);
+    var UpgradeEquipListener = function(_ForgeListener) {
+      _inheritsLoose(UpgradeEquipListener, _ForgeListener);
+      function UpgradeEquipListener() {
+        return _ForgeListener.apply(this, arguments) || this;
+      }
+      var _proto2 = UpgradeEquipListener.prototype;
+      _proto2.expire = function expire() {
+        var equip = this.item;
+        var clazz = typeDict[equip.type];
+        this.game.addLog(logItem(this) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 1);
+        equip.upgrade();
+        equip.level in clazz.evolve_level && equip.evolve();
+      };
+      return UpgradeEquipListener;
+    }(ForgeListener);
+    var ForgeSpellListener = function(_ForgeListener2) {
+      _inheritsLoose(ForgeSpellListener, _ForgeListener2);
+      function ForgeSpellListener() {
+        return _ForgeListener2.apply(this, arguments) || this;
+      }
+      var _proto3 = ForgeSpellListener.prototype;
+      _proto3.expire = function expire() {
+        var clazz = typeDict[this.item.type];
+        this.game.addLog(logItem(this) + "\u7684\u7b26\u7b93\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 1);
+        this.item.num++;
+      };
+      return ForgeSpellListener;
+    }(ForgeListener);
+    var ForgeEquipListener = function(_ForgeListener3) {
+      _inheritsLoose(ForgeEquipListener, _ForgeListener3);
+      function ForgeEquipListener() {
+        return _ForgeListener3.apply(this, arguments) || this;
+      }
+      var _proto4 = ForgeEquipListener.prototype;
+      _proto4.expire = function expire() {
+        var clazz = typeDict[this.item];
+        this.game.addLog(logItem(this) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 1);
+        var equip = new clazz(this.owner);
+        this.owner.equipList.push(equip);
+        equip.upgrade();
+        equip.level in clazz.evolve_level && equip.evolve();
+      };
+      return ForgeEquipListener;
+    }(ForgeListener);
+    module.exports = {
+      UpgradeEquipListener: UpgradeEquipListener,
+      ForgeSpellListener: ForgeSpellListener,
+      ForgeEquipListener: ForgeEquipListener
+    };
+    var _require2 = require("../wheels/TypeDict"), Equips = _require2.Equips, typeDict = _require2.typeDict;
+    var _require3 = require("../constants/timeConstants"), ENTER_TIME = _require3.ENTER_TIME, ONE_MINUTES = _require3.ONE_MINUTES;
+    var _require4 = require("../loggers/logUtils"), logItem = _require4.logItem;
+    cc._RF.pop();
+  }, {
+    "../constants/timeConstants": "timeConstants",
+    "../loggers/logUtils": "logUtils",
+    "../templates/Listeners": "Listeners",
+    "../wheels/TypeDict": "TypeDict"
+  } ],
   "Game-clas0.0.1": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "5dc6dfuMJVMAra4rGLDQlI2", "Game-clas0.0.1");
@@ -9038,7 +11102,7 @@ window.__require = function e(t, n, r) {
     "./wheels/TypeDict-clas0.0.1": "TypeDict-clas0.0.1",
     "./wheels/common-clas0.0.1": "common-clas0.0.1",
     "./wheels/interfaces-clas0.0.1": "interfaces-clas0.0.1",
-    heap: 38
+    heap: 39
   } ],
   "Game-clas0.0.2": [ function(require, module, exports) {
     "use strict";
@@ -9451,9 +11515,11 @@ window.__require = function e(t, n, r) {
     var _require14 = require("./listeners/DamageListeners-clas0.0.2"), HarmImprovingMonitors = _require14.HarmImprovingMonitors, RealDamageLogger = _require14.RealDamageLogger;
     var _require15 = require("./animations/animationPlayer-clas0.0.2"), AnimationPlayer = _require15.AnimationPlayer;
     var obj = require("../gameLogicRoutes-clas0.0.2");
+    var _require16 = require("./Creature-clas0.0.2"), Creature = _require16.Creature;
     cc._RF.pop();
   }, {
     "../gameLogicRoutes-clas0.0.2": "gameLogicRoutes-clas0.0.2",
+    "./Creature-clas0.0.2": "Creature-clas0.0.2",
     "./OriginMonitors-clas0.0.2": "OriginMonitors-clas0.0.2",
     "./Pets-clas0.0.2": "Pets-clas0.0.2",
     "./Player-clas0.0.2": "Player-clas0.0.2",
@@ -9469,7 +11535,7 @@ window.__require = function e(t, n, r) {
     "./wheels/TypeDict-clas0.0.2": "TypeDict-clas0.0.2",
     "./wheels/common-clas0.0.2": "common-clas0.0.2",
     "./wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2",
-    heap: 38
+    heap: 39
   } ],
   Game: [ function(require, module, exports) {
     "use strict";
@@ -9882,9 +11948,11 @@ window.__require = function e(t, n, r) {
     var _require14 = require("./listeners/DamageListeners"), HarmImprovingMonitors = _require14.HarmImprovingMonitors, RealDamageLogger = _require14.RealDamageLogger;
     var _require15 = require("./animations/animationPlayer"), AnimationPlayer = _require15.AnimationPlayer;
     var obj = require("../gameLogicRoutes");
+    var _require16 = require("./Creature"), Creature = _require16.Creature;
     cc._RF.pop();
   }, {
     "../gameLogicRoutes": "gameLogicRoutes",
+    "./Creature": "Creature",
     "./OriginMonitors": "OriginMonitors",
     "./Pets": "Pets",
     "./Player": "Player",
@@ -9900,7 +11968,7 @@ window.__require = function e(t, n, r) {
     "./wheels/TypeDict": "TypeDict",
     "./wheels/common": "common",
     "./wheels/interfaces": "interfaces",
-    heap: 38
+    heap: 39
   } ],
   Globals: [ function(require, module, exports) {
     "use strict";
@@ -10628,7 +12696,7 @@ window.__require = function e(t, n, r) {
     var heap = require("heap");
     cc._RF.pop();
   }, {
-    heap: 38
+    heap: 39
   } ],
   "ListenerList-clas0.0.2": [ function(require, module, exports) {
     "use strict";
@@ -10681,7 +12749,7 @@ window.__require = function e(t, n, r) {
     var heap = require("heap");
     cc._RF.pop();
   }, {
-    heap: 38
+    heap: 39
   } ],
   ListenerList: [ function(require, module, exports) {
     "use strict";
@@ -10734,7 +12802,7 @@ window.__require = function e(t, n, r) {
     var heap = require("heap");
     cc._RF.pop();
   }, {
-    heap: 38
+    heap: 39
   } ],
   "ListenerPriorities-clas0.0.1": [ function(require, module, exports) {
     "use strict";
@@ -10953,8 +13021,10 @@ window.__require = function e(t, n, r) {
     Listener.temporary = false;
     exports.Listener = Listener;
     var _require2 = require("../listeners/ListenerPriorities-clas0.0.2"), PRIORITY_DICT = _require2.PRIORITY_DICT;
+    var _require3 = require("../Player-clas0.0.2"), Player = _require3.Player;
     cc._RF.pop();
   }, {
+    "../Player-clas0.0.2": "Player-clas0.0.2",
     "../listeners/ListenerPriorities-clas0.0.2": "ListenerPriorities-clas0.0.2",
     "../wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2"
   } ],
@@ -11040,8 +13110,10 @@ window.__require = function e(t, n, r) {
     Listener.temporary = false;
     exports.Listener = Listener;
     var _require2 = require("../listeners/ListenerPriorities"), PRIORITY_DICT = _require2.PRIORITY_DICT;
+    var _require3 = require("../Player"), Player = _require3.Player;
     cc._RF.pop();
   }, {
+    "../Player": "Player",
     "../listeners/ListenerPriorities": "ListenerPriorities",
     "../wheels/interfaces": "interfaces"
   } ],
@@ -13476,8 +15548,10 @@ window.__require = function e(t, n, r) {
       var _proto = Player.prototype;
       _proto.init = function init(code, source) {
         _Creature.prototype.init.call(this, xs[code - 1], ys[code - 1], source);
+        this._power = 7;
         this.equipList = [];
         this.spellList = [];
+        this.forgingList = [];
         this.coins = new Coin({
           baseCoins: 100
         });
@@ -13529,10 +15603,7 @@ window.__require = function e(t, n, r) {
         this.game.addLog('{"code":' + this.code + "}\u8d2d\u4e70\u4e86\u201c" + clazz.equip_name + "\u201d", 1);
         this.energy -= energy;
         this.changeCoins(price.opposite());
-        var equip = new clazz(this);
-        this.equipList.push(equip);
-        equip.upgrade();
-        equip.level in clazz.evolve_level && equip.evolve();
+        this.forgingList.push(new ForgeEquipListener(this, clazz.name));
       };
       _proto.upgradeEquip = function upgradeEquip(id) {
         var equip = this.findEquip(id);
@@ -13542,25 +15613,57 @@ window.__require = function e(t, n, r) {
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
         if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
-        if (equip.level >= 20) throw new GameLogicError("\u6b66\u5668\u5df2\u6ee1\u7ea7");
-        this.game.addLog('{"code":' + this.code + "}\u5347\u7ea7\u4e86\u201c" + clazz.equip_name + "\u201d", 1);
+        var upgrading = this.forgingList.filter(function(listener) {
+          return listener.equip && listener.equip.code == equip.code;
+        }).length;
+        if (equip.level + upgrading >= 20) throw new GameLogicError("\u6b66\u5668\u5df2\u6ee1\u7ea7");
+        this.game.addLog(logItem(this) + "\u5f00\u59cb\u5347\u7ea7\u201c" + clazz.equip_name + "\u201d", 1);
         this.energy -= energy;
         this.changeCoins(price.opposite());
-        equip.upgrade();
-        equip.level in clazz.evolve_level && equip.evolve();
+        this.forgingList.push(new UpgradeEquipListener(this, equip));
       };
-      _proto.buySpell = function buySpell(id, x, y, extra) {
+      _proto.learnSpell = function learnSpell(id) {
         var clazz = Spell[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
-        var price = this.getSpellPrice(id);
+        if (this.findSpell(id)) throw new GameLogicError("\u4f60\u5df2\u7ecf\u5b66\u4e60\u8fc7\u8be5\u672f\u6cd5\u4e86");
+        var price = new Coin({});
+        var spellNum = 0;
+        this.spellList.forEach(function(spell) {
+          spellNum += typeDict[spell.type].size;
+        });
+        spellNum >= 5 && price.add(new Coin({
+          baseCoins: 200
+        }));
+        this.game.listeners.GoldCostCalculators.check(price, this);
+        if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
+        this.game.addLog(logItem(this) + "\u5b66\u4e60\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.spellList.push(new clazz(this));
+      };
+      _proto.buySpell = function buySpell(id) {
+        var clazz = Spell[id];
+        if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
+        var spell = this.findSpell(id);
+        if (!spell) throw new GameLogicError("\u8bf7\u5148\u5b66\u4e60\u8be5\u672f\u6cd5");
+        var price = this.calculatePrice(clazz.price);
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
         if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
-        var locStr = x < MAP_SIZE ? "\u5bf9(" + (x + 1) + "," + (MAP_SIZE - y) + ")" : "";
-        this.game.addLog('{"code":' + this.code + ',"x":' + this.x + ',"y":' + this.y + "}" + locStr + "\u4f7f\u7528\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
-        this.findSpell(id) || this.spellList.push(new clazz(this));
+        this.game.addLog(logItem(this) + "\u5f00\u59cb\u70bc\u5236\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.forgingList.push(new ForgeSpellListener(this, spell));
         this.energy -= energy;
         this.changeCoins(price.opposite());
+      };
+      _proto.useSpell = function useSpell(id, x, y, extra) {
+        var spell = this.findSpell(id);
+        if (!spell) throw new GameLogicError("\u8bf7\u5148\u5b66\u4e60\u8be5\u672f\u6cd5");
+        if (!spell.num) throw new GameLogicError("\u7075\u7b26\u5df2\u7528\u5b8c\uff0c\u8bf7\u5148\u70bc\u5236\u7075\u7b26");
+        var clazz = Spell[id];
+        var energy = this.calculateEnergyCost(clazz.energy_cost);
+        if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
+        var locStr = x < MAP_SIZE ? "\u5bf9(" + (x + 1) + "," + (MAP_SIZE - y) + ")" : "";
+        this.game.addLog("" + logItem(this) + locStr + "\u4f7f\u7528\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.energy -= energy;
+        spell.num--;
         this.findSpell(id).use(x, y, extra);
       };
       _proto.buyPet = function buyPet(id, x, y) {
@@ -13617,8 +15720,8 @@ window.__require = function e(t, n, r) {
       _proto.getSpellPrice = function getSpellPrice(id) {
         var clazz = Spell[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
-        var price = new Coin(clazz.price);
-        if (!this.findSpell(id)) {
+        var price = new Coin({});
+        if (this.findSpell(id)) price.add(new Coin(clazz.price)); else {
           var spellNum = 0;
           this.spellList.forEach(function(spell) {
             spellNum += typeDict[spell.type].size;
@@ -13656,6 +15759,14 @@ window.__require = function e(t, n, r) {
             code: equip.code
           };
         });
+        res.forgingList = this.forgingList.filter(function(forging) {
+          return forging;
+        }).map(function(forging) {
+          return {
+            isItem: true,
+            code: forging.code
+          };
+        });
         return res;
       };
       _proto.JSONParse = function JSONParse(info) {
@@ -13666,6 +15777,11 @@ window.__require = function e(t, n, r) {
         });
         this.equipList = this.equipList.map(function(equip) {
           return dict.get(equip.code);
+        });
+        this.forgingList = this.forgingList.map(function(forging) {
+          return dict.get(forging.code);
+        }).filter(function(forging) {
+          return forging;
         });
         this.coins = new Coin(this.coins);
       };
@@ -13704,6 +15820,7 @@ window.__require = function e(t, n, r) {
     var _require10 = require("./utils/iterationUtils-clas0.0.2"), iter_36 = _require10.iter_36;
     var _require11 = require("./animations/spellAnimation-clas0.0.2"), InkAnimation = _require11.InkAnimation;
     var _require12 = require("./animations/challengeAnimation-clas0.0.2"), AttackAnimation = _require12.AttackAnimation, ChallengeAnimation = _require12.ChallengeAnimation;
+    var _require13 = require("./listeners/ForgeListeners-clas0.0.2"), ForgeSpellListener = _require13.ForgeSpellListener, UpgradeEquipListener = _require13.UpgradeEquipListener, ForgeEquipListener = _require13.ForgeEquipListener;
     cc._RF.pop();
   }, {
     "./Creature-clas0.0.2": "Creature-clas0.0.2",
@@ -13711,6 +15828,7 @@ window.__require = function e(t, n, r) {
     "./animations/challengeAnimation-clas0.0.2": "challengeAnimation-clas0.0.2",
     "./animations/spellAnimation-clas0.0.2": "spellAnimation-clas0.0.2",
     "./constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
+    "./listeners/ForgeListeners-clas0.0.2": "ForgeListeners-clas0.0.2",
     "./loggers/logUtils-clas0.0.2": "logUtils-clas0.0.2",
     "./objects/Coin-clas0.0.2": "Coin-clas0.0.2",
     "./templates/EquipItems-clas0.0.2": "EquipItems-clas0.0.2",
@@ -13777,8 +15895,10 @@ window.__require = function e(t, n, r) {
       var _proto = Player.prototype;
       _proto.init = function init(code, source) {
         _Creature.prototype.init.call(this, xs[code - 1], ys[code - 1], source);
+        this._power = 7;
         this.equipList = [];
         this.spellList = [];
+        this.forgingList = [];
         this.coins = new Coin({
           baseCoins: 100
         });
@@ -13830,10 +15950,7 @@ window.__require = function e(t, n, r) {
         this.game.addLog('{"code":' + this.code + "}\u8d2d\u4e70\u4e86\u201c" + clazz.equip_name + "\u201d", 1);
         this.energy -= energy;
         this.changeCoins(price.opposite());
-        var equip = new clazz(this);
-        this.equipList.push(equip);
-        equip.upgrade();
-        equip.level in clazz.evolve_level && equip.evolve();
+        this.forgingList.push(new ForgeEquipListener(this, clazz.name));
       };
       _proto.upgradeEquip = function upgradeEquip(id) {
         var equip = this.findEquip(id);
@@ -13843,25 +15960,57 @@ window.__require = function e(t, n, r) {
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
         if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
-        if (equip.level >= 20) throw new GameLogicError("\u6b66\u5668\u5df2\u6ee1\u7ea7");
-        this.game.addLog('{"code":' + this.code + "}\u5347\u7ea7\u4e86\u201c" + clazz.equip_name + "\u201d", 1);
+        var upgrading = this.forgingList.filter(function(listener) {
+          return listener.equip && listener.equip.code == equip.code;
+        }).length;
+        if (equip.level + upgrading >= 20) throw new GameLogicError("\u6b66\u5668\u5df2\u6ee1\u7ea7");
+        this.game.addLog(logItem(this) + "\u5f00\u59cb\u5347\u7ea7\u201c" + clazz.equip_name + "\u201d", 1);
         this.energy -= energy;
         this.changeCoins(price.opposite());
-        equip.upgrade();
-        equip.level in clazz.evolve_level && equip.evolve();
+        this.forgingList.push(new UpgradeEquipListener(this, equip));
       };
-      _proto.buySpell = function buySpell(id, x, y, extra) {
+      _proto.learnSpell = function learnSpell(id) {
         var clazz = Spell[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
-        var price = this.getSpellPrice(id);
+        if (this.findSpell(id)) throw new GameLogicError("\u4f60\u5df2\u7ecf\u5b66\u4e60\u8fc7\u8be5\u672f\u6cd5\u4e86");
+        var price = new Coin({});
+        var spellNum = 0;
+        this.spellList.forEach(function(spell) {
+          spellNum += typeDict[spell.type].size;
+        });
+        spellNum >= 5 && price.add(new Coin({
+          baseCoins: 200
+        }));
+        this.game.listeners.GoldCostCalculators.check(price, this);
+        if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
+        this.game.addLog(logItem(this) + "\u5b66\u4e60\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.spellList.push(new clazz(this));
+      };
+      _proto.buySpell = function buySpell(id) {
+        var clazz = Spell[id];
+        if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
+        var spell = this.findSpell(id);
+        if (!spell) throw new GameLogicError("\u8bf7\u5148\u5b66\u4e60\u8be5\u672f\u6cd5");
+        var price = this.calculatePrice(clazz.price);
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
         if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
-        var locStr = x < MAP_SIZE ? "\u5bf9(" + (x + 1) + "," + (MAP_SIZE - y) + ")" : "";
-        this.game.addLog('{"code":' + this.code + ',"x":' + this.x + ',"y":' + this.y + "}" + locStr + "\u4f7f\u7528\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
-        this.findSpell(id) || this.spellList.push(new clazz(this));
+        this.game.addLog(logItem(this) + "\u5f00\u59cb\u70bc\u5236\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.forgingList.push(new ForgeSpellListener(this, spell));
         this.energy -= energy;
         this.changeCoins(price.opposite());
+      };
+      _proto.useSpell = function useSpell(id, x, y, extra) {
+        var spell = this.findSpell(id);
+        if (!spell) throw new GameLogicError("\u8bf7\u5148\u5b66\u4e60\u8be5\u672f\u6cd5");
+        if (!spell.num) throw new GameLogicError("\u7075\u7b26\u5df2\u7528\u5b8c\uff0c\u8bf7\u5148\u70bc\u5236\u7075\u7b26");
+        var clazz = Spell[id];
+        var energy = this.calculateEnergyCost(clazz.energy_cost);
+        if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
+        var locStr = x < MAP_SIZE ? "\u5bf9(" + (x + 1) + "," + (MAP_SIZE - y) + ")" : "";
+        this.game.addLog("" + logItem(this) + locStr + "\u4f7f\u7528\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.energy -= energy;
+        spell.num--;
         this.findSpell(id).use(x, y, extra);
       };
       _proto.buyPet = function buyPet(id, x, y) {
@@ -13918,8 +16067,8 @@ window.__require = function e(t, n, r) {
       _proto.getSpellPrice = function getSpellPrice(id) {
         var clazz = Spell[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
-        var price = new Coin(clazz.price);
-        if (!this.findSpell(id)) {
+        var price = new Coin({});
+        if (this.findSpell(id)) price.add(new Coin(clazz.price)); else {
           var spellNum = 0;
           this.spellList.forEach(function(spell) {
             spellNum += typeDict[spell.type].size;
@@ -13957,6 +16106,14 @@ window.__require = function e(t, n, r) {
             code: equip.code
           };
         });
+        res.forgingList = this.forgingList.filter(function(forging) {
+          return forging;
+        }).map(function(forging) {
+          return {
+            isItem: true,
+            code: forging.code
+          };
+        });
         return res;
       };
       _proto.JSONParse = function JSONParse(info) {
@@ -13967,6 +16124,11 @@ window.__require = function e(t, n, r) {
         });
         this.equipList = this.equipList.map(function(equip) {
           return dict.get(equip.code);
+        });
+        this.forgingList = this.forgingList.map(function(forging) {
+          return dict.get(forging.code);
+        }).filter(function(forging) {
+          return forging;
         });
         this.coins = new Coin(this.coins);
       };
@@ -14005,6 +16167,7 @@ window.__require = function e(t, n, r) {
     var _require10 = require("./utils/iterationUtils"), iter_36 = _require10.iter_36;
     var _require11 = require("./animations/spellAnimation"), InkAnimation = _require11.InkAnimation;
     var _require12 = require("./animations/challengeAnimation"), AttackAnimation = _require12.AttackAnimation, ChallengeAnimation = _require12.ChallengeAnimation;
+    var _require13 = require("./listeners/ForgeListeners"), ForgeSpellListener = _require13.ForgeSpellListener, UpgradeEquipListener = _require13.UpgradeEquipListener, ForgeEquipListener = _require13.ForgeEquipListener;
     cc._RF.pop();
   }, {
     "./Creature": "Creature",
@@ -14012,6 +16175,7 @@ window.__require = function e(t, n, r) {
     "./animations/challengeAnimation": "challengeAnimation",
     "./animations/spellAnimation": "spellAnimation",
     "./constants/gameConstants": "gameConstants",
+    "./listeners/ForgeListeners": "ForgeListeners",
     "./loggers/logUtils": "logUtils",
     "./objects/Coin": "Coin",
     "./templates/EquipItems": "EquipItems",
@@ -15073,12 +17237,13 @@ window.__require = function e(t, n, r) {
       _proto6.use = function use(x, y) {
         var player2 = this.game.map[y][x];
         if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
+        if ("Player" != player2.type && player2.owner != this) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
         player2.updateSpeed(1.07);
         this.game.addAnime(new GeoCoreSpellAnimation(x, y));
         if (7 == getThirdDigit(player2.power)) {
           this.game.addLog('{"code":' + player2.code + '}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a7,{"code":' + this.owner.code + "}\u83b7\u5f97\u571f\u5370\u8bb0\u5e76\u63d0\u5347\u4fee\u4e3a", 2);
           this.owner.geoSign++;
-          var ratio = 1.12 + .05 * this.owner.geoSign;
+          var ratio = 1.18 + .05 * this.owner.geoSign;
           this.owner.updateSpeed(ratio);
           this.game.addAnime(new InkAnimation(x, y, [ 140, 108, 85 ]));
           this.game.addAnime(new InkAnimation(this.owner.x, this.owner.y, [ 140, 108, 85 ]));
@@ -15097,7 +17262,7 @@ window.__require = function e(t, n, r) {
     });
     GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
     GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534718+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
     };
     var HydroCoreSpell = function(_SpellItem6) {
       _inheritsLoose(HydroCoreSpell, _SpellItem6);
@@ -15107,7 +17272,6 @@ window.__require = function e(t, n, r) {
       var _proto7 = HydroCoreSpell.prototype;
       _proto7.init = function init(player) {
         _SpellItem6.prototype.init.call(this, player);
-        this.listener = new ResetHydroFreeListener(player, ENDLESS_TIME);
         this.game.listeners.OperateListeners.push(this.listener);
       };
       _proto7.use = function use(x, y) {
@@ -15162,6 +17326,7 @@ window.__require = function e(t, n, r) {
           return res;
         }();
         var self = this;
+        var addHydroSpell = false;
         PointsInLine.forEach(function(location) {
           var x = location[0], y = location[1];
           if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return;
@@ -15169,12 +17334,13 @@ window.__require = function e(t, n, r) {
           var target = self.game.map[y][x];
           if (!(target && target.hydroSign > 0)) return;
           target.hydroSign = 0;
-          if (self.listener.isFree) {
+          if (addHydroSpell) {
             _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e", 2);
             self.owner.updateSpeed(1.1);
           } else {
-            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e\uff0c" + logItem(_this2.owner) + "\u4e0b\u6b21\u64cd\u4f5c\u5c06\u514d\u8d39", 2);
-            self.listener.free();
+            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e\uff0c" + logItem(_this2.owner) + "\u83b7\u5f97\u3010\u6d41\u6ce2\u78a7\u5f71\u3011\u5377\u8f74", 2);
+            addHydroSpell = true;
+            self.owner.findSpell(HydroCoreSpell.id).num++;
             self.owner.updateSpeed(1.3);
           }
         });
@@ -15208,61 +17374,18 @@ window.__require = function e(t, n, r) {
         return !map[y][x];
       });
     };
-    var HydroFreeListener = function(_Listener) {
-      _inheritsLoose(HydroFreeListener, _Listener);
-      function HydroFreeListener() {
-        return _Listener.apply(this, arguments) || this;
-      }
-      var _proto8 = HydroFreeListener.prototype;
-      _proto8.check = function check(cost) {
-        cost instanceof Coin ? COIN_KEYS.forEach(function(key) {
-          cost[key] = 0;
-        }) : cost.cost = 0;
-      };
-      return HydroFreeListener;
-    }(Listener);
-    HydroFreeListener.uiDisplay = true;
-    HydroFreeListener.iconUrl = HydroCoreSpell.iconUrl;
-    HydroFreeListener.description = function(item) {
-      return "\u3010\u6d41\u6ce2\u78a7\u5f71\u3011\u4e0b\u4e00\u6b21\u64cd\u4f5c\u4e0d\u6d88\u8017\u7075\u77f3\u4e0e\u5185\u529b";
-    };
-    var ResetHydroFreeListener = function(_Listener2) {
-      _inheritsLoose(ResetHydroFreeListener, _Listener2);
-      function ResetHydroFreeListener() {
-        return _Listener2.apply(this, arguments) || this;
-      }
-      var _proto9 = ResetHydroFreeListener.prototype;
-      _proto9.check = function check(player) {
-        if (player.code != this.owner.code) return;
-        this.isFree ? this.count++ : this.listener && (this.listener.disabled = true);
-      };
-      _proto9.free = function free() {
-        this.count = 0;
-        if (this.listener && !this.listener.disabled) return;
-        this.listener = new HydroFreeListener(this, ONE_MINUTES);
-        this.game.listeners.GoldCostCalculators.push(this.listener);
-        this.game.listeners.SpellCostCalculators.push(this.listener);
-      };
-      _createClass(ResetHydroFreeListener, [ {
-        key: "isFree",
-        get: function get() {
-          return 0 == this.count;
-        }
-      } ]);
-      return ResetHydroFreeListener;
-    }(Listener);
     var PyroCoreSpell = function(_SpellItem7) {
       _inheritsLoose(PyroCoreSpell, _SpellItem7);
       function PyroCoreSpell() {
         return _SpellItem7.apply(this, arguments) || this;
       }
-      var _proto10 = PyroCoreSpell.prototype;
-      _proto10.use = function use(x, y) {
+      var _proto8 = PyroCoreSpell.prototype;
+      _proto8.use = function use(x, y) {
         var target = this.game.map[y][x];
         if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
         this.explode(target, 2);
       };
-      _proto10.explode = function explode(target, log_level) {
+      _proto8.explode = function explode(target, log_level) {
         var _this3 = this;
         if (!target) return;
         this.game.addLog('{"code":' + target.code + "}\u88ab\u9644\u52a01\u5c42\u706b\u5370\u8bb0", log_level);
@@ -15277,9 +17400,6 @@ window.__require = function e(t, n, r) {
         getItemIn33(target).forEach(function(new_target) {
           _this3.explode(new_target, 3);
         });
-      };
-      _proto10.upgrade_special = function upgrade_special() {
-        this.level in [ 7, 13, 20 ] && this.num--;
       };
       return PyroCoreSpell;
     }(SpellItem);
@@ -15296,8 +17416,8 @@ window.__require = function e(t, n, r) {
       function DisplaceSpell() {
         return _SpellItem8.apply(this, arguments) || this;
       }
-      var _proto11 = DisplaceSpell.prototype;
-      _proto11.use = function use(x, y, extra) {
+      var _proto9 = DisplaceSpell.prototype;
+      _proto9.use = function use(x, y, extra) {
         var map = this.game.map;
         var oldX = this.owner.x, oldY = this.owner.y;
         var item1 = this.owner, item2 = map[y][x];
@@ -15338,8 +17458,8 @@ window.__require = function e(t, n, r) {
       function BounceSpell() {
         return _SpellItem9.apply(this, arguments) || this;
       }
-      var _proto12 = BounceSpell.prototype;
-      _proto12.use = function use(x, y) {
+      var _proto10 = BounceSpell.prototype;
+      _proto10.use = function use(x, y) {
         var _this4 = this;
         eightDirections(this.owner).forEach(function(direction) {
           direction.reverse();
@@ -15354,7 +17474,7 @@ window.__require = function e(t, n, r) {
           });
         });
       };
-      _proto12.validLocations = function validLocations() {
+      _proto10.validLocations = function validLocations() {
         return null;
       };
       return BounceSpell;
@@ -15375,8 +17495,8 @@ window.__require = function e(t, n, r) {
       function AttractSpell() {
         return _SpellItem10.apply(this, arguments) || this;
       }
-      var _proto13 = AttractSpell.prototype;
-      _proto13.use = function use(x, y) {
+      var _proto11 = AttractSpell.prototype;
+      _proto11.use = function use(x, y) {
         var _this5 = this;
         eightDirections(this.owner).forEach(function(direction) {
           var items = direction.map(function(loc) {
@@ -15391,7 +17511,7 @@ window.__require = function e(t, n, r) {
           });
         });
       };
-      _proto13.validLocations = function validLocations() {
+      _proto11.validLocations = function validLocations() {
         return null;
       };
       return AttractSpell;
@@ -15412,8 +17532,8 @@ window.__require = function e(t, n, r) {
       function HydrateOneDirectionSpell() {
         return _SpellItem11.apply(this, arguments) || this;
       }
-      var _proto14 = HydrateOneDirectionSpell.prototype;
-      _proto14.use = function use(x, y) {
+      var _proto12 = HydrateOneDirectionSpell.prototype;
+      _proto12.use = function use(x, y) {
         var _this6 = this;
         var has = false;
         var self = this;
@@ -15433,7 +17553,7 @@ window.__require = function e(t, n, r) {
         });
         if (!has) throw new GameLogicError("\u53ea\u80fd\u6307\u5b9a\u76f4\u7ebf\u6216\u659c\u5bf9\u89d2\u7684\u65b9\u5411");
       };
-      _proto14.validLocations = function validLocations() {
+      _proto12.validLocations = function validLocations() {
         var _this7 = this;
         return iter_36().filter(function(axis) {
           return _this7.owner.x != axis[0] || _this7.owner.y != axis[1];
@@ -15459,8 +17579,8 @@ window.__require = function e(t, n, r) {
       function PyrateSpell() {
         return _SpellItem12.apply(this, arguments) || this;
       }
-      var _proto15 = PyrateSpell.prototype;
-      _proto15.use = function use(x, y) {
+      var _proto13 = PyrateSpell.prototype;
+      _proto13.use = function use(x, y) {
         var player2 = this.game.map[y][x];
         if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
         this.game.addLog('{"code":' + player2.code + "}\u88ab\u9644\u52a07\u5c42\u706b\u5370\u8bb0", 2);
@@ -15482,8 +17602,8 @@ window.__require = function e(t, n, r) {
       function Geo33Spell() {
         return _SpellItem13.apply(this, arguments) || this;
       }
-      var _proto16 = Geo33Spell.prototype;
-      _proto16.use = function use(x, y) {
+      var _proto14 = Geo33Spell.prototype;
+      _proto14.use = function use(x, y) {
         var player = this.owner;
         getItemIn33({
           game: this.game,
@@ -15493,7 +17613,7 @@ window.__require = function e(t, n, r) {
           7 == getThirdDigit(item.power) && player.geoSign++;
         });
       };
-      _proto16.validLocations = function validLocations() {
+      _proto14.validLocations = function validLocations() {
         return iter_36();
       };
       return Geo33Spell;
@@ -15514,8 +17634,8 @@ window.__require = function e(t, n, r) {
       function GeoToPyroSpell() {
         return _SpellItem14.apply(this, arguments) || this;
       }
-      var _proto17 = GeoToPyroSpell.prototype;
-      _proto17.use = function use(x, y, extra) {
+      var _proto15 = GeoToPyroSpell.prototype;
+      _proto15.use = function use(x, y, extra) {
         var target = this.game.map[y][x];
         if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u70ec\u706b\u7075\u4f7f\u7528");
         if (target.transfer_time <= 0) throw new GameLogicError("\u70ec\u706b\u5370\u8bb0\u4e0d\u8db3");
@@ -15526,7 +17646,7 @@ window.__require = function e(t, n, r) {
           pyroCoins: 50
         });
       };
-      _proto17.validLocations = function validLocations() {
+      _proto15.validLocations = function validLocations() {
         var _this8 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
@@ -15557,8 +17677,8 @@ window.__require = function e(t, n, r) {
       function GeoToHydroSpell() {
         return _SpellItem15.apply(this, arguments) || this;
       }
-      var _proto18 = GeoToHydroSpell.prototype;
-      _proto18.use = function use(x, y, extra) {
+      var _proto16 = GeoToHydroSpell.prototype;
+      _proto16.use = function use(x, y, extra) {
         var target = this.game.map[y][x];
         if (!target || "GeoToHydroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u6d41\u6e0a\u517d\u4f7f\u7528");
         if (target.transfer_time <= 0) throw new GameLogicError("\u6d41\u6e0a\u5370\u8bb0\u4e0d\u8db3");
@@ -15569,7 +17689,7 @@ window.__require = function e(t, n, r) {
           hydroCoins: 50
         });
       };
-      _proto18.validLocations = function validLocations() {
+      _proto16.validLocations = function validLocations() {
         var _this10 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
@@ -15600,8 +17720,8 @@ window.__require = function e(t, n, r) {
       function GeoToAuroSpell() {
         return _SpellItem16.apply(this, arguments) || this;
       }
-      var _proto19 = GeoToAuroSpell.prototype;
-      _proto19.use = function use(x, y, extra) {
+      var _proto17 = GeoToAuroSpell.prototype;
+      _proto17.use = function use(x, y, extra) {
         var target = this.game.map[y][x];
         if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u5764\u91d1\u517d\u4f7f\u7528");
         if (target.transfer_time <= 0) throw new GameLogicError("\u5764\u91d1\u5370\u8bb0\u4e0d\u8db3");
@@ -15612,7 +17732,7 @@ window.__require = function e(t, n, r) {
           auroCoins: 50
         });
       };
-      _proto19.validLocations = function validLocations() {
+      _proto17.validLocations = function validLocations() {
         var _this11 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
@@ -15643,12 +17763,12 @@ window.__require = function e(t, n, r) {
       function DisplaceToPetSpell() {
         return _SpellItem17.apply(this, arguments) || this;
       }
-      var _proto20 = DisplaceToPetSpell.prototype;
-      _proto20.use = function use(x, y, extra) {
+      var _proto18 = DisplaceToPetSpell.prototype;
+      _proto18.use = function use(x, y, extra) {
         if (!this.scope[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u5df1\u65b9\u5f52\u9014\u7075\u9e643*3\u8303\u56f4\u5185");
         this.owner.move(x, y);
       };
-      _proto20.validLocations = function validLocations() {
+      _proto18.validLocations = function validLocations() {
         var scope = this.scope;
         return iter_36().filter(function(axis) {
           return scope[axis[1]][scope[axis[0]]];
@@ -15708,10 +17828,9 @@ window.__require = function e(t, n, r) {
       Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
       PowerSpell: PowerSpell,
       TempPowerSpell: TempPowerSpell,
+      EnergyToPowerSpell: EnergyToPowerSpell,
       GeoCoreSpell: GeoCoreSpell,
       HydroCoreSpell: HydroCoreSpell,
-      HydroFreeListener: HydroFreeListener,
-      ResetHydroFreeListener: ResetHydroFreeListener,
       PyroCoreSpell: PyroCoreSpell,
       DisplaceSpell: DisplaceSpell,
       BounceSpell: BounceSpell,
@@ -15719,9 +17838,9 @@ window.__require = function e(t, n, r) {
       HydrateOneDirectionSpell: HydrateOneDirectionSpell,
       PyrateSpell: PyrateSpell,
       Geo33Spell: Geo33Spell,
-      EnergyToPowerSpell: EnergyToPowerSpell,
-      GeoToHydroSpell: GeoToHydroSpell,
       GeoToPyroSpell: GeoToPyroSpell,
+      GeoToHydroSpell: GeoToHydroSpell,
+      GeoToAuroSpell: GeoToAuroSpell,
       DisplaceToPetSpell: DisplaceToPetSpell
     };
     var _require4 = require("./wheels/common-clas0.0.2"), GameLogicError = _require4.GameLogicError;
@@ -15844,6 +17963,7 @@ window.__require = function e(t, n, r) {
       _proto.init = function init(owner) {
         _Item.prototype.init.call(this, owner.game);
         this.owner = owner;
+        this.num = 0;
       };
       _proto.upgrade = function upgrade() {
         this.owner.updateSpeed(1.05);
@@ -15911,6 +18031,7 @@ window.__require = function e(t, n, r) {
       _proto.init = function init(owner) {
         _Item.prototype.init.call(this, owner.game);
         this.owner = owner;
+        this.num = 0;
       };
       _proto.upgrade = function upgrade() {
         this.owner.updateSpeed(1.05);
@@ -16139,12 +18260,13 @@ window.__require = function e(t, n, r) {
       _proto6.use = function use(x, y) {
         var player2 = this.game.map[y][x];
         if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
+        if ("Player" != player2.type && player2.owner != this) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
         player2.updateSpeed(1.07);
         this.game.addAnime(new GeoCoreSpellAnimation(x, y));
         if (7 == getThirdDigit(player2.power)) {
           this.game.addLog('{"code":' + player2.code + '}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a7,{"code":' + this.owner.code + "}\u83b7\u5f97\u571f\u5370\u8bb0\u5e76\u63d0\u5347\u4fee\u4e3a", 2);
           this.owner.geoSign++;
-          var ratio = 1.12 + .05 * this.owner.geoSign;
+          var ratio = 1.18 + .05 * this.owner.geoSign;
           this.owner.updateSpeed(ratio);
           this.game.addAnime(new InkAnimation(x, y, [ 140, 108, 85 ]));
           this.game.addAnime(new InkAnimation(this.owner.x, this.owner.y, [ 140, 108, 85 ]));
@@ -16163,7 +18285,7 @@ window.__require = function e(t, n, r) {
     });
     GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
     GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534718+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
     };
     var HydroCoreSpell = function(_SpellItem6) {
       _inheritsLoose(HydroCoreSpell, _SpellItem6);
@@ -16173,7 +18295,6 @@ window.__require = function e(t, n, r) {
       var _proto7 = HydroCoreSpell.prototype;
       _proto7.init = function init(player) {
         _SpellItem6.prototype.init.call(this, player);
-        this.listener = new ResetHydroFreeListener(player, ENDLESS_TIME);
         this.game.listeners.OperateListeners.push(this.listener);
       };
       _proto7.use = function use(x, y) {
@@ -16228,6 +18349,7 @@ window.__require = function e(t, n, r) {
           return res;
         }();
         var self = this;
+        var addHydroSpell = false;
         PointsInLine.forEach(function(location) {
           var x = location[0], y = location[1];
           if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return;
@@ -16235,12 +18357,13 @@ window.__require = function e(t, n, r) {
           var target = self.game.map[y][x];
           if (!(target && target.hydroSign > 0)) return;
           target.hydroSign = 0;
-          if (self.listener.isFree) {
+          if (addHydroSpell) {
             _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e", 2);
             self.owner.updateSpeed(1.1);
           } else {
-            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e\uff0c" + logItem(_this2.owner) + "\u4e0b\u6b21\u64cd\u4f5c\u5c06\u514d\u8d39", 2);
-            self.listener.free();
+            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e\uff0c" + logItem(_this2.owner) + "\u83b7\u5f97\u3010\u6d41\u6ce2\u78a7\u5f71\u3011\u5377\u8f74", 2);
+            addHydroSpell = true;
+            self.owner.findSpell(HydroCoreSpell.id).num++;
             self.owner.updateSpeed(1.3);
           }
         });
@@ -16274,61 +18397,18 @@ window.__require = function e(t, n, r) {
         return !map[y][x];
       });
     };
-    var HydroFreeListener = function(_Listener) {
-      _inheritsLoose(HydroFreeListener, _Listener);
-      function HydroFreeListener() {
-        return _Listener.apply(this, arguments) || this;
-      }
-      var _proto8 = HydroFreeListener.prototype;
-      _proto8.check = function check(cost) {
-        cost instanceof Coin ? COIN_KEYS.forEach(function(key) {
-          cost[key] = 0;
-        }) : cost.cost = 0;
-      };
-      return HydroFreeListener;
-    }(Listener);
-    HydroFreeListener.uiDisplay = true;
-    HydroFreeListener.iconUrl = HydroCoreSpell.iconUrl;
-    HydroFreeListener.description = function(item) {
-      return "\u3010\u6d41\u6ce2\u78a7\u5f71\u3011\u4e0b\u4e00\u6b21\u64cd\u4f5c\u4e0d\u6d88\u8017\u7075\u77f3\u4e0e\u5185\u529b";
-    };
-    var ResetHydroFreeListener = function(_Listener2) {
-      _inheritsLoose(ResetHydroFreeListener, _Listener2);
-      function ResetHydroFreeListener() {
-        return _Listener2.apply(this, arguments) || this;
-      }
-      var _proto9 = ResetHydroFreeListener.prototype;
-      _proto9.check = function check(player) {
-        if (player.code != this.owner.code) return;
-        this.isFree ? this.count++ : this.listener && (this.listener.disabled = true);
-      };
-      _proto9.free = function free() {
-        this.count = 0;
-        if (this.listener && !this.listener.disabled) return;
-        this.listener = new HydroFreeListener(this, ONE_MINUTES);
-        this.game.listeners.GoldCostCalculators.push(this.listener);
-        this.game.listeners.SpellCostCalculators.push(this.listener);
-      };
-      _createClass(ResetHydroFreeListener, [ {
-        key: "isFree",
-        get: function get() {
-          return 0 == this.count;
-        }
-      } ]);
-      return ResetHydroFreeListener;
-    }(Listener);
     var PyroCoreSpell = function(_SpellItem7) {
       _inheritsLoose(PyroCoreSpell, _SpellItem7);
       function PyroCoreSpell() {
         return _SpellItem7.apply(this, arguments) || this;
       }
-      var _proto10 = PyroCoreSpell.prototype;
-      _proto10.use = function use(x, y) {
+      var _proto8 = PyroCoreSpell.prototype;
+      _proto8.use = function use(x, y) {
         var target = this.game.map[y][x];
         if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
         this.explode(target, 2);
       };
-      _proto10.explode = function explode(target, log_level) {
+      _proto8.explode = function explode(target, log_level) {
         var _this3 = this;
         if (!target) return;
         this.game.addLog('{"code":' + target.code + "}\u88ab\u9644\u52a01\u5c42\u706b\u5370\u8bb0", log_level);
@@ -16343,9 +18423,6 @@ window.__require = function e(t, n, r) {
         getItemIn33(target).forEach(function(new_target) {
           _this3.explode(new_target, 3);
         });
-      };
-      _proto10.upgrade_special = function upgrade_special() {
-        this.level in [ 7, 13, 20 ] && this.num--;
       };
       return PyroCoreSpell;
     }(SpellItem);
@@ -16362,8 +18439,8 @@ window.__require = function e(t, n, r) {
       function DisplaceSpell() {
         return _SpellItem8.apply(this, arguments) || this;
       }
-      var _proto11 = DisplaceSpell.prototype;
-      _proto11.use = function use(x, y, extra) {
+      var _proto9 = DisplaceSpell.prototype;
+      _proto9.use = function use(x, y, extra) {
         var map = this.game.map;
         var oldX = this.owner.x, oldY = this.owner.y;
         var item1 = this.owner, item2 = map[y][x];
@@ -16404,8 +18481,8 @@ window.__require = function e(t, n, r) {
       function BounceSpell() {
         return _SpellItem9.apply(this, arguments) || this;
       }
-      var _proto12 = BounceSpell.prototype;
-      _proto12.use = function use(x, y) {
+      var _proto10 = BounceSpell.prototype;
+      _proto10.use = function use(x, y) {
         var _this4 = this;
         eightDirections(this.owner).forEach(function(direction) {
           direction.reverse();
@@ -16420,7 +18497,7 @@ window.__require = function e(t, n, r) {
           });
         });
       };
-      _proto12.validLocations = function validLocations() {
+      _proto10.validLocations = function validLocations() {
         return null;
       };
       return BounceSpell;
@@ -16441,8 +18518,8 @@ window.__require = function e(t, n, r) {
       function AttractSpell() {
         return _SpellItem10.apply(this, arguments) || this;
       }
-      var _proto13 = AttractSpell.prototype;
-      _proto13.use = function use(x, y) {
+      var _proto11 = AttractSpell.prototype;
+      _proto11.use = function use(x, y) {
         var _this5 = this;
         eightDirections(this.owner).forEach(function(direction) {
           var items = direction.map(function(loc) {
@@ -16457,7 +18534,7 @@ window.__require = function e(t, n, r) {
           });
         });
       };
-      _proto13.validLocations = function validLocations() {
+      _proto11.validLocations = function validLocations() {
         return null;
       };
       return AttractSpell;
@@ -16478,8 +18555,8 @@ window.__require = function e(t, n, r) {
       function HydrateOneDirectionSpell() {
         return _SpellItem11.apply(this, arguments) || this;
       }
-      var _proto14 = HydrateOneDirectionSpell.prototype;
-      _proto14.use = function use(x, y) {
+      var _proto12 = HydrateOneDirectionSpell.prototype;
+      _proto12.use = function use(x, y) {
         var _this6 = this;
         var has = false;
         var self = this;
@@ -16499,7 +18576,7 @@ window.__require = function e(t, n, r) {
         });
         if (!has) throw new GameLogicError("\u53ea\u80fd\u6307\u5b9a\u76f4\u7ebf\u6216\u659c\u5bf9\u89d2\u7684\u65b9\u5411");
       };
-      _proto14.validLocations = function validLocations() {
+      _proto12.validLocations = function validLocations() {
         var _this7 = this;
         return iter_36().filter(function(axis) {
           return _this7.owner.x != axis[0] || _this7.owner.y != axis[1];
@@ -16525,8 +18602,8 @@ window.__require = function e(t, n, r) {
       function PyrateSpell() {
         return _SpellItem12.apply(this, arguments) || this;
       }
-      var _proto15 = PyrateSpell.prototype;
-      _proto15.use = function use(x, y) {
+      var _proto13 = PyrateSpell.prototype;
+      _proto13.use = function use(x, y) {
         var player2 = this.game.map[y][x];
         if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
         this.game.addLog('{"code":' + player2.code + "}\u88ab\u9644\u52a07\u5c42\u706b\u5370\u8bb0", 2);
@@ -16548,8 +18625,8 @@ window.__require = function e(t, n, r) {
       function Geo33Spell() {
         return _SpellItem13.apply(this, arguments) || this;
       }
-      var _proto16 = Geo33Spell.prototype;
-      _proto16.use = function use(x, y) {
+      var _proto14 = Geo33Spell.prototype;
+      _proto14.use = function use(x, y) {
         var player = this.owner;
         getItemIn33({
           game: this.game,
@@ -16559,7 +18636,7 @@ window.__require = function e(t, n, r) {
           7 == getThirdDigit(item.power) && player.geoSign++;
         });
       };
-      _proto16.validLocations = function validLocations() {
+      _proto14.validLocations = function validLocations() {
         return iter_36();
       };
       return Geo33Spell;
@@ -16580,8 +18657,8 @@ window.__require = function e(t, n, r) {
       function GeoToPyroSpell() {
         return _SpellItem14.apply(this, arguments) || this;
       }
-      var _proto17 = GeoToPyroSpell.prototype;
-      _proto17.use = function use(x, y, extra) {
+      var _proto15 = GeoToPyroSpell.prototype;
+      _proto15.use = function use(x, y, extra) {
         var target = this.game.map[y][x];
         if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u70ec\u706b\u7075\u4f7f\u7528");
         if (target.transfer_time <= 0) throw new GameLogicError("\u70ec\u706b\u5370\u8bb0\u4e0d\u8db3");
@@ -16592,7 +18669,7 @@ window.__require = function e(t, n, r) {
           pyroCoins: 50
         });
       };
-      _proto17.validLocations = function validLocations() {
+      _proto15.validLocations = function validLocations() {
         var _this8 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
@@ -16623,8 +18700,8 @@ window.__require = function e(t, n, r) {
       function GeoToHydroSpell() {
         return _SpellItem15.apply(this, arguments) || this;
       }
-      var _proto18 = GeoToHydroSpell.prototype;
-      _proto18.use = function use(x, y, extra) {
+      var _proto16 = GeoToHydroSpell.prototype;
+      _proto16.use = function use(x, y, extra) {
         var target = this.game.map[y][x];
         if (!target || "GeoToHydroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u6d41\u6e0a\u517d\u4f7f\u7528");
         if (target.transfer_time <= 0) throw new GameLogicError("\u6d41\u6e0a\u5370\u8bb0\u4e0d\u8db3");
@@ -16635,7 +18712,7 @@ window.__require = function e(t, n, r) {
           hydroCoins: 50
         });
       };
-      _proto18.validLocations = function validLocations() {
+      _proto16.validLocations = function validLocations() {
         var _this10 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
@@ -16666,8 +18743,8 @@ window.__require = function e(t, n, r) {
       function GeoToAuroSpell() {
         return _SpellItem16.apply(this, arguments) || this;
       }
-      var _proto19 = GeoToAuroSpell.prototype;
-      _proto19.use = function use(x, y, extra) {
+      var _proto17 = GeoToAuroSpell.prototype;
+      _proto17.use = function use(x, y, extra) {
         var target = this.game.map[y][x];
         if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u5764\u91d1\u517d\u4f7f\u7528");
         if (target.transfer_time <= 0) throw new GameLogicError("\u5764\u91d1\u5370\u8bb0\u4e0d\u8db3");
@@ -16678,7 +18755,7 @@ window.__require = function e(t, n, r) {
           auroCoins: 50
         });
       };
-      _proto19.validLocations = function validLocations() {
+      _proto17.validLocations = function validLocations() {
         var _this11 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
@@ -16709,12 +18786,12 @@ window.__require = function e(t, n, r) {
       function DisplaceToPetSpell() {
         return _SpellItem17.apply(this, arguments) || this;
       }
-      var _proto20 = DisplaceToPetSpell.prototype;
-      _proto20.use = function use(x, y, extra) {
+      var _proto18 = DisplaceToPetSpell.prototype;
+      _proto18.use = function use(x, y, extra) {
         if (!this.scope[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u5df1\u65b9\u5f52\u9014\u7075\u9e643*3\u8303\u56f4\u5185");
         this.owner.move(x, y);
       };
-      _proto20.validLocations = function validLocations() {
+      _proto18.validLocations = function validLocations() {
         var scope = this.scope;
         return iter_36().filter(function(axis) {
           return scope[axis[1]][scope[axis[0]]];
@@ -16774,10 +18851,9 @@ window.__require = function e(t, n, r) {
       Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
       PowerSpell: PowerSpell,
       TempPowerSpell: TempPowerSpell,
+      EnergyToPowerSpell: EnergyToPowerSpell,
       GeoCoreSpell: GeoCoreSpell,
       HydroCoreSpell: HydroCoreSpell,
-      HydroFreeListener: HydroFreeListener,
-      ResetHydroFreeListener: ResetHydroFreeListener,
       PyroCoreSpell: PyroCoreSpell,
       DisplaceSpell: DisplaceSpell,
       BounceSpell: BounceSpell,
@@ -16785,9 +18861,9 @@ window.__require = function e(t, n, r) {
       HydrateOneDirectionSpell: HydrateOneDirectionSpell,
       PyrateSpell: PyrateSpell,
       Geo33Spell: Geo33Spell,
-      EnergyToPowerSpell: EnergyToPowerSpell,
-      GeoToHydroSpell: GeoToHydroSpell,
       GeoToPyroSpell: GeoToPyroSpell,
+      GeoToHydroSpell: GeoToHydroSpell,
+      GeoToAuroSpell: GeoToAuroSpell,
       DisplaceToPetSpell: DisplaceToPetSpell
     };
     var _require4 = require("./wheels/common"), GameLogicError = _require4.GameLogicError;
@@ -16971,13 +19047,14 @@ window.__require = function e(t, n, r) {
     };
     var _require = require("../Equips-clas0.0.2"), Equip0 = _require.Equip0, Equip1 = _require.Equip1, Equip1AttackSpeedUpListener = _require.Equip1AttackSpeedUpListener, Equip2 = _require.Equip2, Equip3 = _require.Equip3, Equip4 = _require.Equip4, Equip5 = _require.Equip5, Equip6 = _require.Equip6, Equip6AttackWeakenListener = _require.Equip6AttackWeakenListener, Equip7 = _require.Equip7, Equip8 = _require.Equip8, Equip9 = _require.Equip9, Equip9AttackAllListener = _require.Equip9AttackAllListener, Equip10 = _require.Equip10, Equip10AddPyroSignListener = _require.Equip10AddPyroSignListener, Equip11 = _require.Equip11, Equip11AddHydroSignListener = _require.Equip11AddHydroSignListener, Equip12 = _require.Equip12, Equip12EnergyRecoveringListener = _require.Equip12EnergyRecoveringListener, Equip13 = _require.Equip13, Equip13CoinsListener = _require.Equip13CoinsListener, Equip14 = _require.Equip14, Equip14DistanceListener = _require.Equip14DistanceListener, Equip14ChallengeEnhanceMoveListener = _require.Equip14ChallengeEnhanceMoveListener, Equip14OperateResetMoveListener = _require.Equip14OperateResetMoveListener;
     var _require2 = require("../Pets-clas0.0.2"), BasePet = _require2.BasePet, GeoSignTransferPetsItems = _require2.GeoSignTransferPetsItems, GeoToAuroPet = _require2.GeoToAuroPet, GeoToHydroPet = _require2.GeoToHydroPet, GeoToPyroPet = _require2.GeoToPyroPet, GeoSignTransferListener = _require2.GeoSignTransferListener, AddGeoPet = _require2.AddGeoPet, AddGeoPetListener = _require2.AddGeoPetListener, AddHydroPet = _require2.AddHydroPet, AddHydroPetListener = _require2.AddHydroPetListener, AddPyroPet = _require2.AddPyroPet, AddPyroPetListener = _require2.AddPyroPetListener, DisplacePet = _require2.DisplacePet, AddScopePet = _require2.AddScopePet, AddScopePetListener = _require2.AddScopePetListener, AddDistanceDamagePet = _require2.AddDistanceDamagePet, AddDistanceDamagePetListener = _require2.AddDistanceDamagePetListener, ChasePet = _require2.ChasePet, ChasePetListener = _require2.ChasePetListener;
-    var _require3 = require("../Spell-clas0.0.2"), MoveSpell = _require3.MoveSpell, Equip14EnhancedMoveSpell = _require3.Equip14EnhancedMoveSpell, PowerSpell = _require3.PowerSpell, TempPowerSpell = _require3.TempPowerSpell, GeoCoreSpell = _require3.GeoCoreSpell, HydroCoreSpell = _require3.HydroCoreSpell, HydroFreeListener = _require3.HydroFreeListener, ResetHydroFreeListener = _require3.ResetHydroFreeListener, PyroCoreSpell = _require3.PyroCoreSpell, DisplaceSpell = _require3.DisplaceSpell, BounceSpell = _require3.BounceSpell, AttractSpell = _require3.AttractSpell, HydrateOneDirectionSpell = _require3.HydrateOneDirectionSpell, PyrateSpell = _require3.PyrateSpell, Geo33Spell = _require3.Geo33Spell, EnergyToPowerSpell = _require3.EnergyToPowerSpell, GeoToHydroSpell = _require3.GeoToHydroSpell, GeoToPyroSpell = _require3.GeoToPyroSpell, DisplaceToPetSpell = _require3.DisplaceToPetSpell;
+    var _require3 = require("../Spell-clas0.0.2"), MoveSpell = _require3.MoveSpell, Equip14EnhancedMoveSpell = _require3.Equip14EnhancedMoveSpell, PowerSpell = _require3.PowerSpell, TempPowerSpell = _require3.TempPowerSpell, EnergyToPowerSpell = _require3.EnergyToPowerSpell, GeoCoreSpell = _require3.GeoCoreSpell, HydroCoreSpell = _require3.HydroCoreSpell, PyroCoreSpell = _require3.PyroCoreSpell, DisplaceSpell = _require3.DisplaceSpell, BounceSpell = _require3.BounceSpell, AttractSpell = _require3.AttractSpell, HydrateOneDirectionSpell = _require3.HydrateOneDirectionSpell, PyrateSpell = _require3.PyrateSpell, Geo33Spell = _require3.Geo33Spell, GeoToPyroSpell = _require3.GeoToPyroSpell, GeoToHydroSpell = _require3.GeoToHydroSpell, GeoToAuroSpell = _require3.GeoToAuroSpell, DisplaceToPetSpell = _require3.DisplaceToPetSpell;
     var _require4 = require("../Buffs-clas0.0.2"), ChangeSpeedBuff = _require4.ChangeSpeedBuff, IncreaseSpeedBuff = _require4.IncreaseSpeedBuff, DecreaseSpeedBuff = _require4.DecreaseSpeedBuff, StrongBuff = _require4.StrongBuff, VulnerBuff = _require4.VulnerBuff, ChangeAspdBuff = _require4.ChangeAspdBuff;
     var _require5 = require("../Player-clas0.0.2"), Player = _require5.Player;
     var _require6 = require("../Creature-clas0.0.2"), Creature = _require6.Creature;
     var _require7 = require("../OriginMonitors-clas0.0.2"), MiningMonitors = _require7.MiningMonitors, PetConvertingMonitors = _require7.PetConvertingMonitors, SpellRecoveringMonitors = _require7.SpellRecoveringMonitors, RefreshChallengeTimeMonitors = _require7.RefreshChallengeTimeMonitors, BaseInScopeCalculators = _require7.BaseInScopeCalculators, GoldCostFloorMonitors = _require7.GoldCostFloorMonitors, SpellCostFloorMonitors = _require7.SpellCostFloorMonitors;
     var _require8 = require("../listeners/AttackListeners-clas0.0.2"), AttackCriticalMonitors = _require8.AttackCriticalMonitors, AttackDamageInitializer = _require8.AttackDamageInitializer, AttackDamageExecuter = _require8.AttackDamageExecuter;
-    var _require9 = require("../listeners/DamageListeners-clas0.0.2"), RealDamageLogger = _require9.RealDamageLogger, HarmImprovingMonitors = _require9.HarmImprovingMonitors;
+    var _require9 = require("../listeners/ForgeListeners-clas0.0.2"), UpgradeEquipListener = _require9.UpgradeEquipListener, ForgeSpellListener = _require9.ForgeSpellListener, ForgeEquipListener = _require9.ForgeEquipListener;
+    var _require10 = require("../listeners/DamageListeners-clas0.0.2"), RealDamageLogger = _require10.RealDamageLogger, HarmImprovingMonitors = _require10.HarmImprovingMonitors;
     Object.assign(typeDict, {
       Equip0: Equip0,
       Equip1: Equip1,
@@ -17027,10 +19104,9 @@ window.__require = function e(t, n, r) {
       Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
       PowerSpell: PowerSpell,
       TempPowerSpell: TempPowerSpell,
+      EnergyToPowerSpell: EnergyToPowerSpell,
       GeoCoreSpell: GeoCoreSpell,
       HydroCoreSpell: HydroCoreSpell,
-      HydroFreeListener: HydroFreeListener,
-      ResetHydroFreeListener: ResetHydroFreeListener,
       PyroCoreSpell: PyroCoreSpell,
       DisplaceSpell: DisplaceSpell,
       BounceSpell: BounceSpell,
@@ -17038,9 +19114,9 @@ window.__require = function e(t, n, r) {
       HydrateOneDirectionSpell: HydrateOneDirectionSpell,
       PyrateSpell: PyrateSpell,
       Geo33Spell: Geo33Spell,
-      EnergyToPowerSpell: EnergyToPowerSpell,
-      GeoToHydroSpell: GeoToHydroSpell,
       GeoToPyroSpell: GeoToPyroSpell,
+      GeoToHydroSpell: GeoToHydroSpell,
+      GeoToAuroSpell: GeoToAuroSpell,
       DisplaceToPetSpell: DisplaceToPetSpell,
       ChangeSpeedBuff: ChangeSpeedBuff,
       IncreaseSpeedBuff: IncreaseSpeedBuff,
@@ -17060,6 +19136,9 @@ window.__require = function e(t, n, r) {
       AttackCriticalMonitors: AttackCriticalMonitors,
       AttackDamageInitializer: AttackDamageInitializer,
       AttackDamageExecuter: AttackDamageExecuter,
+      UpgradeEquipListener: UpgradeEquipListener,
+      ForgeSpellListener: ForgeSpellListener,
+      ForgeEquipListener: ForgeEquipListener,
       RealDamageLogger: RealDamageLogger,
       HarmImprovingMonitors: HarmImprovingMonitors
     });
@@ -17096,7 +19175,8 @@ window.__require = function e(t, n, r) {
     "../Player-clas0.0.2": "Player-clas0.0.2",
     "../Spell-clas0.0.2": "Spell-clas0.0.2",
     "../listeners/AttackListeners-clas0.0.2": "AttackListeners-clas0.0.2",
-    "../listeners/DamageListeners-clas0.0.2": "DamageListeners-clas0.0.2"
+    "../listeners/DamageListeners-clas0.0.2": "DamageListeners-clas0.0.2",
+    "../listeners/ForgeListeners-clas0.0.2": "ForgeListeners-clas0.0.2"
   } ],
   TypeDict: [ function(require, module, exports) {
     "use strict";
@@ -17112,13 +19192,14 @@ window.__require = function e(t, n, r) {
     };
     var _require = require("../Equips"), Equip0 = _require.Equip0, Equip1 = _require.Equip1, Equip1AttackSpeedUpListener = _require.Equip1AttackSpeedUpListener, Equip2 = _require.Equip2, Equip3 = _require.Equip3, Equip4 = _require.Equip4, Equip5 = _require.Equip5, Equip6 = _require.Equip6, Equip6AttackWeakenListener = _require.Equip6AttackWeakenListener, Equip7 = _require.Equip7, Equip8 = _require.Equip8, Equip9 = _require.Equip9, Equip9AttackAllListener = _require.Equip9AttackAllListener, Equip10 = _require.Equip10, Equip10AddPyroSignListener = _require.Equip10AddPyroSignListener, Equip11 = _require.Equip11, Equip11AddHydroSignListener = _require.Equip11AddHydroSignListener, Equip12 = _require.Equip12, Equip12EnergyRecoveringListener = _require.Equip12EnergyRecoveringListener, Equip13 = _require.Equip13, Equip13CoinsListener = _require.Equip13CoinsListener, Equip14 = _require.Equip14, Equip14DistanceListener = _require.Equip14DistanceListener, Equip14ChallengeEnhanceMoveListener = _require.Equip14ChallengeEnhanceMoveListener, Equip14OperateResetMoveListener = _require.Equip14OperateResetMoveListener;
     var _require2 = require("../Pets"), BasePet = _require2.BasePet, GeoSignTransferPetsItems = _require2.GeoSignTransferPetsItems, GeoToAuroPet = _require2.GeoToAuroPet, GeoToHydroPet = _require2.GeoToHydroPet, GeoToPyroPet = _require2.GeoToPyroPet, GeoSignTransferListener = _require2.GeoSignTransferListener, AddGeoPet = _require2.AddGeoPet, AddGeoPetListener = _require2.AddGeoPetListener, AddHydroPet = _require2.AddHydroPet, AddHydroPetListener = _require2.AddHydroPetListener, AddPyroPet = _require2.AddPyroPet, AddPyroPetListener = _require2.AddPyroPetListener, DisplacePet = _require2.DisplacePet, AddScopePet = _require2.AddScopePet, AddScopePetListener = _require2.AddScopePetListener, AddDistanceDamagePet = _require2.AddDistanceDamagePet, AddDistanceDamagePetListener = _require2.AddDistanceDamagePetListener, ChasePet = _require2.ChasePet, ChasePetListener = _require2.ChasePetListener;
-    var _require3 = require("../Spell"), MoveSpell = _require3.MoveSpell, Equip14EnhancedMoveSpell = _require3.Equip14EnhancedMoveSpell, PowerSpell = _require3.PowerSpell, TempPowerSpell = _require3.TempPowerSpell, GeoCoreSpell = _require3.GeoCoreSpell, HydroCoreSpell = _require3.HydroCoreSpell, HydroFreeListener = _require3.HydroFreeListener, ResetHydroFreeListener = _require3.ResetHydroFreeListener, PyroCoreSpell = _require3.PyroCoreSpell, DisplaceSpell = _require3.DisplaceSpell, BounceSpell = _require3.BounceSpell, AttractSpell = _require3.AttractSpell, HydrateOneDirectionSpell = _require3.HydrateOneDirectionSpell, PyrateSpell = _require3.PyrateSpell, Geo33Spell = _require3.Geo33Spell, EnergyToPowerSpell = _require3.EnergyToPowerSpell, GeoToHydroSpell = _require3.GeoToHydroSpell, GeoToPyroSpell = _require3.GeoToPyroSpell, DisplaceToPetSpell = _require3.DisplaceToPetSpell;
+    var _require3 = require("../Spell"), MoveSpell = _require3.MoveSpell, Equip14EnhancedMoveSpell = _require3.Equip14EnhancedMoveSpell, PowerSpell = _require3.PowerSpell, TempPowerSpell = _require3.TempPowerSpell, EnergyToPowerSpell = _require3.EnergyToPowerSpell, GeoCoreSpell = _require3.GeoCoreSpell, HydroCoreSpell = _require3.HydroCoreSpell, PyroCoreSpell = _require3.PyroCoreSpell, DisplaceSpell = _require3.DisplaceSpell, BounceSpell = _require3.BounceSpell, AttractSpell = _require3.AttractSpell, HydrateOneDirectionSpell = _require3.HydrateOneDirectionSpell, PyrateSpell = _require3.PyrateSpell, Geo33Spell = _require3.Geo33Spell, GeoToPyroSpell = _require3.GeoToPyroSpell, GeoToHydroSpell = _require3.GeoToHydroSpell, GeoToAuroSpell = _require3.GeoToAuroSpell, DisplaceToPetSpell = _require3.DisplaceToPetSpell;
     var _require4 = require("../Buffs"), ChangeSpeedBuff = _require4.ChangeSpeedBuff, IncreaseSpeedBuff = _require4.IncreaseSpeedBuff, DecreaseSpeedBuff = _require4.DecreaseSpeedBuff, StrongBuff = _require4.StrongBuff, VulnerBuff = _require4.VulnerBuff, ChangeAspdBuff = _require4.ChangeAspdBuff;
     var _require5 = require("../Player"), Player = _require5.Player;
     var _require6 = require("../Creature"), Creature = _require6.Creature;
     var _require7 = require("../OriginMonitors"), MiningMonitors = _require7.MiningMonitors, PetConvertingMonitors = _require7.PetConvertingMonitors, SpellRecoveringMonitors = _require7.SpellRecoveringMonitors, RefreshChallengeTimeMonitors = _require7.RefreshChallengeTimeMonitors, BaseInScopeCalculators = _require7.BaseInScopeCalculators, GoldCostFloorMonitors = _require7.GoldCostFloorMonitors, SpellCostFloorMonitors = _require7.SpellCostFloorMonitors;
     var _require8 = require("../listeners/AttackListeners"), AttackCriticalMonitors = _require8.AttackCriticalMonitors, AttackDamageInitializer = _require8.AttackDamageInitializer, AttackDamageExecuter = _require8.AttackDamageExecuter;
-    var _require9 = require("../listeners/DamageListeners"), RealDamageLogger = _require9.RealDamageLogger, HarmImprovingMonitors = _require9.HarmImprovingMonitors;
+    var _require9 = require("../listeners/ForgeListeners"), UpgradeEquipListener = _require9.UpgradeEquipListener, ForgeSpellListener = _require9.ForgeSpellListener, ForgeEquipListener = _require9.ForgeEquipListener;
+    var _require10 = require("../listeners/DamageListeners"), RealDamageLogger = _require10.RealDamageLogger, HarmImprovingMonitors = _require10.HarmImprovingMonitors;
     Object.assign(typeDict, {
       Equip0: Equip0,
       Equip1: Equip1,
@@ -17168,10 +19249,9 @@ window.__require = function e(t, n, r) {
       Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
       PowerSpell: PowerSpell,
       TempPowerSpell: TempPowerSpell,
+      EnergyToPowerSpell: EnergyToPowerSpell,
       GeoCoreSpell: GeoCoreSpell,
       HydroCoreSpell: HydroCoreSpell,
-      HydroFreeListener: HydroFreeListener,
-      ResetHydroFreeListener: ResetHydroFreeListener,
       PyroCoreSpell: PyroCoreSpell,
       DisplaceSpell: DisplaceSpell,
       BounceSpell: BounceSpell,
@@ -17179,9 +19259,9 @@ window.__require = function e(t, n, r) {
       HydrateOneDirectionSpell: HydrateOneDirectionSpell,
       PyrateSpell: PyrateSpell,
       Geo33Spell: Geo33Spell,
-      EnergyToPowerSpell: EnergyToPowerSpell,
-      GeoToHydroSpell: GeoToHydroSpell,
       GeoToPyroSpell: GeoToPyroSpell,
+      GeoToHydroSpell: GeoToHydroSpell,
+      GeoToAuroSpell: GeoToAuroSpell,
       DisplaceToPetSpell: DisplaceToPetSpell,
       ChangeSpeedBuff: ChangeSpeedBuff,
       IncreaseSpeedBuff: IncreaseSpeedBuff,
@@ -17201,6 +19281,9 @@ window.__require = function e(t, n, r) {
       AttackCriticalMonitors: AttackCriticalMonitors,
       AttackDamageInitializer: AttackDamageInitializer,
       AttackDamageExecuter: AttackDamageExecuter,
+      UpgradeEquipListener: UpgradeEquipListener,
+      ForgeSpellListener: ForgeSpellListener,
+      ForgeEquipListener: ForgeEquipListener,
       RealDamageLogger: RealDamageLogger,
       HarmImprovingMonitors: HarmImprovingMonitors
     });
@@ -17237,7 +19320,8 @@ window.__require = function e(t, n, r) {
     "../Player": "Player",
     "../Spell": "Spell",
     "../listeners/AttackListeners": "AttackListeners",
-    "../listeners/DamageListeners": "DamageListeners"
+    "../listeners/DamageListeners": "DamageListeners",
+    "../listeners/ForgeListeners": "ForgeListeners"
   } ],
   "TypeList-clas0.0.1": [ function(require, module, exports) {
     "use strict";
@@ -18514,6 +20598,77 @@ window.__require = function e(t, n, r) {
   }, {
     "../battleMiddleWare/gameUtils": "gameUtils"
   } ],
+  calculatorManager: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "5373fw2KpRAwqUsY1rj5v/y", "calculatorManager");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    var __decorate = this && this.__decorate || function(decorators, target, key, desc) {
+      var c = arguments.length, r = c < 3 ? target : null === desc ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+      if ("object" === typeof Reflect && "function" === typeof Reflect.decorate) r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) (d = decorators[i]) && (r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r);
+      return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
+    var NewClass = function(_super) {
+      __extends(NewClass, _super);
+      function NewClass() {
+        var _this = null !== _super && _super.apply(this, arguments) || this;
+        _this.sevenCalculator = null;
+        _this.mathCalculator = null;
+        _this.sevenBtnLbl = null;
+        _this.mathBtnLbl = null;
+        return _this;
+      }
+      NewClass.prototype.refresh = function() {
+        this.sevenCalculator.getComponent("sevenCalculator").refresh();
+        this.useSevenCalculator();
+      };
+      NewClass.prototype.useSevenCalculator = function() {
+        this.sevenCalculator.active = true;
+        this.mathCalculator.active = false;
+        this.sevenBtnLbl.color = new cc.Color(210, 180, 140);
+        this.mathBtnLbl.color = cc.Color.WHITE;
+      };
+      NewClass.prototype.useMathCalculator = function() {
+        this.mathCalculator.active = true;
+        this.sevenCalculator.active = false;
+        this.sevenBtnLbl.color = cc.Color.WHITE;
+        this.mathBtnLbl.color = new cc.Color(210, 180, 140);
+      };
+      NewClass.prototype.closeBtn = function() {
+        this.node.active = false;
+      };
+      __decorate([ property(cc.Node) ], NewClass.prototype, "sevenCalculator", void 0);
+      __decorate([ property(cc.Node) ], NewClass.prototype, "mathCalculator", void 0);
+      __decorate([ property(cc.Node) ], NewClass.prototype, "sevenBtnLbl", void 0);
+      __decorate([ property(cc.Node) ], NewClass.prototype, "mathBtnLbl", void 0);
+      NewClass = __decorate([ ccclass ], NewClass);
+      return NewClass;
+    }(cc.Component);
+    exports.default = NewClass;
+    cc._RF.pop();
+  }, {} ],
   "challengeAnimation-clas0.0.1": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "f6c01ysebpPZ4uCLWZVnN9B", "challengeAnimation-clas0.0.1");
@@ -19846,7 +22001,7 @@ window.__require = function e(t, n, r) {
           price = Equip.upgrade_price;
           data.level >= constant().EQUIP_MAX_LEVEL && (this.buy.node.active = false);
         } else {
-          this.buyLbl.string = "\u8d2d\u4e70";
+          this.buyLbl.string = "\u953b\u9020";
           price = Equip.buy_price;
         }
         this.price.getComponent("price").init(getCurrPlayer().calculatePrice(price));
@@ -19862,7 +22017,7 @@ window.__require = function e(t, n, r) {
         this.cost = false;
       },
       buyBtn: function buyBtn() {
-        "\u8d2d\u4e70" == this.buyLbl.string ? makeOperation("be00" + fillWithZero(this.id, 2)) : makeOperation("ue00" + fillWithZero(this.id, 2));
+        "\u953b\u9020" == this.buyLbl.string ? makeOperation("be00" + fillWithZero(this.id, 2)) : makeOperation("ue00" + fillWithZero(this.id, 2));
         this.init(this.id);
       },
       closeBtn: function closeBtn() {
@@ -20469,6 +22624,89 @@ window.__require = function e(t, n, r) {
   }, {
     "../Globals": "Globals",
     "../battleMiddleWare/gameGlobals": "gameGlobals",
+    "../battleMiddleWare/gameUtils": "gameUtils"
+  } ],
+  forge: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "5ed1bxbgR9Bn78SKcJqMl2a", "forge");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    var __decorate = this && this.__decorate || function(decorators, target, key, desc) {
+      var c = arguments.length, r = c < 3 ? target : null === desc ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+      if ("object" === typeof Reflect && "function" === typeof Reflect.decorate) r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) (d = decorators[i]) && (r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r);
+      return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
+    var NewClass = function(_super) {
+      __extends(NewClass, _super);
+      function NewClass() {
+        var _this = null !== _super && _super.apply(this, arguments) || this;
+        _this.list = null;
+        _this.item = null;
+        return _this;
+      }
+      NewClass.prototype.start = function() {
+        var self = this;
+        var forgeList = gameUtils_1.getCurrPlayer().forgingList;
+        var currTime = gameGlobals.currTime;
+        forgeList.forEach(function(forge) {
+          console.log(forge);
+          var item = forge.item, className;
+          className = "string" == typeof item ? item : item.type;
+          var clazz = gameUtils_1.typeDict()[className];
+          var node = cc.instantiate(self.item);
+          var sprite = node.getChildByName("icon").getComponent(cc.Sprite);
+          cc.loader.loadRes(clazz.iconUrl, cc.SpriteFrame, function(err, spriteFrame) {
+            err && console.log(err);
+            sprite.spriteFrame = spriteFrame;
+          });
+          var remainTime = forge.end_time - currTime;
+          var seconds = remainTime % 60;
+          var remainMinutes = (remainTime - seconds) / 60;
+          var minutes = remainMinutes % 60;
+          var hours = (remainMinutes - minutes) / 60;
+          var label = node.getChildByName("time Label").getComponent(cc.Label);
+          label.string = hours + ":" + minutes + ":" + seconds;
+          self.list.node.addChild(node);
+          self.list.updateLayout();
+          self.list.node.y = 430 - self.list.node.height / 2;
+        });
+      };
+      NewClass.prototype.close = function() {
+        this.node.removeFromParent();
+      };
+      __decorate([ property(cc.Layout) ], NewClass.prototype, "list", void 0);
+      __decorate([ property(cc.Prefab) ], NewClass.prototype, "item", void 0);
+      NewClass = __decorate([ ccclass ], NewClass);
+      return NewClass;
+    }(cc.Component);
+    exports.default = NewClass;
+    var gameGlobals = require("../battleMiddleWare/gameGlobals.js");
+    var gameUtils_1 = require("../battleMiddleWare/gameUtils");
+    cc._RF.pop();
+  }, {
+    "../battleMiddleWare/gameGlobals.js": "gameGlobals",
     "../battleMiddleWare/gameUtils": "gameUtils"
   } ],
   "gameConstants-clas0.0.1": [ function(require, module, exports) {
@@ -21087,7 +23325,15 @@ window.__require = function e(t, n, r) {
               break;
 
              case "bs":
-              player1.buySpell(getId(instru), getX(instru), getY(instru), getExtra(instru));
+              player1.buySpell(getId(instru));
+              break;
+
+             case "ls":
+              player1.learnSpell(getId(instru));
+              break;
+
+             case "us":
+              player1.useSpell(getId(instru), getX(instru), getY(instru), getExtra(instru));
               break;
 
              case "bp":
@@ -21266,7 +23512,15 @@ window.__require = function e(t, n, r) {
               break;
 
              case "bs":
-              player1.buySpell(getId(instru), getX(instru), getY(instru), getExtra(instru));
+              player1.buySpell(getId(instru));
+              break;
+
+             case "ls":
+              player1.learnSpell(getId(instru));
+              break;
+
+             case "us":
+              player1.useSpell(getId(instru), getX(instru), getY(instru), getExtra(instru));
               break;
 
              case "bp":
@@ -21427,12 +23681,14 @@ window.__require = function e(t, n, r) {
         entry: cc.Node,
         history: cc.Node,
         send: cc.Node,
+        calculator: cc.Node,
         players: cc.Node,
         map: cc.Node,
         tiles: cc.Prefab,
         equips: cc.Prefab,
         spells: cc.Prefab,
         pets: cc.Prefab,
+        forge: cc.Prefab,
         control: cc.Node,
         fightUI: cc.Node,
         attack: true,
@@ -21513,6 +23769,9 @@ window.__require = function e(t, n, r) {
       petsBtn: function petsBtn() {
         this.node.addChild(cc.instantiate(this.pets));
       },
+      forgingBtn: function forgingBtn() {
+        this.node.addChild(cc.instantiate(this.forge));
+      },
       historyBtn: function historyBtn() {
         loadingView();
         this.history.getComponent("history").init();
@@ -21526,6 +23785,10 @@ window.__require = function e(t, n, r) {
       fighting: function fighting(player1, player2) {
         var battle = cc.instantiate(this.fightUI);
         battle.init(player1, player2);
+      },
+      calculatorBtn: function calculatorBtn() {
+        this.calculator.getComponent("calculatorManager").refresh();
+        this.calculator.active = true;
       }
     });
     var _require = require("./Globals"), config = _require.config, music = _require.music, user = _require.user;
@@ -21761,6 +24024,7 @@ window.__require = function e(t, n, r) {
     var global = require("./gameGlobals");
     var _require = require("../xjfz-journey/index"), getEquip = _require.getEquip, getSpell = _require.getSpell, getPets = _require.getPets, getBuffs = _require.getBuffs;
     var _require2 = require("../Constants"), DECORATION_MENU = _require2.DECORATION_MENU;
+    var _require3 = require("../xjfz-journey/classic-latest/main/Player"), Player = _require3.Player;
     var obj = {
       constant: function constant() {
         return global.gameModule.constants;
@@ -21785,6 +24049,9 @@ window.__require = function e(t, n, r) {
       },
       getCurrPlayer: function getCurrPlayer() {
         return global.gameObj.getPlayer(global.currPLayerIndex);
+      },
+      getGameObj: function getGameObj() {
+        return global.gameObj;
       },
       getTimePrefix: function getTimePrefix() {
         var currTime = global.currTime ? global.currTime : Math.floor(new Date().valueOf() / 1e3);
@@ -21840,6 +24107,7 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "../Constants": "Constants",
+    "../xjfz-journey/classic-latest/main/Player": "Player",
     "../xjfz-journey/index": "index",
     "./gameGlobals": "gameGlobals"
   } ],
@@ -22854,6 +25122,7 @@ window.__require = function e(t, n, r) {
     var _require2 = require("./classic-latest/main/templates/Listeners"), Listener = _require2.Listener;
     var _require3 = require("./classic-latest/main/templates/PetsItems"), PetsItems = _require3.PetsItems;
     var _require4 = require("./classic-latest/main/templates/SpellItems"), SpellItem = _require4.SpellItem;
+    var _require5 = require("./classic-latest/main/Game"), Game = _require5.Game;
     cc._RF.pop();
   }, {
     "./classic-latest/gameLogicRoutes": "gameLogicRoutes",
@@ -23368,20 +25637,21 @@ window.__require = function e(t, n, r) {
       _proto.init = function init(game, new_item) {
         void 0 === new_item && (new_item = true);
         this.type = this.constructor.name;
+        this.disabled = false;
         if (!new_item) return;
         this.game = game;
+        this.code = 0;
         game.GenUniqueCode(this);
-        this.disabled = false;
       };
       _proto.JSONStringify = function JSONStringify() {
         var res = {};
         for (var key in this) {
           var value = this[key];
           if (value instanceof Function || this.__lookupGetter__(key)) continue;
-          res[key] = value instanceof Item ? {
+          value instanceof Item || value && "Game" == value.type ? res[key] = {
             isItem: true,
             code: value.code
-          } : value;
+          } : res[key] = value;
         }
         return res;
       };
@@ -23455,20 +25725,21 @@ window.__require = function e(t, n, r) {
       _proto.init = function init(game, new_item) {
         void 0 === new_item && (new_item = true);
         this.type = this.constructor.name;
+        this.disabled = false;
         if (!new_item) return;
         this.game = game;
+        this.code = 0;
         game.GenUniqueCode(this);
-        this.disabled = false;
       };
       _proto.JSONStringify = function JSONStringify() {
         var res = {};
         for (var key in this) {
           var value = this[key];
           if (value instanceof Function || this.__lookupGetter__(key)) continue;
-          res[key] = value instanceof Item ? {
+          value instanceof Item || value && "Game" == value.type ? res[key] = {
             isItem: true,
             code: value.code
-          } : value;
+          } : res[key] = value;
         }
         return res;
       };
@@ -24297,6 +26568,139 @@ window.__require = function e(t, n, r) {
     "../battleMiddleWare/gameGlobals": "gameGlobals",
     "../battleMiddleWare/gameUtils": "gameUtils"
   } ],
+  mathCalculator: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "dc523UaIm5JyInmcITUwKPc", "mathCalculator");
+    "use strict";
+    cc.Class({
+      extends: cc.Component,
+      properties: {
+        label_1: {
+          default: null,
+          type: cc.Label
+        },
+        label_2: {
+          default: null,
+          type: cc.Label
+        }
+      },
+      onLoad: function onLoad() {
+        cc.log("vx:cocoscreator_666");
+        cc.log("QQ:2504549300");
+        this.str_1 = "";
+      },
+      btnCallBack: function btnCallBack(sender, str) {
+        switch (str) {
+         case "btn_zuo":
+          this.str_1 = this.str_1 + "(";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_you":
+          this.str_1 = this.str_1 + ")";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_baiFenHao":
+          this.str_1 = this.str_1 + "/100";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_qingChu":
+          this.str_1 = "";
+          this.label_1.string = this.str_1;
+          this.label_2.string = this.str_1;
+          break;
+
+         case "btn_7":
+          this.str_1 = this.str_1 + "7";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_8":
+          this.str_1 = this.str_1 + "8";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_9":
+          this.str_1 = this.str_1 + "9";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_chu":
+          this.str_1 = this.str_1 + "/";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_4":
+          this.str_1 = this.str_1 + "4";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_5":
+          this.str_1 = this.str_1 + "5";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_6":
+          this.str_1 = this.str_1 + "6";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_cheng":
+          this.str_1 = this.str_1 + "*";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_1":
+          this.str_1 = this.str_1 + "1";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_2":
+          this.str_1 = this.str_1 + "2";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_3":
+          this.str_1 = this.str_1 + "3";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_jian":
+          this.str_1 = this.str_1 + "-";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_0":
+          this.str_1 = this.str_1 + "0";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_dian":
+          this.str_1 = this.str_1 + ".";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_jia":
+          this.str_1 = this.str_1 + "+";
+          this.label_1.string = this.str_1;
+          break;
+
+         case "btn_dengYu":
+          this.label_2.string = this.str_1 + "=";
+          try {
+            this.label_1.string = eval(this.str_1);
+          } catch (exception) {
+            this.label_1.string = "\u9519\u8bef";
+          }
+        }
+      },
+      start: function start() {},
+      update: function update(dt) {}
+    });
+    cc._RF.pop();
+  }, {} ],
   mockConsole: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "7e7676le0NIjq7At9Ygb6J+", "mockConsole");
@@ -25584,6 +27988,306 @@ window.__require = function e(t, n, r) {
   }, {
     "../Globals": "Globals"
   } ],
+  sevenCalSelectItem: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "c06d9mqgPFPA5FLx0Y2+3hP", "sevenCalSelectItem");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    var __decorate = this && this.__decorate || function(decorators, target, key, desc) {
+      var c = arguments.length, r = c < 3 ? target : null === desc ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+      if ("object" === typeof Reflect && "function" === typeof Reflect.decorate) r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) (d = decorators[i]) && (r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r);
+      return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
+    var NewClass = function(_super) {
+      __extends(NewClass, _super);
+      function NewClass() {
+        var _this = null !== _super && _super.apply(this, arguments) || this;
+        _this.teamLabel = null;
+        _this.teamTexture = null;
+        _this.nameLabel = null;
+        _this.power = null;
+        _this.callback = null;
+        return _this;
+      }
+      NewClass.prototype.init = function(data) {
+        this.nameLabel.string = data.name;
+        var self = this;
+        var code = data.team;
+        this.teamLabel.string = [ "\u4e00", "\u4e8c", "\u4e09" ][code - 1];
+        cc.loader.loadRes("texture/" + code + ".png", cc.SpriteFrame, function(err, spriteFrame) {
+          err && console.log(err);
+          self.teamTexture.spriteFrame = spriteFrame;
+        });
+        this.callback = data.callback;
+        this.power = data.power;
+      };
+      NewClass.prototype.changeTargetItem = function() {
+        this.callback();
+      };
+      __decorate([ property(cc.Label) ], NewClass.prototype, "teamLabel", void 0);
+      __decorate([ property(cc.Sprite) ], NewClass.prototype, "teamTexture", void 0);
+      __decorate([ property(cc.Label) ], NewClass.prototype, "nameLabel", void 0);
+      NewClass = __decorate([ ccclass ], NewClass);
+      return NewClass;
+    }(cc.Component);
+    exports.default = NewClass;
+    cc._RF.pop();
+  }, {} ],
+  sevenCalculator: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "78c5drTGqFNF7RJkrBbAZM7", "sevenCalculator");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    var __decorate = this && this.__decorate || function(decorators, target, key, desc) {
+      var c = arguments.length, r = c < 3 ? target : null === desc ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+      if ("object" === typeof Reflect && "function" === typeof Reflect.decorate) r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) (d = decorators[i]) && (r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r);
+      return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
+    var NewClass = function(_super) {
+      __extends(NewClass, _super);
+      function NewClass() {
+        var _this = null !== _super && _super.apply(this, arguments) || this;
+        _this.resultViews = null;
+        _this.selectionList = null;
+        _this.selectionPage = null;
+        _this.selectionItem = null;
+        _this.currItemLabel = null;
+        _this.power = 7;
+        _this.level = 2;
+        _this.resultHead = {
+          power: 7,
+          level: 2
+        };
+        _this.resultTail = {
+          power: 7,
+          level: 2
+        };
+        return _this;
+      }
+      Object.defineProperty(NewClass.prototype, "resultItems", {
+        get: function() {
+          return this.resultViews.children.slice(1);
+        },
+        enumerable: false,
+        configurable: true
+      });
+      NewClass.prototype.openSelectionPage = function() {
+        this.selectionPage.active = true;
+      };
+      NewClass.prototype.closeSelectionPage = function() {
+        this.selectionPage.active = false;
+      };
+      NewClass.prototype.changeTargetItem = function(power, level, name) {
+        this.currItemLabel.string = name;
+        this.refreshSingleResultItem(this.resultViews.children[0], {
+          result: "\u5f53\u524d\u4fee\u4e3a",
+          power: power.toPrecision(5) + "e" + level
+        });
+        this.power = power;
+        this.level = level;
+        var seven = toSeven(power);
+        this.resultTail = {
+          level: level,
+          power: getPrevSeven(seven)
+        };
+        this.nextPage();
+      };
+      NewClass.prototype.refresh = function() {
+        var _this = this;
+        this.selectionList.removeAllChildren();
+        var self = this;
+        var items = gameUtils_1.getGameObj().allMapElements;
+        var players = items.filter(function(item) {
+          return item.isPlayer;
+        });
+        var pets = items.filter(function(item) {
+          return !item.isPlayer;
+        });
+        var axisText = function(pet) {
+          return "(" + (pet.x + 1) + "," + (gameUtils_1.constant().MAP_SIZE - pet.y) + ")";
+        };
+        var playerDataList = players.map(function(player) {
+          var code = player.code;
+          var info = gameGlobals.gameInfo.playerInfo[code - 1];
+          var name = "" + info.nickname + axisText(player);
+          var team = code;
+          return {
+            code: code,
+            name: name,
+            team: team,
+            power: player._power,
+            level: player._level
+          };
+        });
+        var petDataList = pets.map(function(pet) {
+          var code = pet.code;
+          var clazz = gameUtils_1.typeDict()[pet.type];
+          var name = "" + clazz.pet_name + axisText(pet);
+          var team = pet.owner.code;
+          return {
+            code: code,
+            name: name,
+            team: team,
+            power: pet._power,
+            level: pet._level
+          };
+        });
+        var itemDataList = playerDataList.concat(petDataList);
+        itemDataList.forEach(function(data) {
+          var node = cc.instantiate(_this.selectionItem);
+          data.callback = function() {
+            self.changeTargetItem(data.power, data.level, data.name);
+            self.closeSelectionPage();
+          };
+          node.getComponent("sevenCalSelectItem").init(data);
+          _this.selectionList.addChild(node);
+          _this.selectionList.getComponent(cc.Layout).updateLayout();
+          _this.selectionList.y = 250 - _this.selectionList.height / 2;
+        });
+        var currPlayer = gameUtils_1.getCurrPlayer();
+        var player = playerDataList.find(function(player) {
+          return player.code == currPlayer.code;
+        });
+        this.changeTargetItem(player.power, player.level, player.name);
+      };
+      NewClass.prototype.refreshSingleResultItem = function(item, data) {
+        var powerLbl = item.getChildByName("power label").getComponent(cc.Label);
+        var resultLbl = item.getChildByName("result label").getComponent(cc.Label);
+        powerLbl.string = data.power;
+        resultLbl.string = data.result;
+      };
+      NewClass.prototype.nextPage = function() {
+        var _a = this.resultTail, power = _a.power, level = _a.level;
+        var children = this.resultViews.children;
+        for (var i = 1; i < children.length; i++) {
+          var seven = getNextSeven(power);
+          power > seven && level++;
+          power = seven;
+          var multiple = Math.pow(10, level - this.level);
+          var lower = getPercentage(seven * multiple, this.power, false);
+          var upper = getPercentage((seven + .01) * multiple, this.power, true);
+          var data = {
+            power: seven.toFixed(2) + "e" + level,
+            result: lower + "~" + upper + "%"
+          };
+          this.refreshSingleResultItem(children[i], data);
+          1 == i && (this.resultHead = {
+            power: seven,
+            level: level
+          });
+          i == children.length - 1 && (this.resultTail = {
+            power: seven,
+            level: level
+          });
+        }
+      };
+      NewClass.prototype.prevPage = function() {
+        var _a = this.resultHead, power = _a.power, level = _a.level;
+        var children = this.resultViews.children;
+        for (var i = children.length - 1; i >= 1; i--) {
+          var seven = getPrevSeven(power);
+          power < seven && level--;
+          power = seven;
+          var multiple = Math.pow(10, level - this.level);
+          var lower = getPercentage(seven * multiple, this.power, false);
+          var upper = getPercentage((seven + .01) * multiple, this.power, true);
+          var data = {
+            power: seven.toFixed(2) + "e" + level,
+            result: lower + "~" + upper + "%"
+          };
+          this.refreshSingleResultItem(children[i], data);
+          1 == i && (this.resultHead = {
+            power: seven,
+            level: level
+          });
+          i == children.length - 1 && (this.resultTail = {
+            power: seven,
+            level: level
+          });
+        }
+      };
+      __decorate([ property(cc.Node) ], NewClass.prototype, "resultViews", void 0);
+      __decorate([ property(cc.Node) ], NewClass.prototype, "selectionList", void 0);
+      __decorate([ property(cc.Node) ], NewClass.prototype, "selectionPage", void 0);
+      __decorate([ property(cc.Prefab) ], NewClass.prototype, "selectionItem", void 0);
+      __decorate([ property(cc.Label) ], NewClass.prototype, "currItemLabel", void 0);
+      NewClass = __decorate([ ccclass ], NewClass);
+      return NewClass;
+    }(cc.Component);
+    exports.default = NewClass;
+    function toSeven(power) {
+      var rounded = parseFloat(power.toFixed(1));
+      rounded > power && (rounded -= .1);
+      return rounded + .07;
+    }
+    function getPercentage(now, old, floor) {
+      var ratio = now / old - 1;
+      ratio < 0 && (floor = !floor);
+      floor ? ratio -= 5e-4 : ratio += 5e-4;
+      var ratioStr = ratio.toFixed(3).replace(".", "");
+      ratioStr = parseInt(ratioStr).toString();
+      ratioStr.startsWith("-") || (ratioStr = "+" + ratioStr);
+      return ratioStr.substring(0, ratioStr.length - 1) + "." + ratioStr.substring(ratioStr.length - 1);
+    }
+    function getNextSeven(seven) {
+      var next = seven + .1;
+      return next > 10 ? 1.07 : next;
+    }
+    function getPrevSeven(seven) {
+      var prev = seven - .1;
+      return prev < 1 ? 9.97 : prev;
+    }
+    var gameGlobals = require("../battleMiddleWare/gameGlobals.js");
+    var gameUtils_1 = require("../battleMiddleWare/gameUtils");
+    cc._RF.pop();
+  }, {
+    "../battleMiddleWare/gameGlobals.js": "gameGlobals",
+    "../battleMiddleWare/gameUtils": "gameUtils"
+  } ],
   "spellAnimation-clas0.0.1": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "cb4edK+pm1JxYDPT3SsefEU", "spellAnimation-clas0.0.1");
@@ -26103,13 +28807,15 @@ window.__require = function e(t, n, r) {
       properties: {
         id: 1,
         nameLbl: cc.Label,
+        buyLbl: cc.Label,
         iconSF: cc.Sprite,
         detail: cc.Label,
         price: cc.Node,
         energyLabel: cc.Label,
-        _spellDeck: null
+        _spellDeck: null,
+        _mode: 0
       },
-      init: function init(id, deckNode) {
+      init: function init(id, deckNode, learned) {
         this._spellDeck = deckNode;
         var player = getCurrPlayer();
         var Spell = spell()[id];
@@ -26125,14 +28831,33 @@ window.__require = function e(t, n, r) {
         });
         this.detail.string = Spell.description();
         this.nameLbl.string = Spell.spellName;
+        if (learned) {
+          this.buyLbl.string = "\u4f7f\u7528";
+          this._mode = 3;
+        } else if (player.findSpell(id)) {
+          this.buyLbl.string = "\u70bc\u5236";
+          this._mode = 2;
+        } else {
+          this.buyLbl.string = "\u5b66\u4e60";
+          this._mode = 1;
+        }
       },
       useBtn: function useBtn() {
         var id = this.id;
+        if (1 == this._mode) {
+          makeOperation("ls99" + fillWithZero(id, 2));
+          this.init(id, this._spellDeck, false);
+          return;
+        }
+        if (2 == this._mode) {
+          makeOperation("bs99" + fillWithZero(id, 2));
+          return;
+        }
         var Spell = spell()[id];
         var locations = Spell.validLocations(getCurrPlayer());
         locations ? mapNode().enableSelection(locations, function(x, y) {
-          makeOperation("bs" + x + y + fillWithZero(id, 2));
-        }) : makeOperation("bs99" + fillWithZero(id, 2));
+          makeOperation("us" + x + y + fillWithZero(id, 2));
+        }) : makeOperation("us99" + fillWithZero(id, 2));
         this._spellDeck.removeFromParent();
         this.node.removeFromParent();
       },
@@ -26159,26 +28884,36 @@ window.__require = function e(t, n, r) {
         id: 0,
         iconSF: cc.Sprite,
         detail: cc.Prefab,
-        _deckNode: cc.Node
+        numLbl: cc.Label,
+        lockedIcon: cc.Node,
+        _deckNode: cc.Node,
+        _learned: false
       },
-      init: function init(id, deckNode) {
+      init: function init(id, deckNode, learned) {
+        void 0 === learned && (learned = false);
         this._deckNode = deckNode;
         this.id = id;
+        this._learned = learned;
         var Spell = spell()[id];
         var self = this;
         cc.loader.loadRes(Spell.iconUrl, cc.SpriteFrame, function(err, spriteFrame) {
           self.iconSF.spriteFrame = spriteFrame;
         });
-        this.refresh();
+        var spellObj = getCurrPlayer().findSpell(id);
+        if (spellObj && learned) {
+          this.numLbl.node.active = true;
+          this.numLbl.string = spellObj.num;
+        }
+        spellObj || (this.lockedIcon.active = true);
       },
       refresh: function refresh() {},
       seeDetailBtn: function seeDetailBtn() {
         var detail = cc.instantiate(this.detail);
-        detail.getComponent("spellDetails").init(this.id, this._deckNode);
+        detail.getComponent("spellDetails").init(this.id, this._deckNode, this._learned);
         root().addChild(detail);
       }
     });
-    var _require = require("../battleMiddleWare/gameUtils"), spell = _require.spell;
+    var _require = require("../battleMiddleWare/gameUtils"), spell = _require.spell, getCurrPlayer = _require.getCurrPlayer;
     var _require2 = require("../otherComponents/uiUtils"), root = _require2.root;
     cc._RF.pop();
   }, {
@@ -26196,18 +28931,51 @@ window.__require = function e(t, n, r) {
         item: cc.Prefab
       },
       start: function start() {
+        this.refreshLearnSpell();
+      },
+      _refresh: function _refresh(include) {
+        this.node.removeAllChildren();
+        var player = getCurrPlayer();
         var self = this;
         spell().forEach(function(item) {
+          if (!item.uiDisplay) return;
+          var learned = player.findSpell(player);
+          if (!include && learned) return;
+          if (include && !learned) return;
+          self.list.node.addChild(initNode(self.item, "spellItem", item.id, self.node));
+        });
+      },
+      refreshLearnSpell: function refreshLearnSpell() {
+        this.list.node.removeAllChildren();
+        var self = this;
+        var player = getCurrPlayer();
+        var spellList = spell().filter(function(clazz) {
+          return player.findSpell(clazz.id) && clazz.uiDisplay;
+        });
+        spellList.forEach(function(item) {
+          return self.list.node.addChild(initNode(self.item, "spellItem", item.id, self.node, true));
+        });
+      },
+      refreshUnLearnSpell: function refreshUnLearnSpell() {
+        this.list.node.removeAllChildren();
+        var self = this;
+        var deck = spell(), player = getCurrPlayer();
+        var learned = deck.filter(function(clazz) {
+          return player.findSpell(clazz.id);
+        });
+        var unLearn = deck.filter(function(clazz) {
+          return !player.findSpell(clazz.id);
+        });
+        learned.concat(unLearn).forEach(function(item) {
           if (!item.uiDisplay) return;
           self.list.node.addChild(initNode(self.item, "spellItem", item.id, self.node));
         });
       },
-      refresh: function refresh() {},
       backBtn: function backBtn() {
         this.node.active = false;
       }
     });
-    var _require = require("../battleMiddleWare/gameUtils"), spell = _require.spell;
+    var _require = require("../battleMiddleWare/gameUtils"), spell = _require.spell, getCurrPlayer = _require.getCurrPlayer;
     var _require2 = require("../otherComponents/uiUtils"), initNode = _require2.initNode;
     cc._RF.pop();
   }, {
@@ -26409,6 +29177,43 @@ window.__require = function e(t, n, r) {
     "../battleMiddleWare/gameService": "gameService",
     "../http": "http",
     "../otherComponents/uiUtils": "uiUtils"
+  } ],
+  temp: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "1108ccAxGlKEa9/y9QIwwgD", "temp");
+    "use strict";
+    cc.Class({
+      extends: cc.Component,
+      properties: {
+        player1Icon: cc.Sprite,
+        player2Icon: cc.Sprite,
+        inkAnimation: cc.Sprite,
+        logPrefab: cc.Prefab,
+        layout: cc.Node,
+        _moved: false,
+        _currIndex: 0,
+        _layoutHeight: 0
+      },
+      refresh: function refresh() {},
+      sevenPowerList: function sevenPowerList(powerStr) {
+        var forgeList = getCurrPlayer().forgingList;
+        forgeList.forEach(function(forge) {
+          var item = forge.item, className;
+          className = "string" == typeof item ? item : item.type;
+          var clazz = typeDict()[className];
+        });
+      }
+    });
+    var _require = require("decimal.js"), Decimal = _require["default"];
+    var _require2 = require("../Globals"), config = _require2.config, decoration = _require2.decoration;
+    var gameGlobals = require("../battleMiddleWare/gameGlobals");
+    var _require3 = require("../battleMiddleWare/gameUtils"), getPlayerIconUrl = _require3.getPlayerIconUrl, refreshPage = _require3.refreshPage, getCurrPlayer = _require3.getCurrPlayer, getGameObj = _require3.getGameObj, typeDict = _require3.typeDict, constant = _require3.constant, pet = _require3.pet;
+    cc._RF.pop();
+  }, {
+    "../Globals": "Globals",
+    "../battleMiddleWare/gameGlobals": "gameGlobals",
+    "../battleMiddleWare/gameUtils": "gameUtils",
+    "decimal.js": 38
   } ],
   "timeConstants-clas0.0.1": [ function(require, module, exports) {
     "use strict";
@@ -27103,4 +29908,4 @@ window.__require = function e(t, n, r) {
   }, {
     "../http": "http"
   } ]
-}, {}, [ "ATJSSDK", "ATRewardedAutoVideoTSSDK", "AdsManager", "AndroidAds", "ATAndroidBannerTS", "ATAndroidIntersitialAutoTS", "ATAndroidIntersitialTS", "ATAndroidJS", "ATAndroidNativeTS", "ATAndroidRewardedVideoAutoTS", "ATAndroidRewardedVideoTS", "ATiOSBannerTS", "ATiOSIntersitiaAutolTS", "ATiOSIntersitialTS", "ATiOSJS", "ATiOSNativeTS", "ATiOSRewardedAutoVideoTS", "ATiOSRewardedVideoTS", "Constants", "Globals", "LoadingLogic", "Login", "gameGlobals", "gameService", "gameUtils", "deck", "decoration", "auction", "entryTemplate", "gameEntry", "gameHistory", "gameTV", "itemOverview", "overviewTemplate", "startJourney", "console", "creatureDetails", "fightUI", "getCoins", "gridIcon", "history", "history2", "historyLog", "map", "observeAndEntry", "playerDetails", "playerPanel", "submit", "buffDetails", "buffItem", "equipDetails", "equipItem", "equips", "petDetails", "petItem", "pets", "price", "spellDetails", "spellItem", "spells", "gameMain", "labelToggle", "mockConsole", "hall", "background", "board", "email", "inkRenderManager", "inkRendering", "setting", "top", "topTemplate", "userDetail", "http", "instruction", "mocking", "fetch", "alert", "commonUtils", "decorationItem", "icon", "twoFontLabel", "uiUtils", "viewTemplate", "stoarge", "gameLogicRoutes", "Buffs", "Creature", "Equips", "Game", "OriginMonitors", "Pets", "Player", "Spell", "animationPlayer", "animationUtils", "animeConstant", "challengeAnimation", "moveAnimation", "spellAnimation", "gameConstants", "timeConstants", "AttackListeners", "DamageListeners", "ListenerDict", "ListenerList", "ListenerPriorities", "baseLoggers", "logUtils", "AttackStatus", "Coin", "Damage", "BuffItems", "EquipItems", "Listeners", "PetsItems", "SpellItems", "iterationUtils", "mapUtils", "numberUtils", "typeUtils", "TypeDict", "TypeList", "common", "interfaces", "gameLogger-clas0.0.1", "gameLogicRoutes-clas0.0.1", "Buffs-clas0.0.1", "Creature-clas0.0.1", "Equips-clas0.0.1", "Game-clas0.0.1", "OriginMonitors-clas0.0.1", "Pets-clas0.0.1", "Player-clas0.0.1", "Spell-clas0.0.1", "animationPlayer-clas0.0.1", "animationUtils-clas0.0.1", "animeConstant-clas0.0.1", "challengeAnimation-clas0.0.1", "moveAnimation-clas0.0.1", "spellAnimation-clas0.0.1", "gameConstants-clas0.0.1", "timeConstants-clas0.0.1", "AttackListeners-clas0.0.1", "DamageListeners-clas0.0.1", "ListenerDict-clas0.0.1", "ListenerList-clas0.0.1", "ListenerPriorities-clas0.0.1", "baseLoggers-clas0.0.1", "logUtils-clas0.0.1", "AttackStatus-clas0.0.1", "Coin-clas0.0.1", "Damage-clas0.0.1", "BuffItems-clas0.0.1", "EquipItems-clas0.0.1", "Listeners-clas0.0.1", "PetsItems-clas0.0.1", "SpellItems-clas0.0.1", "iterationUtils-clas0.0.1", "mapUtils-clas0.0.1", "numberUtils-clas0.0.1", "typeUtils-clas0.0.1", "TypeDict-clas0.0.1", "TypeList-clas0.0.1", "common-clas0.0.1", "interfaces-clas0.0.1", "gameLogicRoutes-clas0.0.2", "Buffs-clas0.0.2", "Creature-clas0.0.2", "Equips-clas0.0.2", "Game-clas0.0.2", "OriginMonitors-clas0.0.2", "Pets-clas0.0.2", "Player-clas0.0.2", "Spell-clas0.0.2", "animationPlayer-clas0.0.2", "animationUtils-clas0.0.2", "animeConstant-clas0.0.2", "challengeAnimation-clas0.0.2", "moveAnimation-clas0.0.2", "spellAnimation-clas0.0.2", "gameConstants-clas0.0.2", "timeConstants-clas0.0.2", "AttackListeners-clas0.0.2", "DamageListeners-clas0.0.2", "ListenerDict-clas0.0.2", "ListenerList-clas0.0.2", "ListenerPriorities-clas0.0.2", "baseLoggers-clas0.0.2", "logUtils-clas0.0.2", "AttackStatus-clas0.0.2", "Coin-clas0.0.2", "Damage-clas0.0.2", "BuffItems-clas0.0.2", "EquipItems-clas0.0.2", "Listeners-clas0.0.2", "PetsItems-clas0.0.2", "SpellItems-clas0.0.2", "iterationUtils-clas0.0.2", "mapUtils-clas0.0.2", "numberUtils-clas0.0.2", "typeUtils-clas0.0.2", "TypeDict-clas0.0.2", "TypeList-clas0.0.2", "common-clas0.0.2", "interfaces-clas0.0.2", "index" ]);
+}, {}, [ "ATJSSDK", "ATRewardedAutoVideoTSSDK", "AdsManager", "AndroidAds", "ATAndroidBannerTS", "ATAndroidIntersitialAutoTS", "ATAndroidIntersitialTS", "ATAndroidJS", "ATAndroidNativeTS", "ATAndroidRewardedVideoAutoTS", "ATAndroidRewardedVideoTS", "ATiOSBannerTS", "ATiOSIntersitiaAutolTS", "ATiOSIntersitialTS", "ATiOSJS", "ATiOSNativeTS", "ATiOSRewardedAutoVideoTS", "ATiOSRewardedVideoTS", "Constants", "Globals", "LoadingLogic", "Login", "gameGlobals", "gameService", "gameUtils", "deck", "decoration", "calculatorManager", "mathCalculator", "sevenCalSelectItem", "sevenCalculator", "temp", "auction", "entryTemplate", "gameEntry", "gameHistory", "gameTV", "itemOverview", "overviewTemplate", "startJourney", "console", "creatureDetails", "fightUI", "forge", "getCoins", "gridIcon", "history", "history2", "historyLog", "map", "observeAndEntry", "playerDetails", "playerPanel", "submit", "buffDetails", "buffItem", "equipDetails", "equipItem", "equips", "petDetails", "petItem", "pets", "price", "spellDetails", "spellItem", "spells", "gameMain", "labelToggle", "mockConsole", "hall", "background", "board", "email", "inkRenderManager", "inkRendering", "setting", "top", "topTemplate", "userDetail", "http", "instruction", "mocking", "fetch", "alert", "commonUtils", "decorationItem", "icon", "twoFontLabel", "uiUtils", "viewTemplate", "stoarge", "gameLogicRoutes", "Buffs", "Creature", "Equips", "Game", "OriginMonitors", "Pets", "Player", "Spell", "animationPlayer", "animationUtils", "animeConstant", "challengeAnimation", "moveAnimation", "spellAnimation", "gameConstants", "timeConstants", "AttackListeners", "DamageListeners", "ForgeListeners", "ListenerDict", "ListenerList", "ListenerPriorities", "baseLoggers", "logUtils", "AttackStatus", "Coin", "Damage", "BuffItems", "EquipItems", "Listeners", "PetsItems", "SpellItems", "iterationUtils", "mapUtils", "numberUtils", "typeUtils", "TypeDict", "TypeList", "common", "interfaces", "gameLogger-clas0.0.1", "gameLogicRoutes-clas0.0.1", "Buffs-clas0.0.1", "Creature-clas0.0.1", "Equips-clas0.0.1", "Game-clas0.0.1", "OriginMonitors-clas0.0.1", "Pets-clas0.0.1", "Player-clas0.0.1", "Spell-clas0.0.1", "animationPlayer-clas0.0.1", "animationUtils-clas0.0.1", "animeConstant-clas0.0.1", "challengeAnimation-clas0.0.1", "moveAnimation-clas0.0.1", "spellAnimation-clas0.0.1", "gameConstants-clas0.0.1", "timeConstants-clas0.0.1", "AttackListeners-clas0.0.1", "DamageListeners-clas0.0.1", "ListenerDict-clas0.0.1", "ListenerList-clas0.0.1", "ListenerPriorities-clas0.0.1", "baseLoggers-clas0.0.1", "logUtils-clas0.0.1", "AttackStatus-clas0.0.1", "Coin-clas0.0.1", "Damage-clas0.0.1", "BuffItems-clas0.0.1", "EquipItems-clas0.0.1", "Listeners-clas0.0.1", "PetsItems-clas0.0.1", "SpellItems-clas0.0.1", "iterationUtils-clas0.0.1", "mapUtils-clas0.0.1", "numberUtils-clas0.0.1", "typeUtils-clas0.0.1", "TypeDict-clas0.0.1", "TypeList-clas0.0.1", "common-clas0.0.1", "interfaces-clas0.0.1", "gameLogicRoutes-clas0.0.2", "Buffs-clas0.0.2", "Creature-clas0.0.2", "Equips-clas0.0.2", "Game-clas0.0.2", "OriginMonitors-clas0.0.2", "Pets-clas0.0.2", "Player-clas0.0.2", "Spell-clas0.0.2", "animationPlayer-clas0.0.2", "animationUtils-clas0.0.2", "animeConstant-clas0.0.2", "challengeAnimation-clas0.0.2", "moveAnimation-clas0.0.2", "spellAnimation-clas0.0.2", "gameConstants-clas0.0.2", "timeConstants-clas0.0.2", "AttackListeners-clas0.0.2", "DamageListeners-clas0.0.2", "ForgeListeners-clas0.0.2", "ListenerDict-clas0.0.2", "ListenerList-clas0.0.2", "ListenerPriorities-clas0.0.2", "baseLoggers-clas0.0.2", "logUtils-clas0.0.2", "AttackStatus-clas0.0.2", "Coin-clas0.0.2", "Damage-clas0.0.2", "BuffItems-clas0.0.2", "EquipItems-clas0.0.2", "Listeners-clas0.0.2", "PetsItems-clas0.0.2", "SpellItems-clas0.0.2", "iterationUtils-clas0.0.2", "mapUtils-clas0.0.2", "numberUtils-clas0.0.2", "typeUtils-clas0.0.2", "TypeDict-clas0.0.2", "TypeList-clas0.0.2", "common-clas0.0.2", "interfaces-clas0.0.2", "index" ]);

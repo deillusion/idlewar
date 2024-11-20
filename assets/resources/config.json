@@ -772,6 +772,15 @@
             "cc.SpriteFrame",
             1
         ],
+        "84pEGIgl5F461t0wjgFX2G": [
+            "buttons/calculator",
+            "cc.SpriteFrame",
+            1
+        ],
+        "baIhM/wsFNxK5cW7o1ojne": [
+            "buttons/calculator",
+            "cc.Texture2D"
+        ],
         "48F7LDtspFB65xQhNUnTNL": [
             "buttons/circle",
             "cc.SpriteFrame",
@@ -824,6 +833,15 @@
         ],
         "d8XeXobS1OdLHIdmgV9lI8": [
             "buttons/eye",
+            "cc.Texture2D"
+        ],
+        "3299SfUTFGsJFIu+LareGz": [
+            "buttons/forging",
+            "cc.SpriteFrame",
+            1
+        ],
+        "c3QgJGiNdO1KMnjveA31LB": [
+            "buttons/forging",
             "cc.Texture2D"
         ],
         "13Da/suY1GtprKxAK0OVmp": [
@@ -2175,6 +2193,7 @@
         "32ThbdlyxCcYEuPLa2lKyK",
         "32l/oYd69KHo6gnztpr38b",
         "32pxFacldMcq/lFP/bECP3",
+        "3299SfUTFGsJFIu+LareGz",
         "336vZasmxFwrnqYSY5ATVZ",
         "34GNrnLSdJRI1Swg3vxG29",
         "35lr+tHSZBkKNOqVE/WrFa",
@@ -2319,6 +2338,7 @@
         "83L6GE6w1DZbWPN9epqopY",
         "837Ku5Bo1Ljod/7VZbK4o/",
         "84SEJN1iZLbakC2bspFiXk",
+        "84pEGIgl5F461t0wjgFX2G",
         "845EYd5TJKXYnTGfkj00mt",
         "86G6FCp/ZNKI1Ooi2cMzaG",
         "86MD7+KJRJLIgO+edrnqm7",
@@ -2423,6 +2443,7 @@
         "b8dlS31ZFHgoHCghdLbQW0",
         "b87Jvn2L1KcLUvRiOosxmZ",
         "b9XTlwvRtHoaaxvekUjSU4",
+        "baIhM/wsFNxK5cW7o1ojne",
         "baWCKy9/NNX6P73bCY6K6S",
         "bbT53d1L5NVI5EipclpkqK",
         "bbhSSHAAlC4595UM9CRKkv",
@@ -2444,6 +2465,7 @@
         "c2dBkzOKBJlIpS+gAwMPNk",
         "c2jDlVhlRFx7hnzHYS5CGX",
         "c22J93sQZIzr3eAH43wSwL",
+        "c3QgJGiNdO1KMnjveA31LB",
         "c4EBGfsT1A8bu3r1rTbkN8",
         "c4FSFucOREh5CMmbO7hUVi",
         "c4XW0dwBtEfJAPUrh2ZYBh",
