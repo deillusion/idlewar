@@ -1193,7 +1193,7 @@ window.__require = function e(t, n, r) {
     var _require = require("../loggers/logUtils"), logDamageInfo = _require.logDamageInfo;
     var _require2 = require("../objects/Damage"), Damage = _require2.Damage;
     var Listeners_1 = require("../templates/Listeners");
-    var _require3 = require("../utils/numberUtils"), getThirdDigit = _require3.getThirdDigit;
+    var _require3 = require("../utils/numberUtils"), getThirdDigit = _require3.getThirdDigit, getSecondDigit = _require3.getSecondDigit;
     var AttackCriticalMonitors = function(_Listeners_1$Listener) {
       _inheritsLoose(AttackCriticalMonitors, _Listeners_1$Listener);
       function AttackCriticalMonitors() {
@@ -1206,10 +1206,10 @@ window.__require = function e(t, n, r) {
       };
       _proto.check = function check(player1, player2, kwargs) {
         var _this$critical_digits;
-        if (null != (_this$critical_digits = this.critical_digits[player1.code]) && _this$critical_digits.includes(getThirdDigit(player2.power))) {
+        if (null != (_this$critical_digits = this.critical_digits[player1.code]) && _this$critical_digits.includes(getSecondDigit(player2.power))) {
           kwargs.critical = true;
           kwargs.damage.value *= 2;
-          this.game.addLog('{"code":' + player2.code + "}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a" + getThirdDigit(player2.power) + ",\u672c\u6b21\u653b\u51fb\u89e6\u53d1\u66b4\u51fb", 3);
+          this.game.addLog('{"code":' + player2.code + "}\u4fee\u4e3a\u7b2c\u4e8c\u4f4d\u6570\u4e3a" + getSecondDigit(player2.power) + ",\u672c\u6b21\u653b\u51fb\u89e6\u53d1\u66b4\u51fb", 3);
         }
       };
       return AttackCriticalMonitors;
@@ -15595,6 +15595,7 @@ window.__require = function e(t, n, r) {
       _proto.buyEquip = function buyEquip(id) {
         var clazz = Equips[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6b66\u5668\u4e0d\u5b58\u5728");
+        if (this.isForgingEquip(id)) throw new GameLogicError("\u5df2\u5728\u953b\u9020\u4e2d\uff0c\u8bf7\u52ff\u91cd\u590d\u70b9\u51fb");
         var price = this.calculatePrice(clazz.buy_price);
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
@@ -15717,6 +15718,17 @@ window.__require = function e(t, n, r) {
           return typeDict[e["type"]].id == id;
         });
       };
+      _proto.isForgingEquip = function isForgingEquip(id) {
+        var _this = this;
+        var clazz = Equips[id];
+        return void 0 != this.forgingList.filter(function(forging) {
+          return "ForgeEquipListener" == forging.type;
+        }).filter(function(forging) {
+          return forging.item == clazz.name;
+        }).find(function(forging) {
+          return forging.owner.code == _this.code;
+        });
+      };
       _proto.getSpellPrice = function getSpellPrice(id) {
         var clazz = Spell[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
@@ -15788,17 +15800,17 @@ window.__require = function e(t, n, r) {
       _createClass(Player, [ {
         key: "Pets",
         get: function get() {
-          var _this = this;
+          var _this2 = this;
           return this.game.allMapElements.filter(function(item) {
-            return item.owner && item.owner.code == _this.code;
+            return item.owner && item.owner.code == _this2.code;
           });
         }
       }, {
         key: "challengeAbleItems",
         get: function get() {
-          var _this2 = this;
+          var _this3 = this;
           return this.itemsInScope().filter(function(item) {
-            return item.code != _this2.code && "Player" != item.type;
+            return item.code != _this3.code;
           }).map(function(item) {
             return [ item.x, item.y ];
           });
@@ -15942,6 +15954,7 @@ window.__require = function e(t, n, r) {
       _proto.buyEquip = function buyEquip(id) {
         var clazz = Equips[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6b66\u5668\u4e0d\u5b58\u5728");
+        if (this.isForgingEquip(id)) throw new GameLogicError("\u5df2\u5728\u953b\u9020\u4e2d\uff0c\u8bf7\u52ff\u91cd\u590d\u70b9\u51fb");
         var price = this.calculatePrice(clazz.buy_price);
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
@@ -16064,6 +16077,17 @@ window.__require = function e(t, n, r) {
           return typeDict[e["type"]].id == id;
         });
       };
+      _proto.isForgingEquip = function isForgingEquip(id) {
+        var _this = this;
+        var clazz = Equips[id];
+        return void 0 != this.forgingList.filter(function(forging) {
+          return "ForgeEquipListener" == forging.type;
+        }).filter(function(forging) {
+          return forging.item == clazz.name;
+        }).find(function(forging) {
+          return forging.owner.code == _this.code;
+        });
+      };
       _proto.getSpellPrice = function getSpellPrice(id) {
         var clazz = Spell[id];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
@@ -16135,17 +16159,17 @@ window.__require = function e(t, n, r) {
       _createClass(Player, [ {
         key: "Pets",
         get: function get() {
-          var _this = this;
+          var _this2 = this;
           return this.game.allMapElements.filter(function(item) {
-            return item.owner && item.owner.code == _this.code;
+            return item.owner && item.owner.code == _this2.code;
           });
         }
       }, {
         key: "challengeAbleItems",
         get: function get() {
-          var _this2 = this;
+          var _this3 = this;
           return this.itemsInScope().filter(function(item) {
-            return item.code != _this2.code && "Player" != item.type;
+            return item.code != _this3.code;
           }).map(function(item) {
             return [ item.x, item.y ];
           });
@@ -17106,6 +17130,10 @@ window.__require = function e(t, n, r) {
         return _SpellItem.apply(this, arguments) || this;
       }
       var _proto = MoveSpell.prototype;
+      _proto.init = function init(owner) {
+        _SpellItem.prototype.init.call(this, owner);
+        this.num = 999999;
+      };
       _proto.use = function use(x, y) {
         var player = this.owner;
         if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u6ca1\u6709\u5355\u4f4d\u7684\u5730\u65b9");
@@ -17237,7 +17265,7 @@ window.__require = function e(t, n, r) {
       _proto6.use = function use(x, y) {
         var player2 = this.game.map[y][x];
         if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
-        if ("Player" != player2.type && player2.owner != this) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
+        if ("Player" != player2.type && player2.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
         player2.updateSpeed(1.07);
         this.game.addAnime(new GeoCoreSpellAnimation(x, y));
         if (7 == getThirdDigit(player2.power)) {
@@ -17272,7 +17300,6 @@ window.__require = function e(t, n, r) {
       var _proto7 = HydroCoreSpell.prototype;
       _proto7.init = function init(player) {
         _SpellItem6.prototype.init.call(this, player);
-        this.game.listeners.OperateListeners.push(this.listener);
       };
       _proto7.use = function use(x, y) {
         var _this2 = this;
@@ -18129,6 +18156,10 @@ window.__require = function e(t, n, r) {
         return _SpellItem.apply(this, arguments) || this;
       }
       var _proto = MoveSpell.prototype;
+      _proto.init = function init(owner) {
+        _SpellItem.prototype.init.call(this, owner);
+        this.num = 999999;
+      };
       _proto.use = function use(x, y) {
         var player = this.owner;
         if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u6ca1\u6709\u5355\u4f4d\u7684\u5730\u65b9");
@@ -18260,10 +18291,10 @@ window.__require = function e(t, n, r) {
       _proto6.use = function use(x, y) {
         var player2 = this.game.map[y][x];
         if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
-        if ("Player" != player2.type && player2.owner != this) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
+        if ("Player" != player2.type && player2.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
         player2.updateSpeed(1.07);
         this.game.addAnime(new GeoCoreSpellAnimation(x, y));
-        if (7 == getThirdDigit(player2.power)) {
+        if (7 == getSecondDigit(player2.power)) {
           this.game.addLog('{"code":' + player2.code + '}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a7,{"code":' + this.owner.code + "}\u83b7\u5f97\u571f\u5370\u8bb0\u5e76\u63d0\u5347\u4fee\u4e3a", 2);
           this.owner.geoSign++;
           var ratio = 1.18 + .05 * this.owner.geoSign;
@@ -18285,7 +18316,7 @@ window.__require = function e(t, n, r) {
     });
     GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
     GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534718+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570+7\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u4f7f\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u52a018+5X\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09";
     };
     var HydroCoreSpell = function(_SpellItem6) {
       _inheritsLoose(HydroCoreSpell, _SpellItem6);
@@ -18295,7 +18326,6 @@ window.__require = function e(t, n, r) {
       var _proto7 = HydroCoreSpell.prototype;
       _proto7.init = function init(player) {
         _SpellItem6.prototype.init.call(this, player);
-        this.game.listeners.OperateListeners.push(this.listener);
       };
       _proto7.use = function use(x, y) {
         var _this2 = this;
@@ -18652,6 +18682,7 @@ window.__require = function e(t, n, r) {
     Geo33Spell.validLocations = function() {
       return iter_36();
     };
+    Geo33Spell.uiDisplay = false;
     var GeoToPyroSpell = function(_SpellItem14) {
       _inheritsLoose(GeoToPyroSpell, _SpellItem14);
       function GeoToPyroSpell() {
@@ -18868,7 +18899,7 @@ window.__require = function e(t, n, r) {
     };
     var _require4 = require("./wheels/common"), GameLogicError = _require4.GameLogicError;
     var Damage_1 = require("./objects/Damage");
-    var _require5 = require("./utils/numberUtils"), getThirdDigit = _require5.getThirdDigit, roundIfInteger = _require5.roundIfInteger, between = _require5.between;
+    var _require5 = require("./utils/numberUtils"), getThirdDigit = _require5.getThirdDigit, roundIfInteger = _require5.roundIfInteger, between = _require5.between, getSecondDigit = _require5.getSecondDigit;
     var _require6 = require("./constants/timeConstants"), ONE_MINUTES = _require6.ONE_MINUTES, ENDLESS_TIME = _require6.ENDLESS_TIME, ENTER_TIME = _require6.ENTER_TIME;
     var _require7 = require("./utils/mapUtils"), getLocInScope = _require7.getLocInScope, getItemIn33 = _require7.getItemIn33, eightDirections = _require7.eightDirections, emptyMap = _require7.emptyMap;
     var _require8 = require("./constants/gameConstants"), MAP_SIZE = _require8.MAP_SIZE;
@@ -21996,15 +22027,22 @@ window.__require = function e(t, n, r) {
         var data = getCurrPlayer().findEquip(id), price;
         var Equip = equips()[id];
         this.id = id;
-        if (data) {
+        if (data && data.level >= constant().EQUIP_MAX_LEVEL) {
+          this.buy.interactable = false;
+          this.buyLbl.string = "\u5df2\u6ee1\u7ea7";
+        } else if (data) {
+          this.buy.interactable = true;
           this.buyLbl.string = "\u5347\u7ea7";
           price = Equip.upgrade_price;
-          data.level >= constant().EQUIP_MAX_LEVEL && (this.buy.node.active = false);
+        } else if (getCurrPlayer().isForgingEquip(id)) {
+          this.buy.interactable = false;
+          this.buyLbl.string = "\u953b\u9020\u4e2d";
         } else {
+          this.buy.interactable = true;
           this.buyLbl.string = "\u953b\u9020";
           price = Equip.buy_price;
         }
-        this.price.getComponent("price").init(getCurrPlayer().calculatePrice(price));
+        this.buy.interactable ? this.price.getComponent("price").init(getCurrPlayer().calculatePrice(price)) : this.price.active = false;
         var energy = getCurrPlayer().calculateEnergyCost(Equip.energy_cost);
         this.energyLabel.string = "" + energy;
         var self = this;
@@ -22017,7 +22055,13 @@ window.__require = function e(t, n, r) {
         this.cost = false;
       },
       buyBtn: function buyBtn() {
-        "\u953b\u9020" == this.buyLbl.string ? makeOperation("be00" + fillWithZero(this.id, 2)) : makeOperation("ue00" + fillWithZero(this.id, 2));
+        var success = false;
+        success = "\u953b\u9020" == this.buyLbl.string ? makeOperation("be00" + fillWithZero(this.id, 2)) : makeOperation("ue00" + fillWithZero(this.id, 2));
+        if (success) {
+          var deckNode = cc.find("Canvas/equip");
+          deckNode.getComponent("equips").refresh();
+          danMu("\u5f00\u59cb" + this.buyLbl.string);
+        }
         this.init(this.id);
       },
       closeBtn: function closeBtn() {
@@ -22027,11 +22071,15 @@ window.__require = function e(t, n, r) {
     var _require = require("../battleMiddleWare/gameService"), makeOperation = _require.makeOperation;
     var _require2 = require("../battleMiddleWare/gameUtils"), getCurrPlayer = _require2.getCurrPlayer, equips = _require2.equips, constant = _require2.constant;
     var _require3 = require("../otherComponents/commonUtils"), fillWithZero = _require3.fillWithZero;
+    var _require4 = require("../otherComponents/uiUtils"), danMu = _require4.danMu;
+    var _require5 = require("../xjfz-journey/classic-latest/main/objects/Coin"), Coin = _require5.Coin;
     cc._RF.pop();
   }, {
     "../battleMiddleWare/gameService": "gameService",
     "../battleMiddleWare/gameUtils": "gameUtils",
-    "../otherComponents/commonUtils": "commonUtils"
+    "../otherComponents/commonUtils": "commonUtils",
+    "../otherComponents/uiUtils": "uiUtils",
+    "../xjfz-journey/classic-latest/main/objects/Coin": "Coin"
   } ],
   equipItem: [ function(require, module, exports) {
     "use strict";
@@ -22070,10 +22118,14 @@ window.__require = function e(t, n, r) {
         }
       },
       refresh: function refresh() {
-        var data = checkEquip(this.id);
+        var player = getCurrPlayer(), data = player.findEquip(this.id);
         if (data) {
           this.cost.node.active = true;
-          this.cost.string = "Lv" + data.level;
+          this.cost.string = "Lv." + data.level;
+          this.node.zIndex = this.id;
+        } else if (player.isForgingEquip(this.id)) {
+          this.cost.node.active = true;
+          this.cost.string = "\u953b\u9020\u4e2d";
           this.node.zIndex = this.id;
         } else {
           this.cost.node.active = false;
@@ -22122,12 +22174,13 @@ window.__require = function e(t, n, r) {
         }
       },
       refresh: function refresh() {
+        console.log("equip refreshing");
         this.list.node.children.forEach(function(item) {
           item.getComponent("equipItem").refresh();
         });
       },
       backBtn: function backBtn() {
-        this.node.active = false;
+        this.node.removeFromParent();
       }
     });
     var _require = require("../otherComponents/uiUtils"), initNode = _require.initNode;
@@ -23763,7 +23816,7 @@ window.__require = function e(t, n, r) {
       moveBtn: function moveBtn() {
         var coordinates = getCurrPlayer().findSpell(MoveSpell.id).validLocations();
         this.map.getComponent("map").enableSelection(coordinates, function(x, y) {
-          makeOperation("bs" + x + y + "00");
+          makeOperation("us" + x + y + "00");
         });
       },
       petsBtn: function petsBtn() {
@@ -23833,10 +23886,10 @@ window.__require = function e(t, n, r) {
       makeOperation: function makeOperation(instru) {
         if (global.isEntering && global.historyPosition < global.initPosition) {
           danMu("\u4fee\u884c\u4e2d\u4e0d\u8981\u5206\u5fc3\u63a8\u6f14\u65e7\u4e8b");
-          return;
+          return false;
         }
         var command = "" + fillWithZero(global.currTime, 6) + global.currPLayerIndex + instru;
-        updateGame(command);
+        var result = updateGame(command);
         console.log(global.gameObj.JSONStringify());
         global.animationPlayer = global.gameObj.animationPlayer;
         if (config.playAnimation) {
@@ -23845,6 +23898,7 @@ window.__require = function e(t, n, r) {
           };
           setTimeout(fn, 20);
         } else refreshPage();
+        return result;
       },
       initGame: function initGame(instructions, version) {
         version || (version = global.gameVersion);
@@ -23852,6 +23906,7 @@ window.__require = function e(t, n, r) {
         global.gameModule = journey[version];
         global.gameRouter = global.gameModule.routers;
         global.gameObj = global.gameRouter.newGame();
+        global.gameRouter.initForCocos();
         global.historyPosition = 0;
         global.gameRecords = [ global.gameObj ];
         global.operations = [];
@@ -23880,15 +23935,16 @@ window.__require = function e(t, n, r) {
       if ("success" != result) {
         danMu(result);
         global.gameObj = global.gameRecords[global.historyPosition];
-      } else {
-        global.historyPosition < global.initPosition && (global.isTrying = true);
-        global.gameRecords.splice(global.historyPosition + 1);
-        global.operations.splice(global.historyPosition);
-        global.logs.splice(global.historyPosition);
-        global.operations.push(command);
-        obj.addHistory();
-        global.isMocking;
+        return false;
       }
+      global.historyPosition < global.initPosition && (global.isTrying = true);
+      global.gameRecords.splice(global.historyPosition + 1);
+      global.operations.splice(global.historyPosition);
+      global.logs.splice(global.historyPosition);
+      global.operations.push(command);
+      obj.addHistory();
+      global.isMocking;
+      return true;
     }
     function formatLogger(logger) {
       var _logger$children;
@@ -26585,8 +26641,6 @@ window.__require = function e(t, n, r) {
         }
       },
       onLoad: function onLoad() {
-        cc.log("vx:cocoscreator_666");
-        cc.log("QQ:2504549300");
         this.str_1 = "";
       },
       btnCallBack: function btnCallBack(sender, str) {
@@ -27297,6 +27351,10 @@ window.__require = function e(t, n, r) {
       if (numberStr.indexOf("e") < 4) return 0;
       return parseInt(numberStr[3], 10);
     }
+    function getSecondDigit(numberStr) {
+      if (numberStr.indexOf("e") < 3) return 0;
+      return parseInt(numberStr[2], 10);
+    }
     function getPercentage(num) {
       num *= 1e4;
       var numStr = Math.round(num).toString();
@@ -27317,6 +27375,7 @@ window.__require = function e(t, n, r) {
     }
     module.exports = {
       getThirdDigit: getThirdDigit,
+      getSecondDigit: getSecondDigit,
       getPercentage: getPercentage,
       roundIfInteger: roundIfInteger,
       between: between
@@ -27648,6 +27707,8 @@ window.__require = function e(t, n, r) {
           if (!item.uiDisplay) continue;
           var child = initNode(this.item, "petItem", item.id, "detail");
           this.list.node.addChild(child);
+          this.list.updateLayout();
+          this.list.node.y = 380 - this.list.node.height / 2;
         }
         getCurrPlayer().Pets.forEach(function(pet) {
           var clazz = typeDict()[pet.type];
@@ -27905,6 +27966,7 @@ window.__require = function e(t, n, r) {
           this.node.active = false;
           return;
         }
+        this.node.active = true;
         var address = "coins/" + type + ".png";
         var self = this;
         cc.loader.loadRes(address, cc.SpriteFrame, function(err, spriteFrame) {
@@ -28821,6 +28883,7 @@ window.__require = function e(t, n, r) {
         var Spell = spell()[id];
         this.id = id;
         var price = player.getSpellPrice(id);
+        console.log("price: ", price);
         var energy = player.calculateEnergyCost(Spell.energy_cost);
         this.price.getComponent("price").init(price);
         this.energyLabel.string = "" + energy;
@@ -28845,12 +28908,16 @@ window.__require = function e(t, n, r) {
       useBtn: function useBtn() {
         var id = this.id;
         if (1 == this._mode) {
-          makeOperation("ls99" + fillWithZero(id, 2));
+          var success = makeOperation("ls99" + fillWithZero(id, 2));
+          success && danMu("\u5b66\u4e60\u6210\u529f");
           this.init(id, this._spellDeck, false);
+          this._refreshDeck();
           return;
         }
         if (2 == this._mode) {
-          makeOperation("bs99" + fillWithZero(id, 2));
+          var _success = makeOperation("bs99" + fillWithZero(id, 2));
+          _success && danMu("\u5f00\u59cb\u70bc\u5236");
+          this._refreshDeck();
           return;
         }
         var Spell = spell()[id];
@@ -28863,16 +28930,23 @@ window.__require = function e(t, n, r) {
       },
       closeBtn: function closeBtn() {
         this.node.removeFromParent();
+      },
+      _refreshDeck: function _refreshDeck() {
+        var spellDeck = this._spellDeck.getComponent("spells");
+        spellDeck.refreshLearnSpell();
+        spellDeck.refreshUnLearnSpell();
       }
     });
     var _require = require("../battleMiddleWare/gameService"), makeOperation = _require.makeOperation;
     var _require2 = require("../battleMiddleWare/gameUtils"), getCurrPlayer = _require2.getCurrPlayer, spell = _require2.spell, constant = _require2.constant, mapNode = _require2.mapNode;
     var _require3 = require("../otherComponents/commonUtils"), fillWithZero = _require3.fillWithZero;
+    var _require4 = require("../otherComponents/uiUtils"), danMu = _require4.danMu;
     cc._RF.pop();
   }, {
     "../battleMiddleWare/gameService": "gameService",
     "../battleMiddleWare/gameUtils": "gameUtils",
-    "../otherComponents/commonUtils": "commonUtils"
+    "../otherComponents/commonUtils": "commonUtils",
+    "../otherComponents/uiUtils": "uiUtils"
   } ],
   spellItem: [ function(require, module, exports) {
     "use strict";
@@ -28947,18 +29021,20 @@ window.__require = function e(t, n, r) {
       },
       refreshLearnSpell: function refreshLearnSpell() {
         this.list.node.removeAllChildren();
-        var self = this;
+        var self = this, list = this.list;
         var player = getCurrPlayer();
         var spellList = spell().filter(function(clazz) {
           return player.findSpell(clazz.id) && clazz.uiDisplay;
         });
         spellList.forEach(function(item) {
-          return self.list.node.addChild(initNode(self.item, "spellItem", item.id, self.node, true));
+          list.node.addChild(initNode(self.item, "spellItem", item.id, self.node, true));
+          list.updateLayout();
+          list.node.y = 380 - list.node.height / 2;
         });
       },
       refreshUnLearnSpell: function refreshUnLearnSpell() {
         this.list.node.removeAllChildren();
-        var self = this;
+        var self = this, list = this.list;
         var deck = spell(), player = getCurrPlayer();
         var learned = deck.filter(function(clazz) {
           return player.findSpell(clazz.id);
@@ -28968,7 +29044,9 @@ window.__require = function e(t, n, r) {
         });
         learned.concat(unLearn).forEach(function(item) {
           if (!item.uiDisplay) return;
-          self.list.node.addChild(initNode(self.item, "spellItem", item.id, self.node));
+          list.node.addChild(initNode(self.item, "spellItem", item.id, self.node));
+          list.updateLayout();
+          list.node.y = 380 - list.node.height / 2;
         });
       },
       backBtn: function backBtn() {
