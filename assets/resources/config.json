@@ -1895,6 +1895,15 @@
             "cc.SpriteFrame",
             1
         ],
+        "39dleNT3BGpLaDW8FkaMpJ": [
+            "spell/灵枢转轮",
+            "cc.SpriteFrame",
+            1
+        ],
+        "b2P9qmV7pCHKQibxDfJHHa": [
+            "spell/灵枢转轮",
+            "cc.Texture2D"
+        ],
         "2a8eErw41LLrMyXO11apSI": [
             "spell/灵源",
             "cc.SpriteFrame",
@@ -1903,6 +1912,24 @@
         "5fE1THJoZO5bLoFawjQ+SE": [
             "spell/灵源",
             "cc.Texture2D"
+        ],
+        "22Wbq00y9DarqsJYqYSXIl": [
+            "spell/炽焰焚诗",
+            "cc.Texture2D"
+        ],
+        "d5sDxAyVpM2qHIpi1m9GHV": [
+            "spell/炽焰焚诗",
+            "cc.SpriteFrame",
+            1
+        ],
+        "870YUesZ9Ej4OlNbiqrIvu": [
+            "spell/白日飞升",
+            "cc.Texture2D"
+        ],
+        "f9c8GmXIBCjL2DvOu4RYv6": [
+            "spell/白日飞升",
+            "cc.SpriteFrame",
+            1
         ],
         "2dzTDmV3JK741KzsNc1y8N": [
             "spell/真气化元",
@@ -2161,6 +2188,7 @@
         "1f8ad4gNhHgY3kUYS+WE35",
         "21aFMSGShA3InJwz1rNmsa",
         "21yhzS0AlPQ7vJsFlRqbOY",
+        "22Wbq00y9DarqsJYqYSXIl",
         "23Yc8AL7pEjqq8GrmqfzGR",
         "233KCZl+5L7odrzdxJMQus",
         "24CYo+P1pP4bcqUSM9itQl",
@@ -2200,6 +2228,7 @@
         "36eyiQR71GAKn69H5sSX5N",
         "362Jxy+ChI3pSRrFWyk+Au",
         "37XlNmNXZOZZYKQdslzDFS",
+        "39dleNT3BGpLaDW8FkaMpJ",
         "3a+6E8sgJAnrVGLX6hGi1d",
         "3bQkuOUJdPTq3Y11sZ5mvs",
         "3bUVKnYEVJarx7DamWvDfj",
@@ -2344,6 +2373,7 @@
         "86MD7+KJRJLIgO+edrnqm7",
         "86P9OdBfVCDrr7EXryJXrv",
         "87YJ3OyPFGurbbircKS/wR",
+        "870YUesZ9Ej4OlNbiqrIvu",
         "871KQCOh9DSYyZ/NTvhh0Q",
         "88HRsn761IfI2y06H3/w2P",
         "8ak59Tqe1K9o7Iel+J6QbI",
@@ -2426,6 +2456,7 @@
         "b03SlAg6lB3aHeoabTJ4bY",
         "b0+QdHynVA8Kv7zDS92jfa",
         "b1/mjv+TtDgYGoVI4zdhku",
+        "b2P9qmV7pCHKQibxDfJHHa",
         "b2RWkpJiFGt5s2gfBh+wYr",
         "b2W4omqUJDpobg84a2dtwK",
         "b2uscJ3lVPq53Bah509OJl",
@@ -2502,6 +2533,7 @@
         "d5FUb6LWtPsJWyH+2Y33Rd",
         "d5PoxHe7ZAT5Yr47EpTkds",
         "d5Yh+IB0RGko4T5+zU1xn9",
+        "d5sDxAyVpM2qHIpi1m9GHV",
         "d61DD+nXlAsrTmwjRH65YE",
         "d7In5Ue61AH5lscelu66nu",
         "d7+biMIn1KOY0cnnGNCDz1",
@@ -2562,6 +2594,7 @@
         "f7mNBrUVpI8KWwaLfYFVSr",
         "f8OlRK8qtPvbWxNI0t9ICF",
         "f88o09MyFDKoeA/fNcgYaR",
+        "f9c8GmXIBCjL2DvOu4RYv6",
         "faBI8cJJFDxIORjjgDWKPK",
         "faafgTbHlOEZCCtIu9MCoh",
         "fbHW3Xsw1CgLBSyChO8M0q",

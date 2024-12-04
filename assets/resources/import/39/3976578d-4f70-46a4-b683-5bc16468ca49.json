@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "b2P9qmV7pCHKQibxDfJHHa"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "灵枢转轮",
+      "rect": [
+        7,
+        0,
+        583,
+        599
+      ],
+      "offset": [
+        -1.5,
+        0.5
+      ],
+      "originalSize": [
+        600,
+        600
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]

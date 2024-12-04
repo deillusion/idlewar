@@ -124,8 +124,8 @@
         "_fontSize",
         "_lineHeight",
         "_isSystemFontUsed",
-        "_N$horizontalAlign",
         "_N$verticalAlign",
+        "_N$horizontalAlign",
         "_N$overflow",
         "node",
         "_materials"
@@ -275,8 +275,8 @@
       1,
       2,
       3,
-      4,
       5,
+      4,
       7,
       8,
       7
@@ -466,11 +466,10 @@
       2,
       3,
       4,
-      5,
       6,
       7,
       8,
-      8
+      7
     ],
     [
       9,
@@ -1357,7 +1356,6 @@
       45,
       50,
       false,
-      1,
       1,
       3,
       6,

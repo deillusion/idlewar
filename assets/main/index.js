@@ -1174,6 +1174,80 @@ window.__require = function e(t, n, r) {
     "../templates/Listeners-clas0.0.2": "Listeners-clas0.0.2",
     "../utils/numberUtils-clas0.0.2": "numberUtils-clas0.0.2"
   } ],
+  "AttackListeners-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "e1a95wj2dxCiq2PdTzJQLGZ", "AttackListeners-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../loggers/logUtils-clas0.0.3"), logDamageInfo = _require.logDamageInfo;
+    var _require2 = require("../objects/Damage-clas0.0.3"), Damage = _require2.Damage;
+    var Listeners_1 = require("../templates/Listeners-clas0.0.3");
+    var _require3 = require("../utils/numberUtils-clas0.0.3"), getThirdDigit = _require3.getThirdDigit;
+    var AttackCriticalMonitors = function(_Listeners_1$Listener) {
+      _inheritsLoose(AttackCriticalMonitors, _Listeners_1$Listener);
+      function AttackCriticalMonitors() {
+        return _Listeners_1$Listener.apply(this, arguments) || this;
+      }
+      var _proto = AttackCriticalMonitors.prototype;
+      _proto.init = function init() {
+        _Listeners_1$Listener.prototype.init.apply(this, arguments);
+        this.critical_digits = [ [], [ 7 ], [ 7 ], [ 7 ] ];
+      };
+      _proto.check = function check(player1, player2, kwargs) {
+        var _this$critical_digits;
+        if (null != (_this$critical_digits = this.critical_digits[player1.code]) && _this$critical_digits.includes(getThirdDigit(player2.power))) {
+          kwargs.critical = true;
+          kwargs.damage.value *= 2;
+          this.game.addLog('{"code":' + player2.code + "}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a" + getThirdDigit(player2.power) + ",\u672c\u6b21\u653b\u51fb\u89e6\u53d1\u66b4\u51fb", 3);
+        }
+      };
+      return AttackCriticalMonitors;
+    }(Listeners_1.Listener);
+    var AttackDamageInitializer = function(_Listeners_1$Listener2) {
+      _inheritsLoose(AttackDamageInitializer, _Listeners_1$Listener2);
+      function AttackDamageInitializer() {
+        return _Listeners_1$Listener2.apply(this, arguments) || this;
+      }
+      var _proto2 = AttackDamageInitializer.prototype;
+      _proto2.check = function check(player1, player2, kwargs) {
+        kwargs.damage = new Damage(Damage.PHYSICS, player1.damage);
+      };
+      return AttackDamageInitializer;
+    }(Listeners_1.Listener);
+    var AttackDamageExecuter = function(_Listeners_1$Listener3) {
+      _inheritsLoose(AttackDamageExecuter, _Listeners_1$Listener3);
+      function AttackDamageExecuter() {
+        return _Listeners_1$Listener3.apply(this, arguments) || this;
+      }
+      var _proto3 = AttackDamageExecuter.prototype;
+      _proto3.check = function check(player1, player2, kwargs) {
+        player1.harm(player2, kwargs.damage);
+      };
+      return AttackDamageExecuter;
+    }(Listeners_1.Listener);
+    module.exports = {
+      AttackCriticalMonitors: AttackCriticalMonitors,
+      AttackDamageInitializer: AttackDamageInitializer,
+      AttackDamageExecuter: AttackDamageExecuter
+    };
+    cc._RF.pop();
+  }, {
+    "../loggers/logUtils-clas0.0.3": "logUtils-clas0.0.3",
+    "../objects/Damage-clas0.0.3": "Damage-clas0.0.3",
+    "../templates/Listeners-clas0.0.3": "Listeners-clas0.0.3",
+    "../utils/numberUtils-clas0.0.3": "numberUtils-clas0.0.3"
+  } ],
   AttackListeners: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "e259b4ZzAtKbLc/AfIi83vR", "AttackListeners");
@@ -1193,7 +1267,7 @@ window.__require = function e(t, n, r) {
     var _require = require("../loggers/logUtils"), logDamageInfo = _require.logDamageInfo;
     var _require2 = require("../objects/Damage"), Damage = _require2.Damage;
     var Listeners_1 = require("../templates/Listeners");
-    var _require3 = require("../utils/numberUtils"), getThirdDigit = _require3.getThirdDigit, getSecondDigit = _require3.getSecondDigit;
+    var _require3 = require("../utils/numberUtils"), getThirdDigit = _require3.getThirdDigit;
     var AttackCriticalMonitors = function(_Listeners_1$Listener) {
       _inheritsLoose(AttackCriticalMonitors, _Listeners_1$Listener);
       function AttackCriticalMonitors() {
@@ -1206,10 +1280,10 @@ window.__require = function e(t, n, r) {
       };
       _proto.check = function check(player1, player2, kwargs) {
         var _this$critical_digits;
-        if (null != (_this$critical_digits = this.critical_digits[player1.code]) && _this$critical_digits.includes(getSecondDigit(player2.power))) {
+        if (null != (_this$critical_digits = this.critical_digits[player1.code]) && _this$critical_digits.includes(getThirdDigit(player2.power))) {
           kwargs.critical = true;
           kwargs.damage.value *= 2;
-          this.game.addLog('{"code":' + player2.code + "}\u4fee\u4e3a\u7b2c\u4e8c\u4f4d\u6570\u4e3a" + getSecondDigit(player2.power) + ",\u672c\u6b21\u653b\u51fb\u89e6\u53d1\u66b4\u51fb", 3);
+          this.game.addLog('{"code":' + player2.code + "}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a" + getThirdDigit(player2.power) + ",\u672c\u6b21\u653b\u51fb\u89e6\u53d1\u66b4\u51fb", 3);
         }
       };
       return AttackCriticalMonitors;
@@ -1265,6 +1339,20 @@ window.__require = function e(t, n, r) {
   "AttackStatus-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "7923ai4yp1ASYNsvZ4i8jml", "AttackStatus-clas0.0.2");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.AttackStatus = void 0;
+    var AttackStatus = function AttackStatus() {
+      this.critical = false;
+    };
+    exports.AttackStatus = AttackStatus;
+    cc._RF.pop();
+  }, {} ],
+  "AttackStatus-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "3058aoAJglCGoXPNkrN+cPm", "AttackStatus-clas0.0.3");
     "use strict";
     Object.defineProperty(exports, "__esModule", {
       value: true
@@ -1369,6 +1457,46 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "./Listeners-clas0.0.2": "Listeners-clas0.0.2"
+  } ],
+  "BuffItems-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "73713K5T+xGCq8tQ3zPWIe6", "BuffItems-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./Listeners-clas0.0.3"), Listener = _require.Listener;
+    var BuffItem = function(_Listener) {
+      _inheritsLoose(BuffItem, _Listener);
+      function BuffItem() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto = BuffItem.prototype;
+      _proto.init = function init(player, duration, params) {
+        void 0 === params && (params = {});
+        _Listener.prototype.init.call(this, player, duration);
+        this.duration = duration;
+        this.game.endPQ.add(this);
+        for (var i in params) this[i] = params[i];
+      };
+      return BuffItem;
+    }(Listener);
+    BuffItem.uiDisplay = true;
+    BuffItem.temporary = true;
+    exports.BuffItem = BuffItem;
+    BuffItem.id = 0;
+    cc._RF.pop();
+  }, {
+    "./Listeners-clas0.0.3": "Listeners-clas0.0.3"
   } ],
   BuffItems: [ function(require, module, exports) {
     "use strict";
@@ -1688,9 +1816,9 @@ window.__require = function e(t, n, r) {
     "./templates/Listeners-clas0.0.2": "Listeners-clas0.0.2",
     "./utils/numberUtils-clas0.0.2": "numberUtils-clas0.0.2"
   } ],
-  Buffs: [ function(require, module, exports) {
+  "Buffs-clas0.0.3": [ function(require, module, exports) {
     "use strict";
-    cc._RF.push(module, "5f432AeJP9M2Ja0WGNKHeZ6", "Buffs");
+    cc._RF.push(module, "31786d8tiZOwpL9LZrE5rSY", "Buffs-clas0.0.3");
     "use strict";
     function _inheritsLoose(subClass, superClass) {
       subClass.prototype = Object.create(superClass.prototype);
@@ -1704,9 +1832,10 @@ window.__require = function e(t, n, r) {
       };
       return _setPrototypeOf(o, p);
     }
-    var _require = require("./templates/BuffItems"), BuffItem = _require.BuffItem;
-    var _require2 = require("./templates/Listeners"), Listener = _require2.Listener;
-    var _require3 = require("./utils/numberUtils"), getPercentage = _require3.getPercentage;
+    var _require = require("./loggers/logUtils-clas0.0.3"), logItem = _require.logItem;
+    var _require2 = require("./templates/BuffItems-clas0.0.3"), BuffItem = _require2.BuffItem;
+    var _require3 = require("./templates/Listeners-clas0.0.3"), Listener = _require3.Listener;
+    var _require4 = require("./utils/numberUtils-clas0.0.3"), getPercentage = _require4.getPercentage;
     var ChangeSpeedBuff = function(_Listener) {
       _inheritsLoose(ChangeSpeedBuff, _Listener);
       function ChangeSpeedBuff() {
@@ -1715,19 +1844,19 @@ window.__require = function e(t, n, r) {
       var _proto = ChangeSpeedBuff.prototype;
       _proto.init = function init(player, duration, ratio) {
         _Listener.prototype.init.call(this, player, duration);
-        this.game.addLog('{"code":' + player.code + "}\u83b7\u5f97\u77ed\u6682\u7684\u4fee\u4e3a" + (ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347") + "\u6548\u679c", -1);
+        this.game.addLog(logItem(player) + "\u83b7\u5f97\u77ed\u6682\u7684\u4fee\u4e3a" + (ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347") + "\u6548\u679c", -1);
         player.updateSpeed(ratio);
         this.ratio = ratio;
       };
       _proto.expire = function expire() {
-        this.game.addLog('{"code":' + this.owner.code + "}\u7684\u4fee\u4e3a" + (this.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347") + "\u6548\u679c\u89e3\u9664", -1);
-        this.owner.updateSpeed(1 / this.ratio);
+        this.game.addLog(logItem(this.owner) + "\u7684\u4fee\u4e3a" + (this.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347") + "\u6548\u679c\u89e3\u9664", -1);
+        this.owner.updateSpeed(-this.ratio);
       };
       return ChangeSpeedBuff;
     }(Listener);
     ChangeSpeedBuff.description = function(item) {
       var ratio = getPercentage(Math.abs(item.ratio - 1));
-      var verb = item.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
       var remainTime = item.end_time - item.game.currTime;
       return "\u77ed\u6682" + verb + ratio + "\u7684\u4fee\u4e3a\uff0c\u5269\u4f59" + remainTime + "\u79d2";
     };
@@ -1745,17 +1874,41 @@ window.__require = function e(t, n, r) {
       }
       return DecreaseSpeedBuff;
     }(ChangeSpeedBuff);
-    var StrongBuff = function(_BuffItem) {
-      _inheritsLoose(StrongBuff, _BuffItem);
-      function StrongBuff() {
+    var EnhanceBuff = function(_BuffItem) {
+      _inheritsLoose(EnhanceBuff, _BuffItem);
+      function EnhanceBuff() {
         return _BuffItem.apply(this, arguments) || this;
       }
-      var _proto2 = StrongBuff.prototype;
-      _proto2.init = function init(owner, duration, ratio) {
-        _BuffItem.prototype.init.call(this, owner, duration);
+      var _proto2 = EnhanceBuff.prototype;
+      _proto2.init = function init(player, duration) {
+        _BuffItem.prototype.init.call(this, player, duration);
+        this.game.addLog(logItem(player) + "\u83b7\u5f97\u77ed\u6682\u7684\u5168\u5c5e\u6027\u63d0\u5347\u6548\u679c", -1);
+        player.updateSpeed(.27);
+        player.damage += 70;
+        player.minusAspd(.7);
+      };
+      _proto2.expire = function expire() {
+        this.game.addLog(logItem(this.owner) + "\u7684\u3010\u7075\u67a2\u8f6e\u8f6c\u3011\u6548\u679c\u89e3\u9664", -1);
+        this.owner.updateSpeed(-.27);
+        this.owner.minusAspd(-.7);
+        this.owner.damage -= 70;
+      };
+      return EnhanceBuff;
+    }(BuffItem);
+    EnhanceBuff.description = function(item) {
+      return "\u3010\u7075\u67a2\u8f6e\u8f6c\u3011\u63d0\u53470.27\u7684\u7075\u529b\uff0c70\u653b\u51fb\u529b\uff0c\u653b\u901f\u7cfb\u6570\u964d\u4f4e0.7\uff0c\u6301\u7eed5\u5206\u949f";
+    };
+    var StrongBuff = function(_BuffItem2) {
+      _inheritsLoose(StrongBuff, _BuffItem2);
+      function StrongBuff() {
+        return _BuffItem2.apply(this, arguments) || this;
+      }
+      var _proto3 = StrongBuff.prototype;
+      _proto3.init = function init(owner, duration, ratio) {
+        _BuffItem2.prototype.init.call(this, owner, duration);
         this.ratio = ratio;
       };
-      _proto2.check = function check(player1, player2, damage) {
+      _proto3.check = function check(player1, player2, damage) {
         if (!player1) return;
         if (player1.code != this.owner.code) return;
         damage.value *= this.ratio;
@@ -1773,12 +1926,12 @@ window.__require = function e(t, n, r) {
       function VulnerBuff() {
         return _Listener2.apply(this, arguments) || this;
       }
-      var _proto3 = VulnerBuff.prototype;
-      _proto3.init = function init(owner, duration, ratio) {
+      var _proto4 = VulnerBuff.prototype;
+      _proto4.init = function init(owner, duration, ratio) {
         _Listener2.prototype.init.call(this, owner, duration);
         this.ratio = ratio;
       };
-      _proto3.check = function check(player1, player2, damage) {
+      _proto4.check = function check(player1, player2, damage) {
         if (!player2) return;
         if (player2.code != this.owner.code) return;
         damage.value *= this.ratio;
@@ -1791,18 +1944,18 @@ window.__require = function e(t, n, r) {
       var remainTime = item.end_time - item.game.currTime;
       return "\u53d7\u5230\u7684\u4f24\u5bb3" + verb + ratio + "\uff0c\u5269\u4f59" + remainTime + "\u79d2";
     };
-    var ChangeAspdBuff = function(_BuffItem2) {
-      _inheritsLoose(ChangeAspdBuff, _BuffItem2);
+    var ChangeAspdBuff = function(_BuffItem3) {
+      _inheritsLoose(ChangeAspdBuff, _BuffItem3);
       function ChangeAspdBuff() {
-        return _BuffItem2.apply(this, arguments) || this;
+        return _BuffItem3.apply(this, arguments) || this;
       }
-      var _proto4 = ChangeAspdBuff.prototype;
-      _proto4.init = function init(player, duration, ratio, params) {
+      var _proto5 = ChangeAspdBuff.prototype;
+      _proto5.init = function init(player, duration, ratio, params) {
         void 0 === params && (params = {});
-        _BuffItem2.prototype.init.call(this, player, duration, params);
+        _BuffItem3.prototype.init.call(this, player, duration, params);
         player.minusAspd(ratio);
       };
-      _proto4.expire = function expire() {
+      _proto5.expire = function expire() {
         this.owner.minusAspd(-this.ratio);
       };
       return ChangeAspdBuff;
@@ -1817,12 +1970,180 @@ window.__require = function e(t, n, r) {
       ChangeSpeedBuff: ChangeSpeedBuff,
       IncreaseSpeedBuff: IncreaseSpeedBuff,
       DecreaseSpeedBuff: DecreaseSpeedBuff,
+      EnhanceBuff: EnhanceBuff,
       StrongBuff: StrongBuff,
       VulnerBuff: VulnerBuff,
       ChangeAspdBuff: ChangeAspdBuff
     };
     cc._RF.pop();
   }, {
+    "./loggers/logUtils-clas0.0.3": "logUtils-clas0.0.3",
+    "./templates/BuffItems-clas0.0.3": "BuffItems-clas0.0.3",
+    "./templates/Listeners-clas0.0.3": "Listeners-clas0.0.3",
+    "./utils/numberUtils-clas0.0.3": "numberUtils-clas0.0.3"
+  } ],
+  Buffs: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "5f432AeJP9M2Ja0WGNKHeZ6", "Buffs");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./loggers/logUtils"), logItem = _require.logItem;
+    var _require2 = require("./templates/BuffItems"), BuffItem = _require2.BuffItem;
+    var _require3 = require("./templates/Listeners"), Listener = _require3.Listener;
+    var _require4 = require("./utils/numberUtils"), getPercentage = _require4.getPercentage;
+    var ChangeSpeedBuff = function(_Listener) {
+      _inheritsLoose(ChangeSpeedBuff, _Listener);
+      function ChangeSpeedBuff() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto = ChangeSpeedBuff.prototype;
+      _proto.init = function init(player, duration, ratio) {
+        _Listener.prototype.init.call(this, player, duration);
+        this.game.addLog(logItem(player) + "\u83b7\u5f97\u77ed\u6682\u7684\u4fee\u4e3a" + (ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347") + "\u6548\u679c", -1);
+        player.updateSpeed(ratio);
+        this.ratio = ratio;
+      };
+      _proto.expire = function expire() {
+        this.game.addLog(logItem(this.owner) + "\u7684\u4fee\u4e3a" + (this.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347") + "\u6548\u679c\u89e3\u9664", -1);
+        this.owner.updateSpeed(-this.ratio);
+      };
+      return ChangeSpeedBuff;
+    }(Listener);
+    ChangeSpeedBuff.description = function(item) {
+      var ratio = getPercentage(Math.abs(item.ratio - 1));
+      var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var remainTime = item.end_time - item.game.currTime;
+      return "\u77ed\u6682" + verb + ratio + "\u7684\u4fee\u4e3a\uff0c\u5269\u4f59" + remainTime + "\u79d2";
+    };
+    var IncreaseSpeedBuff = function(_ChangeSpeedBuff) {
+      _inheritsLoose(IncreaseSpeedBuff, _ChangeSpeedBuff);
+      function IncreaseSpeedBuff() {
+        return _ChangeSpeedBuff.apply(this, arguments) || this;
+      }
+      return IncreaseSpeedBuff;
+    }(ChangeSpeedBuff);
+    var DecreaseSpeedBuff = function(_ChangeSpeedBuff2) {
+      _inheritsLoose(DecreaseSpeedBuff, _ChangeSpeedBuff2);
+      function DecreaseSpeedBuff() {
+        return _ChangeSpeedBuff2.apply(this, arguments) || this;
+      }
+      return DecreaseSpeedBuff;
+    }(ChangeSpeedBuff);
+    var EnhanceBuff = function(_BuffItem) {
+      _inheritsLoose(EnhanceBuff, _BuffItem);
+      function EnhanceBuff() {
+        return _BuffItem.apply(this, arguments) || this;
+      }
+      var _proto2 = EnhanceBuff.prototype;
+      _proto2.init = function init(player, duration) {
+        _BuffItem.prototype.init.call(this, player, duration);
+        this.game.addLog(logItem(player) + "\u83b7\u5f97\u77ed\u6682\u7684\u5168\u5c5e\u6027\u63d0\u5347\u6548\u679c", -1);
+        player.updateSpeed(.27);
+        player.damage += 70;
+        player.minusAspd(.7);
+      };
+      _proto2.expire = function expire() {
+        this.game.addLog(logItem(this.owner) + "\u7684\u3010\u7075\u67a2\u8f6e\u8f6c\u3011\u6548\u679c\u89e3\u9664", -1);
+        this.owner.updateSpeed(-.27);
+        this.owner.minusAspd(-.7);
+        this.owner.damage -= 70;
+      };
+      return EnhanceBuff;
+    }(BuffItem);
+    EnhanceBuff.description = function(item) {
+      return "\u3010\u7075\u67a2\u8f6e\u8f6c\u3011\u63d0\u53470.27\u7684\u7075\u529b\uff0c70\u653b\u51fb\u529b\uff0c\u653b\u901f\u7cfb\u6570\u964d\u4f4e0.7\uff0c\u6301\u7eed5\u5206\u949f";
+    };
+    var StrongBuff = function(_BuffItem2) {
+      _inheritsLoose(StrongBuff, _BuffItem2);
+      function StrongBuff() {
+        return _BuffItem2.apply(this, arguments) || this;
+      }
+      var _proto3 = StrongBuff.prototype;
+      _proto3.init = function init(owner, duration, ratio) {
+        _BuffItem2.prototype.init.call(this, owner, duration);
+        this.ratio = ratio;
+      };
+      _proto3.check = function check(player1, player2, damage) {
+        if (!player1) return;
+        if (player1.code != this.owner.code) return;
+        damage.value *= this.ratio;
+      };
+      return StrongBuff;
+    }(BuffItem);
+    StrongBuff.description = function(item) {
+      var ratio = getPercentage(Math.abs(item.ratio - 1));
+      var verb = item.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var remainTime = item.end_time - item.game.currTime;
+      return "\u9020\u6210\u7684\u4f24\u5bb3" + verb + ratio + "\uff0c\u5269\u4f59" + remainTime + "\u79d2";
+    };
+    var VulnerBuff = function(_Listener2) {
+      _inheritsLoose(VulnerBuff, _Listener2);
+      function VulnerBuff() {
+        return _Listener2.apply(this, arguments) || this;
+      }
+      var _proto4 = VulnerBuff.prototype;
+      _proto4.init = function init(owner, duration, ratio) {
+        _Listener2.prototype.init.call(this, owner, duration);
+        this.ratio = ratio;
+      };
+      _proto4.check = function check(player1, player2, damage) {
+        if (!player2) return;
+        if (player2.code != this.owner.code) return;
+        damage.value *= this.ratio;
+      };
+      return VulnerBuff;
+    }(Listener);
+    VulnerBuff.description = function(item) {
+      var ratio = getPercentage(Math.abs(item.ratio - 1));
+      var verb = item.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var remainTime = item.end_time - item.game.currTime;
+      return "\u53d7\u5230\u7684\u4f24\u5bb3" + verb + ratio + "\uff0c\u5269\u4f59" + remainTime + "\u79d2";
+    };
+    var ChangeAspdBuff = function(_BuffItem3) {
+      _inheritsLoose(ChangeAspdBuff, _BuffItem3);
+      function ChangeAspdBuff() {
+        return _BuffItem3.apply(this, arguments) || this;
+      }
+      var _proto5 = ChangeAspdBuff.prototype;
+      _proto5.init = function init(player, duration, ratio, params) {
+        void 0 === params && (params = {});
+        _BuffItem3.prototype.init.call(this, player, duration, params);
+        player.minusAspd(ratio);
+      };
+      _proto5.expire = function expire() {
+        this.owner.minusAspd(-this.ratio);
+      };
+      return ChangeAspdBuff;
+    }(BuffItem);
+    ChangeAspdBuff.description = function(item) {
+      var ratio = Math.abs(item.ratio);
+      var verb = item.ratio < 0 ? "\u51cf\u5c11" : "\u5ef6\u957f";
+      var remainTime = item.end_time - item.game.currTime;
+      return "" + verb + ratio + "\u7684\u653b\u51fb\u95f4\u9694\uff0c\u5269\u4f59" + remainTime + "\u79d2";
+    };
+    module.exports = {
+      ChangeSpeedBuff: ChangeSpeedBuff,
+      IncreaseSpeedBuff: IncreaseSpeedBuff,
+      DecreaseSpeedBuff: DecreaseSpeedBuff,
+      EnhanceBuff: EnhanceBuff,
+      StrongBuff: StrongBuff,
+      VulnerBuff: VulnerBuff,
+      ChangeAspdBuff: ChangeAspdBuff
+    };
+    cc._RF.pop();
+  }, {
+    "./loggers/logUtils": "logUtils",
     "./templates/BuffItems": "BuffItems",
     "./templates/Listeners": "Listeners",
     "./utils/numberUtils": "numberUtils"
@@ -1927,6 +2248,103 @@ window.__require = function e(t, n, r) {
   "Coin-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "fff1fsN6+JG3KMtmpjaT9AI", "Coin-clas0.0.2");
+    "use strict";
+    function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+      var it = "undefined" !== typeof Symbol && o[Symbol.iterator] || o["@@iterator"];
+      if (it) return (it = it.call(o)).next.bind(it);
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && "number" === typeof o.length) {
+        it && (o = it);
+        var i = 0;
+        return function() {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        };
+      }
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if ("string" === typeof o) return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      "Object" === n && o.constructor && (n = o.constructor.name);
+      if ("Map" === n || "Set" === n) return Array.from(o);
+      if ("Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+    function _arrayLikeToArray(arr, len) {
+      (null == len || len > arr.length) && (len = arr.length);
+      for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+      return arr2;
+    }
+    var COIN_KEYS = [ "baseCoins", "geoCoins", "auroCoins", "hydroCoins", "pyroCoins" ];
+    var COIN_KEYS_NAME_MAP = {
+      baseCoins: "\u7075\u77f3",
+      geoCoins: "\u571f\u7075\u77f3",
+      auroCoins: "\u91d1\u7075\u77f3",
+      hydroCoins: "\u6c34\u7075\u77f3",
+      pyroCoins: "\u706b\u7075\u77f3"
+    };
+    var Coin = function() {
+      function Coin(args) {
+        this.baseCoins = 0;
+        this.auroCoins = 0;
+        this.geoCoins = 0;
+        this.hydroCoins = 0;
+        this.pyroCoins = 0;
+        for (var _iterator = _createForOfIteratorHelperLoose(COIN_KEYS), _step; !(_step = _iterator()).done; ) {
+          var key = _step.value;
+          args[key] && (this[key] = args[key]);
+        }
+      }
+      var _proto = Coin.prototype;
+      _proto.add = function add(args) {
+        for (var _i = 0, _COIN_KEYS = COIN_KEYS; _i < _COIN_KEYS.length; _i++) {
+          var key = _COIN_KEYS[_i];
+          args[key] && (this[key] += args[key]);
+        }
+      };
+      _proto.minus = function minus(args) {
+        for (var _i2 = 0, _COIN_KEYS2 = COIN_KEYS; _i2 < _COIN_KEYS2.length; _i2++) {
+          var key = _COIN_KEYS2[_i2];
+          args[key] && (this[key] -= args[key]);
+        }
+      };
+      _proto.compare = function compare(args) {
+        for (var _i3 = 0, _COIN_KEYS3 = COIN_KEYS; _i3 < _COIN_KEYS3.length; _i3++) {
+          var key = _COIN_KEYS3[_i3];
+          if (args[key] && this[key] < args[key]) return false;
+        }
+        return true;
+      };
+      _proto.opposite = function opposite() {
+        var res = new Coin({});
+        res.minus(this);
+        return res;
+      };
+      _proto.totalValue = function totalValue() {
+        var res = 0;
+        for (var _i4 = 0, _COIN_KEYS4 = COIN_KEYS; _i4 < _COIN_KEYS4.length; _i4++) {
+          var key = _COIN_KEYS4[_i4];
+          res += this[key];
+        }
+        return res;
+      };
+      return Coin;
+    }();
+    module.exports = {
+      Coin: Coin,
+      COIN_KEYS: COIN_KEYS,
+      COIN_KEYS_NAME_MAP: COIN_KEYS_NAME_MAP
+    };
+    cc._RF.pop();
+  }, {} ],
+  "Coin-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "53ed6/fh69JQqhbFmtfd1sr", "Coin-clas0.0.3");
     "use strict";
     function _createForOfIteratorHelperLoose(o, allowArrayLike) {
       var it = "undefined" !== typeof Symbol && o[Symbol.iterator] || o["@@iterator"];
@@ -2607,6 +3025,199 @@ window.__require = function e(t, n, r) {
     "./wheels/common-clas0.0.2": "common-clas0.0.2",
     "./wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2"
   } ],
+  "Creature-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "a9055nb34pOGJGEHhqkdjHE", "Creature-clas0.0.3");
+    "use strict";
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        "value" in descriptor && (descriptor.writable = true);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
+    function _createClass(Constructor, protoProps, staticProps) {
+      protoProps && _defineProperties(Constructor.prototype, protoProps);
+      staticProps && _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
+      return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return "symbol" === typeof key ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if ("object" !== typeof input || null === input) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (void 0 !== prim) {
+        var res = prim.call(input, hint || "default");
+        if ("object" !== typeof res) return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === hint ? String : Number)(input);
+    }
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./wheels/interfaces-clas0.0.3"), Item = _require.Item;
+    var Creature = function(_Item) {
+      _inheritsLoose(Creature, _Item);
+      function Creature() {
+        return _Item.apply(this, arguments) || this;
+      }
+      var _proto = Creature.prototype;
+      _proto.init = function init(x, y, source) {
+        _Item.prototype.init.call(this, source);
+        this._power = 1;
+        this._level = 2;
+        this._aspd = 7;
+        this._scope = 1;
+        this._damage = 100;
+        this.hydroSign = 0;
+        this.pyroSign = 0;
+        this._geoSign = 0;
+        this.x = x;
+        this.y = y;
+        if (source.map[y][x]) throw new common_1.GameLogicError("\u8be5\u4f4d\u7f6e\u5df2\u6709\u5355\u4f4d");
+        source.map[y][x] = this;
+      };
+      _proto.minusAspd = function minusAspd(num) {
+        this._aspd -= num;
+      };
+      _proto.distance = function distance(player2) {
+        return Math.sqrt(Math.pow(this.x - player2.x, 2) + Math.pow(this.y - player2.y, 2));
+      };
+      _proto.attack = function attack(player2) {
+        this.game.addLog(logItem(this) + "\u653b\u51fb\u4e86" + logItem(player2), 2);
+        this.game.addLog("", 3);
+        this.game.listeners.AttackListeners.check(this, player2, {
+          damage: new Damage(Damage.PHYSICS, this.damage)
+        });
+      };
+      _proto.harm = function harm(player2, damage) {
+        logDamageInfo(this, player2, damage);
+        this.game.listeners.DamageListeners.check(this, player2, damage);
+      };
+      _proto.updateSpeed = function updateSpeed(value) {
+        this._power = parseFloat((this._power + value).toFixed(3));
+        if (this.game.logger) {
+          var prefix = value < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
+          var valueStr = value.toFixed(3);
+          valueStr.endsWith("0") && (valueStr = valueStr.substring(0, valueStr.length - 1));
+          this.game.addLog(logItem(this) + "\u7684\u7075\u529b" + prefix + valueStr, 0);
+        }
+        while (this._power > 10) {
+          this._power /= 10;
+          this._level++;
+          this.game.logger && this.game.addLog(logItem(this) + "\u7684\u7075\u529b\u8fbe\u523010\uff0c\u5883\u754c\u63d0\u53471\u7ea7", 0);
+        }
+        while (this._power < 1) {
+          this._power *= 10;
+          this._level--;
+          this.game.logger && this.game.addLog(logItem(this) + "\u7684\u7075\u529b\u964d\u81f31\u4ee5\u4e0b\uff0c\u5883\u754c\u8dcc\u843d1\u7ea7", 0);
+        }
+      };
+      _proto.move = function move(newX, newY, playAnimation) {
+        void 0 === playAnimation && (playAnimation = true);
+        var Game = this.game;
+        var map = Game.map;
+        var oldX = this.x, oldY = this.y;
+        if (oldY == newY && oldX == newX) return;
+        if (map[newY][newX]) throw new common_1.GameLogicError("\u4e0d\u80fd\u79fb\u52a8\u5230\u5df2\u6709\u5355\u4f4d\u7684\u4f4d\u7f6e");
+        map[newY][newX] = this;
+        map[oldY][oldX] = null;
+        this.game.addLog(logItem(this) + "\u79fb\u52a8\u81f3(" + (newX + 1) + "," + (MAP_SIZE - newY) + ")", 0);
+        playAnimation && this.game.addAnime(new MoveAnimation(oldX, oldY, newX, newY));
+        this.x = newX, this.y = newY;
+        Game.listeners.MoveListeners.check(this, oldX, oldY);
+      };
+      _proto.inScope = function inScope(x, y) {
+        return this.itemsInScope().find(function(axis) {
+          return axis[0] == x && axis[1] == y;
+        });
+      };
+      _proto.itemsInScope = function itemsInScope() {
+        var scope = this.game.listeners.InscopeCalculators.check(this);
+        return this.game.allMapElements.filter(function(item) {
+          return scope[item.y][item.x];
+        });
+      };
+      _createClass(Creature, [ {
+        key: "geoSign",
+        get: function get() {
+          return this._geoSign;
+        },
+        set: function set(num) {
+          var diff = Math.max(num - this._geoSign, 0);
+          this._geoSign = num;
+          this.game.listeners.GeoSignListeners.check(this, diff);
+        }
+      }, {
+        key: "level",
+        get: function get() {
+          return Math.log(this.power) / Math.log(this.aspd);
+        }
+      }, {
+        key: "scope",
+        get: function get() {
+          return this._scope;
+        },
+        set: function set(num) {
+          this._scope = num;
+        }
+      }, {
+        key: "damage",
+        get: function get() {
+          return this._damage;
+        },
+        set: function set(num) {
+          this._damage = num;
+        }
+      }, {
+        key: "power",
+        get: function get() {
+          var valStr = this._power.toFixed(3);
+          return valStr + "e" + this._level;
+        }
+      }, {
+        key: "aspd",
+        get: function get() {
+          return Math.max(this._aspd, 2);
+        }
+      } ]);
+      return Creature;
+    }(Item);
+    Creature.challengable = true;
+    module.exports = {
+      Creature: Creature
+    };
+    var common_1 = require("./wheels/common-clas0.0.3");
+    var _require2 = require("./objects/Damage-clas0.0.3"), Damage = _require2.Damage;
+    var _require3 = require("./loggers/logUtils-clas0.0.3"), logDamageInfo = _require3.logDamageInfo, logItem = _require3.logItem;
+    var _require4 = require("./animations/moveAnimation-clas0.0.3"), MoveAnimation = _require4.MoveAnimation;
+    var _require5 = require("./constants/gameConstants-clas0.0.3"), MAP_SIZE = _require5.MAP_SIZE;
+    cc._RF.pop();
+  }, {
+    "./animations/moveAnimation-clas0.0.3": "moveAnimation-clas0.0.3",
+    "./constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "./loggers/logUtils-clas0.0.3": "logUtils-clas0.0.3",
+    "./objects/Damage-clas0.0.3": "Damage-clas0.0.3",
+    "./wheels/common-clas0.0.3": "common-clas0.0.3",
+    "./wheels/interfaces-clas0.0.3": "interfaces-clas0.0.3"
+  } ],
   Creature: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "aff19EOM6ZKiohXHn6TGfa9", "Creature");
@@ -2694,20 +3305,22 @@ window.__require = function e(t, n, r) {
         this.game.listeners.DamageListeners.check(this, player2, damage);
       };
       _proto.updateSpeed = function updateSpeed(value) {
-        this._power *= value;
+        this._power = parseFloat((this._power + value).toFixed(3));
+        if (this.game.logger) {
+          var prefix = value < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
+          var valueStr = value.toFixed(3);
+          valueStr.endsWith("0") && (valueStr = valueStr.substring(0, valueStr.length - 1));
+          this.game.addLog(logItem(this) + "\u7684\u7075\u529b" + prefix + valueStr, 0);
+        }
         while (this._power > 10) {
           this._power /= 10;
           this._level++;
+          this.game.logger && this.game.addLog(logItem(this) + "\u7684\u7075\u529b\u8fbe\u523010\uff0c\u5883\u754c\u63d0\u53471\u7ea7", 0);
         }
         while (this._power < 1) {
           this._power *= 10;
           this._level--;
-        }
-        if (this.game.logger) {
-          var percentage = 100 * (value - 1);
-          var prefix = percentage < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
-          var percentageStr = Math.abs(percentage).toFixed(3);
-          this.game.addLog(logItem(this) + "\u7684\u4fee\u4e3a" + prefix + parseFloat(percentageStr) + "%", 0);
+          this.game.logger && this.game.addLog(logItem(this) + "\u7684\u7075\u529b\u964d\u81f31\u4ee5\u4e0b\uff0c\u5883\u754c\u8dcc\u843d1\u7ea7", 0);
         }
       };
       _proto.move = function move(newX, newY, playAnimation) {
@@ -2769,9 +3382,8 @@ window.__require = function e(t, n, r) {
       }, {
         key: "power",
         get: function get() {
-          var valStr = this._power.toString();
-          valStr.length > 6 && (valStr = valStr.substring(0, 6));
-          return this._level <= 9 ? this._power + "e" + this._level : valStr + "e" + this._level;
+          var valStr = this._power.toFixed(3);
+          return valStr + "e" + this._level;
         }
       }, {
         key: "aspd",
@@ -2781,7 +3393,7 @@ window.__require = function e(t, n, r) {
       } ]);
       return Creature;
     }(Item);
-    Creature.challengable = false;
+    Creature.challengable = true;
     module.exports = {
       Creature: Creature
     };
@@ -2821,6 +3433,24 @@ window.__require = function e(t, n, r) {
   "Damage-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "4e032CnNsxK+oyBamWDL8WT", "Damage-clas0.0.2");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Damage = void 0;
+    var Damage = function Damage(type, value) {
+      this.type = type;
+      this.value = value;
+    };
+    exports.Damage = Damage;
+    Damage.PHYSICS = 1;
+    Damage.SPELL = 2;
+    Damage.WHITE = 3;
+    cc._RF.pop();
+  }, {} ],
+  "Damage-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "77a2c7fyDRAR6stDpBaOiC3", "Damage-clas0.0.3");
     "use strict";
     Object.defineProperty(exports, "__esModule", {
       value: true
@@ -2948,6 +3578,62 @@ window.__require = function e(t, n, r) {
     "../constants/timeConstants-clas0.0.2": "timeConstants-clas0.0.2",
     "../templates/Listeners-clas0.0.2": "Listeners-clas0.0.2"
   } ],
+  "DamageListeners-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "79219HbygZAeJffC/8MuBCv", "DamageListeners-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../constants/timeConstants-clas0.0.3"), ENDLESS_TIME = _require.ENDLESS_TIME;
+    var _require2 = require("../templates/Listeners-clas0.0.3"), Listener = _require2.Listener;
+    var RealDamageLogger = function(_Listener) {
+      _inheritsLoose(RealDamageLogger, _Listener);
+      function RealDamageLogger() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto = RealDamageLogger.prototype;
+      _proto.check = function check(player1, player2, damage) {
+        var type = (damage.type, "\u7269\u7406");
+        this.game.addLog("\u5b9e\u9645\u9020\u6210\u4e86" + damage.value + "\u70b9" + type + "\u4f24\u5bb3", 0);
+      };
+      return RealDamageLogger;
+    }(Listener);
+    var HarmImprovingMonitors = function(_Listener2) {
+      _inheritsLoose(HarmImprovingMonitors, _Listener2);
+      function HarmImprovingMonitors() {
+        return _Listener2.apply(this, arguments) || this;
+      }
+      var _proto2 = HarmImprovingMonitors.prototype;
+      _proto2.init = function init() {
+        _Listener2.prototype.init.apply(this, arguments);
+        this.description = "\u9020\u6210\u4f24\u5bb3\u540e\u7ed3\u7b97\u5c5e\u6027\u63d0\u5347";
+        this.base = [ 0, 1.025, 1.025, 1.025 ];
+      };
+      _proto2.check = function check(player1, player2, damage) {
+        if (player1.code != this.game.currUser.code) return;
+        player1.updateSpeed(player1.grow * damage.value / 100);
+      };
+      return HarmImprovingMonitors;
+    }(Listener);
+    module.exports = {
+      RealDamageLogger: RealDamageLogger,
+      HarmImprovingMonitors: HarmImprovingMonitors
+    };
+    cc._RF.pop();
+  }, {
+    "../constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "../templates/Listeners-clas0.0.3": "Listeners-clas0.0.3"
+  } ],
   DamageListeners: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "65290CUC7VKNIgZMlK29AoM", "DamageListeners");
@@ -2991,7 +3677,7 @@ window.__require = function e(t, n, r) {
       };
       _proto2.check = function check(player1, player2, damage) {
         if (player1.code != this.game.currUser.code) return;
-        player1.updateSpeed(Math.pow(player1.grow, damage.value / 100));
+        player1.updateSpeed(player1.grow * damage.value / 100);
       };
       return HarmImprovingMonitors;
     }(Listener);
@@ -3156,6 +3842,73 @@ window.__require = function e(t, n, r) {
     "../objects/Coin-clas0.0.2": "Coin-clas0.0.2",
     "../wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2"
   } ],
+  "EquipItems-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "b4f77nUK7dMroUIB/UI2IPx", "EquipItems-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../objects/Coin-clas0.0.3"), Coin = _require.Coin;
+    var _require2 = require("../wheels/interfaces-clas0.0.3"), Item = _require2.Item;
+    var EquipItems = function(_Item) {
+      _inheritsLoose(EquipItems, _Item);
+      function EquipItems() {
+        return _Item.apply(this, arguments) || this;
+      }
+      var _proto = EquipItems.prototype;
+      _proto.init = function init(owner) {
+        _Item.prototype.init.call(this, owner.game);
+        this.owner = owner;
+        this.level = 0;
+      };
+      _proto.upgrade = function upgrade() {
+        this.owner.updateSpeed(.07);
+        this.level++;
+      };
+      _proto.evolve = function evolve() {};
+      return EquipItems;
+    }(Item);
+    EquipItems.category = "equip";
+    EquipItems.equip_name = "";
+    EquipItems.description = "";
+    EquipItems.valid = true;
+    EquipItems.energy_cost = 50;
+    EquipItems.upgrade_price = new Coin({
+      baseCoins: 50
+    });
+    EquipItems.buy_price = new Coin({
+      baseCoins: 200
+    });
+    EquipItems.evolve_level = [ 1, 6, 10, 13, 15, 17, 18, 19, 20 ];
+    EquipItems.uiDisplay = true;
+    EquipItems.story = "";
+    EquipItems.overviewDisplay = true;
+    var EquipItemsWithListener = function(_EquipItems) {
+      _inheritsLoose(EquipItemsWithListener, _EquipItems);
+      function EquipItemsWithListener() {
+        return _EquipItems.apply(this, arguments) || this;
+      }
+      return EquipItemsWithListener;
+    }(EquipItems);
+    module.exports = {
+      EquipItems: EquipItems,
+      EquipItemsWithListener: EquipItemsWithListener
+    };
+    cc._RF.pop();
+  }, {
+    "../objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "../wheels/interfaces-clas0.0.3": "interfaces-clas0.0.3"
+  } ],
   EquipItems: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "b17daFBWulIJbJGBzShgyPh", "EquipItems");
@@ -3186,7 +3939,7 @@ window.__require = function e(t, n, r) {
         this.level = 0;
       };
       _proto.upgrade = function upgrade() {
-        this.owner.updateSpeed(1.05);
+        this.owner.updateSpeed(.07);
         this.level++;
       };
       _proto.evolve = function evolve() {};
@@ -4461,9 +5214,9 @@ window.__require = function e(t, n, r) {
     "./utils/mapUtils-clas0.0.2": "mapUtils-clas0.0.2",
     "./utils/typeUtils-clas0.0.2": "typeUtils-clas0.0.2"
   } ],
-  Equips: [ function(require, module, exports) {
+  "Equips-clas0.0.3": [ function(require, module, exports) {
     "use strict";
-    cc._RF.push(module, "2d3f5A+KrpJfYsacpehGI9W", "Equips");
+    cc._RF.push(module, "63672SFzaJN8pC2jas0oM0B", "Equips-clas0.0.3");
     "use strict";
     function _createForOfIteratorHelperLoose(o, allowArrayLike) {
       var it = "undefined" !== typeof Symbol && o[Symbol.iterator] || o["@@iterator"];
@@ -4508,9 +5261,9 @@ window.__require = function e(t, n, r) {
       };
       return _setPrototypeOf(o, p);
     }
-    var _require = require("./templates/EquipItems"), EquipItems = _require.EquipItems, EquipItemsWithListener = _require.EquipItemsWithListener;
-    var _require2 = require("./objects/Coin"), Coin = _require2.Coin;
-    var _require3 = require("./templates/Listeners"), Listener = _require3.Listener;
+    var _require = require("./templates/EquipItems-clas0.0.3"), EquipItems = _require.EquipItems, EquipItemsWithListener = _require.EquipItemsWithListener;
+    var _require2 = require("./objects/Coin-clas0.0.3"), Coin = _require2.Coin;
+    var _require3 = require("./templates/Listeners-clas0.0.3"), Listener = _require3.Listener;
     var Equip0 = function(_EquipItems) {
       _inheritsLoose(Equip0, _EquipItems);
       function Equip0() {
@@ -4541,7 +5294,7 @@ window.__require = function e(t, n, r) {
     }(EquipItemsWithListener);
     Equip1.id = 1;
     Equip1.equip_name = "\u521d\u8292";
-    Equip1.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u63d0\u5347\u81ea\u8eab2%\u7684\u4fee\u4e3a";
+    Equip1.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u63d0\u5347\u81ea\u8eab0.02\u7684\u7075\u529b";
     Equip1.valid = true;
     Equip1.upgrade_price = new Coin({
       baseCoins: 50
@@ -4554,7 +5307,7 @@ window.__require = function e(t, n, r) {
       var _proto2 = Equip1AttackSpeedUpListener.prototype;
       _proto2.init = function init() {
         _Listener.prototype.init.apply(this, arguments);
-        this.grow = 1.01;
+        this.grow = .01;
       };
       _proto2.check = function check(player1, player2) {
         if (player1.code != this.owner.code) return;
@@ -4577,7 +5330,7 @@ window.__require = function e(t, n, r) {
     }(EquipItems);
     Equip2.id = 2;
     Equip2.equip_name = "\u7389\u9aa8";
-    Equip2.description = "\u6bcf\u6b21\u9020\u6210100\u70b9\u7269\u7406\u4f24\u5bb3\u65f6\uff0c\u83b7\u5f97\u989d\u5916\u76841%\u7684\u4fee\u4e3a\u63d0\u5347";
+    Equip2.description = "\u6bcf\u6b21\u9020\u6210100\u70b9\u7269\u7406\u4f24\u5bb3\u65f6\uff0c\u83b7\u5f97\u989d\u5916\u76840.01\u7684\u7075\u529b\u63d0\u5347";
     Equip2.valid = true;
     Equip2.upgrade_price = new Coin({
       auroCoins: 50
@@ -4656,7 +5409,7 @@ window.__require = function e(t, n, r) {
     }(EquipItemsWithListener);
     Equip6.id = 6;
     Equip6.equip_name = "\u6d45\u6d77";
-    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u654c\u65b93*3\u8303\u56f4\u518510%\u7684\u52bf\u529b";
+    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u654c\u65b93*3\u8303\u56f4\u51850.1\u7684\u52bf\u529b";
     Equip6.valid = true;
     Equip6.upgrade_price = new Coin({
       geoCoins: 50
@@ -4670,7 +5423,7 @@ window.__require = function e(t, n, r) {
       var _proto8 = Equip6AttackWeakenListener.prototype;
       _proto8.init = function init() {
         _Listener2.prototype.init.apply(this, arguments);
-        this.weaken = .9;
+        this.weaken = -.1;
       };
       _proto8.check = function check(player1, player2) {
         var _this = this;
@@ -4794,7 +5547,7 @@ window.__require = function e(t, n, r) {
     }(EquipItemsWithListener);
     Equip10.id = 10;
     Equip10.equip_name = "\u58a8\u708e";
-    Equip10.description = "\u6bcf\u6b21\u653b\u51fb\u4ea7\u751f\u66b4\u51fb\u65f6\u5bf9\u53d7\u51fb\u8005\u53e0\u52a0\u4e00\u5c42\u706b\u5370\u8bb0";
+    Equip10.description = "\u6bcf\u6b21\u653b\u51fb\u4ea7\u751f\u66b4\u51fb\u65f6\u5bf9\u53d7\u51fb\u8005\u53e0\u52a03\u5c42\u706b\u5370\u8bb0";
     Equip10.valid = true;
     Equip10.upgrade_price = new Coin({
       pyroCoins: 50
@@ -4810,7 +5563,7 @@ window.__require = function e(t, n, r) {
         if (kwargs.critical) {
           if (player1.code != this.owner.code) return;
           this.game.addLog('\u201c\u58a8\u708e\u201d\u7684\u6548\u679c\u89e6\u53d1\uff0c{"code":' + player2.code + "}\u53e0\u52a03\u5c42\u706b\u5370\u8bb0", 3);
-          player2.pyroSign++;
+          player2.pyroSign += 3;
         }
       };
       return Equip10AddPyroSignListener;
@@ -4831,7 +5584,7 @@ window.__require = function e(t, n, r) {
     }(EquipItemsWithListener);
     Equip11.id = 11;
     Equip11.equip_name = "\u96e8\u9701";
-    Equip11.description = "\u6bcf\u6b21\u653b\u51fb\u4ea7\u751f\u66b4\u51fb\u65f6\u5bf9\u53d7\u51fb\u8005\u53e0\u52a0\u4e00\u5c42\u6c34\u5370\u8bb0\uff0c\u82e5\u8be5\u89d2\u8272";
+    Equip11.description = "\u6bcf\u6b21\u653b\u51fb\u4ea7\u751f\u66b4\u51fb\u65f6\u5bf9\u53d7\u51fb\u8005\u53e0\u52a0\u4e00\u5c42\u6c34\u5370\u8bb0\uff0c\u82e5\u8be5\u89d2\u8272\u5df2\u6709\u4e00\u5c42\u6c34\u5370\u8bb0\uff0c\u5219\u4f60\u83b7\u5f970.27\u7684\u4fee\u4e3a\u63d0\u5347";
     Equip11.valid = true;
     Equip11.upgrade_price = new Coin({
       hydroCoins: 50
@@ -4850,7 +5603,7 @@ window.__require = function e(t, n, r) {
         if (kwargs.critical) {
           if (player1.code != this.owner.code) return;
           this.game.addLog('\u201c\u96e8\u9701\u201d\u7684\u6548\u679c\u89e6\u53d1\uff0c{"code":' + player2.code + "}\u53e0\u52a01\u5c42\u6c34\u5370\u8bb0", 3);
-          player2.hydroSign++;
+          player2.hydroSign > 0 ? player1.updateSpeed(.27) : player2.hydroSign++;
         }
       };
       return Equip11AddHydroSignListener;
@@ -4867,13 +5620,13 @@ window.__require = function e(t, n, r) {
         this.game.listeners.AttackListeners.push(this.listener);
       };
       _proto17.evolve = function evolve() {
-        this.listener.recover++;
+        this.listener.recover += 20;
       };
       return Equip12;
     }(EquipItemsWithListener);
     Equip12.id = 12;
     Equip12.equip_name = "\u9752\u6eaa";
-    Equip12.description = "\u6bcf\u6b21\u653b\u51fb\u56de\u590d1\u70b9\u6cd5\u529b";
+    Equip12.description = "\u6bcf\u6b21\u653b\u51fb\u56de\u590d20\u70b9\u5185\u529b";
     Equip12.valid = true;
     Equip12.upgrade_price = new Coin({
       hydroCoins: 50
@@ -4890,7 +5643,7 @@ window.__require = function e(t, n, r) {
         this.recover = 20;
       };
       _proto18.check = function check(player1, player2) {
-        player1.code == this.owner.code && this.game.addLog("\u201c\u9752\u6eaa\u201d\u7684\u6548\u679c\u89e6\u53d1\uff0c\u73a9\u5bb61\u56de\u590d20\u70b9\u6cd5\u529b\u503c", 3);
+        player1.code == this.owner.code && this.game.addLog("\u201c\u9752\u6eaa\u201d\u7684\u6548\u679c\u89e6\u53d1\uff0c\u73a9\u5bb61\u56de\u590d20\u70b9\u5185\u529b\u503c", 3);
         player1.energy += this.recover;
       };
       return Equip12EnergyRecoveringListener;
@@ -4908,18 +5661,18 @@ window.__require = function e(t, n, r) {
       };
       _proto19.evolve = function evolve() {
         if (1 == this.level) {
-          this.listener.improve = 1.001;
-          this.listener.deprove = .999;
+          this.listener.improve = .01;
+          this.listener.deprove = .99;
         } else {
-          this.listener.improve += 1e-4;
-          this.listener.deprove += 1e-4;
+          this.listener.improve += .001;
+          this.listener.deprove += .001;
         }
       };
       return Equip13;
     }(EquipItemsWithListener);
     Equip13.id = 13;
     Equip13.equip_name = "\u7075\u6cc9";
-    Equip13.description = "\u6bcf\u5f53\u4f60\u83b7\u5f971\u679a\u91d1\u7075\u77f3/\u6c34\u7075\u77f3/\u706b\u7075\u77f3\uff0c\u4fee\u4e3a\u63d0\u53470.1%\u3002\u6bcf\u5f53\u4f60\u5931\u53bb1\u679a\u91d1\u7075\u77f3/\u6c34\u7075\u77f3/\u706b\u7075\u77f3\uff0c\u4fee\u4e3a\u964d\u4f4e0.1%";
+    Equip13.description = "\u6bcf\u5f53\u4f60\u83b7\u5f9710\u679a\u91d1\u7075\u77f3/\u6c34\u7075\u77f3/\u706b\u7075\u77f3\uff0c\u7075\u529b\u63d0\u53470.01\u3002\u6bcf\u5f53\u4f60\u5931\u53bb10\u679a\u91d1\u7075\u77f3/\u6c34\u7075\u77f3/\u706b\u7075\u77f3\uff0c\u4fee\u4e3a\u964d\u4f4e0.01";
     Equip13.valid = true;
     Equip13.upgrade_price = new Coin({
       geoCoins: 50
@@ -4938,11 +5691,10 @@ window.__require = function e(t, n, r) {
       };
       _proto20.check = function check(player1, coins) {
         if (this.owner.code != player1.code) return;
-        var num = coins.totalValue() - coins.baseCoins;
+        var num = Math.floor((coins.totalValue() - coins.baseCoins) / 10);
         if (0 == num) return;
         this.game.addLog("\u201c\u7075\u6cc9\u201d\u7684\u6548\u679c\u89e6\u53d1", -1);
-        num > 0 && player1.updateSpeed(Math.pow(this.improve, num));
-        num < 0 && player1.updateSpeed(Math.pow(this.deprove, -num));
+        player1.updateSpeed(this.improve * num);
       };
       return Equip13CoinsListener;
     }(Listener);
@@ -4966,7 +5718,625 @@ window.__require = function e(t, n, r) {
     }(EquipItemsWithListener);
     Equip14.id = 14;
     Equip14.equip_name = "\u98de\u71d5";
-    Equip14.description = "\u653b\u51fb\u9020\u6210\u7684\u4f24\u5bb3\u63d0\u534710X%(X\u4e3a\u4f60\u4e0e\u53d7\u51fb\u8005\u7684\u8ddd\u79bb)\n\n\u6bcf\u5f53\u4f60\u53d1\u52a8\u4e00\u6b21\u8bba\u5251\u4e4b\u540e\uff0c\u4e0b\u4e00\u6b21\u53ef\u4ee5\u79fb\u52a8\u81f3\u653b\u51fb\u8303\u56f4\u5185\u4efb\u610f\u4f4d\u7f6e";
+    Equip14.description = "\u653b\u51fb\u9020\u6210\u7684\u4f24\u5bb3\u63d0\u534710X%(X\u4e3a\u4f60\u4e0e\u53d7\u51fb\u8005\u7684\u8ddd\u79bb)\n\n\u6bcf\u5f53\u4f60\u53d1\u52a8\u4e00\u6b21\u8bba\u5251\u4e4b\u540e\uff0c\u4e0b\u4e00\u6b21\u53ef\u4ee5\u79fb\u52a8\u81f3\u653b\u51fb\u8303\u56f4\u5185\u4efb\u610f\u4f4d\u7f6e(\u82e5\u8fdb\u884c\u4e86\u5176\u5b83\u64cd\u4f5c\u5219\u6b64\u673a\u4f1a\u5931\u6548)";
+    Equip14.valid = true;
+    Equip14.upgrade_price = new Coin({
+      auroCoins: 50
+    });
+    Equip14.evolve_level = [ 1 ];
+    var Equip14DistanceListener = function(_Listener8) {
+      _inheritsLoose(Equip14DistanceListener, _Listener8);
+      function Equip14DistanceListener() {
+        return _Listener8.apply(this, arguments) || this;
+      }
+      var _proto22 = Equip14DistanceListener.prototype;
+      _proto22.init = function init() {
+        _Listener8.prototype.init.apply(this, arguments);
+        this.value = 0;
+      };
+      _proto22.check = function check(player1, player2, kwargs) {
+        if (this.owner.code != player1.code) return;
+        kwargs.damage.value *= 1 + player1.distance(player2) * this.value;
+      };
+      return Equip14DistanceListener;
+    }(Listener);
+    var Equip14ChallengeEnhanceMoveListener = function(_Listener9) {
+      _inheritsLoose(Equip14ChallengeEnhanceMoveListener, _Listener9);
+      function Equip14ChallengeEnhanceMoveListener() {
+        return _Listener9.apply(this, arguments) || this;
+      }
+      var _proto23 = Equip14ChallengeEnhanceMoveListener.prototype;
+      _proto23.check = function check(player1, player2) {
+        if (!this.checkOwner(player1)) return;
+        player1.spellList[0].disabled = true;
+        player1.spellList[0] = new Equip14EnhancedMoveSpell(player1);
+      };
+      return Equip14ChallengeEnhanceMoveListener;
+    }(Listener);
+    var Equip14OperateResetMoveListener = function(_Listener10) {
+      _inheritsLoose(Equip14OperateResetMoveListener, _Listener10);
+      function Equip14OperateResetMoveListener() {
+        return _Listener10.apply(this, arguments) || this;
+      }
+      var _proto24 = Equip14OperateResetMoveListener.prototype;
+      _proto24.init = function init() {
+        _Listener10.prototype.init.apply(this, arguments);
+        this.time = 1;
+      };
+      _proto24.check = function check(player) {
+        if (!this.checkOwner(player)) return;
+        if (this.time > 0) this.time--; else {
+          this.disabled = true;
+          player.spellList[0].disabled = true;
+          player.spellList[0] = new MoveSpell(player);
+        }
+      };
+      return Equip14OperateResetMoveListener;
+    }(Listener);
+    Equip1.iconUrl = "weapon/\u521d\u8292.png";
+    Equip2.iconUrl = "weapon/\u7389\u9aa8.png";
+    Equip3.iconUrl = "weapon/\u7eaf\u94a7.png";
+    Equip4.iconUrl = "weapon/\u4e3d\u83ba.png";
+    Equip5.iconUrl = "weapon/\u661f\u7fce.png";
+    Equip6.iconUrl = "weapon/\u6d45\u6d77.png";
+    Equip7.iconUrl = "weapon/\u660e\u6e0a.png";
+    Equip8.iconUrl = "weapon/\u8840\u854a.png";
+    Equip9.iconUrl = "weapon/\u7384\u725d.png";
+    Equip10.iconUrl = "weapon/\u58a8\u708e.png";
+    Equip11.iconUrl = "weapon/\u96e8\u9701.png";
+    Equip12.iconUrl = "weapon/\u9752\u6eaa.png";
+    Equip13.iconUrl = "weapon/\u7075\u6cc9.png";
+    Equip14.iconUrl = "weapon/\u98de\u71d5.png";
+    module.exports = {
+      Equip0: Equip0,
+      Equip1: Equip1,
+      Equip1AttackSpeedUpListener: Equip1AttackSpeedUpListener,
+      Equip2: Equip2,
+      Equip3: Equip3,
+      Equip4: Equip4,
+      Equip5: Equip5,
+      Equip6: Equip6,
+      Equip6AttackWeakenListener: Equip6AttackWeakenListener,
+      Equip7: Equip7,
+      Equip8: Equip8,
+      Equip9: Equip9,
+      Equip9AttackAllListener: Equip9AttackAllListener,
+      Equip10: Equip10,
+      Equip10AddPyroSignListener: Equip10AddPyroSignListener,
+      Equip11: Equip11,
+      Equip11AddHydroSignListener: Equip11AddHydroSignListener,
+      Equip12: Equip12,
+      Equip12EnergyRecoveringListener: Equip12EnergyRecoveringListener,
+      Equip13: Equip13,
+      Equip13CoinsListener: Equip13CoinsListener,
+      Equip14: Equip14,
+      Equip14DistanceListener: Equip14DistanceListener,
+      Equip14ChallengeEnhanceMoveListener: Equip14ChallengeEnhanceMoveListener,
+      Equip14OperateResetMoveListener: Equip14OperateResetMoveListener
+    };
+    var OriginMonitors_1 = require("./OriginMonitors-clas0.0.3");
+    var _require4 = require("./constants/timeConstants-clas0.0.3"), ENDLESS_TIME = _require4.ENDLESS_TIME, ENTER_TIME = _require4.ENTER_TIME;
+    var typeUtils_1 = require("./utils/typeUtils-clas0.0.3");
+    var _require5 = require("./Buffs-clas0.0.3"), DecreaseSpeedBuff = _require5.DecreaseSpeedBuff;
+    var _require6 = require("./Spell-clas0.0.3"), Equip14EnhancedMoveSpell = _require6.Equip14EnhancedMoveSpell, MoveSpell = _require6.MoveSpell;
+    var _require7 = require("./utils/mapUtils-clas0.0.3"), getItemIn33 = _require7.getItemIn33;
+    cc._RF.pop();
+  }, {
+    "./Buffs-clas0.0.3": "Buffs-clas0.0.3",
+    "./OriginMonitors-clas0.0.3": "OriginMonitors-clas0.0.3",
+    "./Spell-clas0.0.3": "Spell-clas0.0.3",
+    "./constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "./objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "./templates/EquipItems-clas0.0.3": "EquipItems-clas0.0.3",
+    "./templates/Listeners-clas0.0.3": "Listeners-clas0.0.3",
+    "./utils/mapUtils-clas0.0.3": "mapUtils-clas0.0.3",
+    "./utils/typeUtils-clas0.0.3": "typeUtils-clas0.0.3"
+  } ],
+  Equips: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "2d3f5A+KrpJfYsacpehGI9W", "Equips");
+    "use strict";
+    function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+      var it = "undefined" !== typeof Symbol && o[Symbol.iterator] || o["@@iterator"];
+      if (it) return (it = it.call(o)).next.bind(it);
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && "number" === typeof o.length) {
+        it && (o = it);
+        var i = 0;
+        return function() {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        };
+      }
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if ("string" === typeof o) return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      "Object" === n && o.constructor && (n = o.constructor.name);
+      if ("Map" === n || "Set" === n) return Array.from(o);
+      if ("Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+    function _arrayLikeToArray(arr, len) {
+      (null == len || len > arr.length) && (len = arr.length);
+      for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+      return arr2;
+    }
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./templates/EquipItems"), EquipItems = _require.EquipItems, EquipItemsWithListener = _require.EquipItemsWithListener;
+    var _require2 = require("./objects/Coin"), Coin = _require2.Coin;
+    var _require3 = require("./templates/Listeners"), Listener = _require3.Listener;
+    var Equip0 = function(_EquipItems) {
+      _inheritsLoose(Equip0, _EquipItems);
+      function Equip0() {
+        return _EquipItems.apply(this, arguments) || this;
+      }
+      return Equip0;
+    }(EquipItems);
+    Equip0.id = 0;
+    Equip0.equip_name = "placeHolder";
+    Equip0.description = "placeHolder";
+    Equip0.valid = false;
+    Equip0.upgrade_price = new Coin({});
+    var Equip1 = function(_EquipItemsWithListen) {
+      _inheritsLoose(Equip1, _EquipItemsWithListen);
+      function Equip1() {
+        return _EquipItemsWithListen.apply(this, arguments) || this;
+      }
+      var _proto = Equip1.prototype;
+      _proto.init = function init(owner) {
+        _EquipItemsWithListen.prototype.init.call(this, owner);
+        this.listener = new Equip1AttackSpeedUpListener(owner, ENDLESS_TIME);
+        this.game.listeners.AttackListeners.push(this.listener);
+      };
+      _proto.evolve = function evolve() {
+        this.listener.grow += .01;
+      };
+      return Equip1;
+    }(EquipItemsWithListener);
+    Equip1.id = 1;
+    Equip1.equip_name = "\u521d\u8292";
+    Equip1.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u63d0\u5347\u81ea\u8eab0.02\u7684\u7075\u529b";
+    Equip1.valid = true;
+    Equip1.upgrade_price = new Coin({
+      baseCoins: 50
+    });
+    var Equip1AttackSpeedUpListener = function(_Listener) {
+      _inheritsLoose(Equip1AttackSpeedUpListener, _Listener);
+      function Equip1AttackSpeedUpListener() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto2 = Equip1AttackSpeedUpListener.prototype;
+      _proto2.init = function init() {
+        _Listener.prototype.init.apply(this, arguments);
+        this.grow = .01;
+      };
+      _proto2.check = function check(player1, player2) {
+        if (player1.code != this.owner.code) return;
+        this.game.addLog("\u201c\u521d\u8292\u201d\u7684\u6548\u679c\u89e6\u53d1", 3);
+        this.game.addLog("", 4);
+        player1.updateSpeed(this.grow);
+      };
+      return Equip1AttackSpeedUpListener;
+    }(Listener);
+    var Equip2 = function(_EquipItems2) {
+      _inheritsLoose(Equip2, _EquipItems2);
+      function Equip2() {
+        return _EquipItems2.apply(this, arguments) || this;
+      }
+      var _proto3 = Equip2.prototype;
+      _proto3.evolve = function evolve() {
+        this.owner.grow += .01;
+      };
+      return Equip2;
+    }(EquipItems);
+    Equip2.id = 2;
+    Equip2.equip_name = "\u7389\u9aa8";
+    Equip2.description = "\u6bcf\u6b21\u9020\u6210100\u70b9\u7269\u7406\u4f24\u5bb3\u65f6\uff0c\u83b7\u5f97\u989d\u5916\u76840.01\u7684\u7075\u529b\u63d0\u5347";
+    Equip2.valid = true;
+    Equip2.upgrade_price = new Coin({
+      auroCoins: 50
+    });
+    var Equip3 = function(_EquipItems3) {
+      _inheritsLoose(Equip3, _EquipItems3);
+      function Equip3() {
+        return _EquipItems3.apply(this, arguments) || this;
+      }
+      var _proto4 = Equip3.prototype;
+      _proto4.evolve = function evolve() {
+        this.owner.damage += 50;
+      };
+      return Equip3;
+    }(EquipItems);
+    Equip3.id = 3;
+    Equip3.equip_name = "\u7eaf\u94a7";
+    Equip3.description = "\u653b\u51fb\u529b\u63d0\u534750";
+    Equip3.valid = true;
+    Equip3.upgrade_price = new Coin({
+      auroCoins: 50
+    });
+    Equip3.evolve_level = [ 1, 5, 8, 11, 14, 16, 18, 20 ];
+    var Equip4 = function(_EquipItems4) {
+      _inheritsLoose(Equip4, _EquipItems4);
+      function Equip4() {
+        return _EquipItems4.apply(this, arguments) || this;
+      }
+      var _proto5 = Equip4.prototype;
+      _proto5.evolve = function evolve() {
+        this.owner.minusAspd(.5);
+      };
+      return Equip4;
+    }(EquipItems);
+    Equip4.id = 4;
+    Equip4.equip_name = "\u4e3d\u83ba";
+    Equip4.description = "\u653b\u51fb\u95f4\u9694\u964d\u4f4e0.5";
+    Equip4.valid = true;
+    Equip4.upgrade_price = new Coin({
+      auroCoins: 50
+    });
+    var Equip5 = function(_EquipItems5) {
+      _inheritsLoose(Equip5, _EquipItems5);
+      function Equip5() {
+        return _EquipItems5.apply(this, arguments) || this;
+      }
+      var _proto6 = Equip5.prototype;
+      _proto6.evolve = function evolve() {
+        this.owner.scope += .5;
+      };
+      return Equip5;
+    }(EquipItems);
+    Equip5.id = 5;
+    Equip5.equip_name = "\u661f\u7fce";
+    Equip5.description = "\u653b\u51fb\u8303\u56f4\u589e\u52a00.5\u683c";
+    Equip5.valid = true;
+    Equip5.upgrade_price = new Coin({
+      pyroCoins: 50
+    });
+    Equip5.evolve_level = [ 1, 4, 7, 10, 13, 16, 18, 20 ];
+    var Equip6 = function(_EquipItemsWithListen2) {
+      _inheritsLoose(Equip6, _EquipItemsWithListen2);
+      function Equip6() {
+        return _EquipItemsWithListen2.apply(this, arguments) || this;
+      }
+      var _proto7 = Equip6.prototype;
+      _proto7.init = function init(owner) {
+        _EquipItemsWithListen2.prototype.init.call(this, owner);
+        this.listener = new Equip6AttackWeakenListener(owner, ENDLESS_TIME);
+        this.game.listeners.AttackListeners.push(this.listener);
+      };
+      _proto7.evolve = function evolve() {
+        this.listener.weaken -= .1;
+      };
+      return Equip6;
+    }(EquipItemsWithListener);
+    Equip6.id = 6;
+    Equip6.equip_name = "\u6d45\u6d77";
+    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u654c\u65b93*3\u8303\u56f4\u51850.1\u7684\u52bf\u529b";
+    Equip6.valid = true;
+    Equip6.upgrade_price = new Coin({
+      geoCoins: 50
+    });
+    Equip6.evolve_level = [ 1, 5, 9, 13, 17, 20 ];
+    var Equip6AttackWeakenListener = function(_Listener2) {
+      _inheritsLoose(Equip6AttackWeakenListener, _Listener2);
+      function Equip6AttackWeakenListener() {
+        return _Listener2.apply(this, arguments) || this;
+      }
+      var _proto8 = Equip6AttackWeakenListener.prototype;
+      _proto8.init = function init() {
+        _Listener2.prototype.init.apply(this, arguments);
+        this.weaken = -.1;
+      };
+      _proto8.check = function check(player1, player2) {
+        var _this = this;
+        if (player1.code != this.owner.code) return;
+        this.game.addLog("\u201c\u6d45\u6d77\u201d\u7684\u524a\u5f31\u6548\u679c\u89e6\u53d1", 3);
+        getItemIn33(player2).forEach(function(item) {
+          new DecreaseSpeedBuff(item, ENTER_TIME, _this.weaken);
+        });
+      };
+      return Equip6AttackWeakenListener;
+    }(Listener);
+    var Equip7 = function(_EquipItemsWithListen3) {
+      _inheritsLoose(Equip7, _EquipItemsWithListen3);
+      function Equip7() {
+        return _EquipItemsWithListen3.apply(this, arguments) || this;
+      }
+      var _proto9 = Equip7.prototype;
+      _proto9.init = function init(owner) {
+        _EquipItemsWithListen3.prototype.init.call(this, owner);
+        for (var _iterator = _createForOfIteratorHelperLoose(this.game.unitDict.values()), _step; !(_step = _iterator()).done; ) {
+          var item = _step.value;
+          if ("RefreshChallengeTimeMonitors" == item.type) {
+            this.listener = item;
+            break;
+          }
+        }
+      };
+      _proto9.evolve = function evolve() {
+        var player_id = this.owner.code;
+        this.listener.challenge_time[player_id] += 1;
+      };
+      return Equip7;
+    }(EquipItemsWithListener);
+    Equip7.id = 7;
+    Equip7.equip_name = "\u7384\u725d";
+    Equip7.description = "\u6bcf\u6b21\u4fee\u884c\u53ef\u4ee5\u989d\u5916\u53d1\u52a8\u4e00\u6b21\u8bba\u5251";
+    Equip7.valid = true;
+    Equip7.upgrade_price = new Coin({
+      geoCoins: 50
+    });
+    Equip7.evolve_level = [ 1, 7, 12, 16, 20 ];
+    var Equip8 = function(_EquipItemsWithListen4) {
+      _inheritsLoose(Equip8, _EquipItemsWithListen4);
+      function Equip8() {
+        return _EquipItemsWithListen4.apply(this, arguments) || this;
+      }
+      var _proto10 = Equip8.prototype;
+      _proto10.init = function init(owner) {
+        _EquipItemsWithListen4.prototype.init.call(this, owner);
+        this.listener = (0, typeUtils_1.findOneItemByType)(this.game, "AttackCriticalMonitors");
+      };
+      _proto10.evolve = function evolve() {
+        var player_id = this.owner.code;
+        this.listener.critical_digits[player_id].push(Equip8.critical_points.get(this.level));
+      };
+      return Equip8;
+    }(EquipItemsWithListener);
+    Equip8.id = 8;
+    Equip8.equip_name = "\u8840\u854a";
+    Equip8.description = "\u653b\u51fb\u7b2c\u4e09\u4f4d\u4e3a3\u7684\u4e5f\u53ef\u4ee5\u4ea7\u751f\u66b4\u51fb";
+    Equip8.valid = true;
+    Equip8.upgrade_price = new Coin({
+      geoCoins: 50
+    });
+    Equip8.critical_points = new Map([ [ 1, 3 ], [ 6, 9 ], [ 10, 1 ], [ 13, 5 ], [ 16, 2 ], [ 17, 4 ], [ 18, 6 ], [ 19, 8 ], [ 20, 0 ] ]);
+    var Equip9 = function(_EquipItemsWithListen5) {
+      _inheritsLoose(Equip9, _EquipItemsWithListen5);
+      function Equip9() {
+        return _EquipItemsWithListen5.apply(this, arguments) || this;
+      }
+      var _proto11 = Equip9.prototype;
+      _proto11.init = function init(owner) {
+        _EquipItemsWithListen5.prototype.init.call(this, owner);
+        this.listener = new Equip9AttackAllListener(owner, ENDLESS_TIME);
+        this.game.listeners.ChallengeListeners.push(this.listener);
+      };
+      _proto11.evolve = function evolve() {
+        this.listener.attack_times++;
+      };
+      return Equip9;
+    }(EquipItemsWithListener);
+    Equip9.id = 9;
+    Equip9.equip_name = "\u660e\u6e0a";
+    Equip9.description = "\u8bba\u5251\u65f6\u4f1a\u5bf9\u653b\u51fb\u8303\u56f4\u5185\u7684\u6240\u6709\u5355\u4f4d\uff08\u9664\u81ea\u5df1\u5916\uff09\u53d1\u52a8\u4e00\u6b21\u989d\u5916\u653b\u51fb";
+    Equip9.valid = true;
+    Equip9.upgrade_price = new Coin({
+      hydroCoins: 50
+    });
+    Equip9.evolve_level = [ 1, 7, 12, 16, 20 ];
+    var Equip9AttackAllListener = function(_Listener3) {
+      _inheritsLoose(Equip9AttackAllListener, _Listener3);
+      function Equip9AttackAllListener() {
+        return _Listener3.apply(this, arguments) || this;
+      }
+      var _proto12 = Equip9AttackAllListener.prototype;
+      _proto12.init = function init() {
+        _Listener3.prototype.init.apply(this, arguments);
+        this.attack_times = 0;
+      };
+      _proto12.check = function check(player1, player2) {
+        if (player1.code != this.owner.code) return;
+        for (var i = 0; i < this.attack_times; i++) player1.itemsInScope().forEach(function(item) {
+          player1.attack(item);
+        });
+      };
+      return Equip9AttackAllListener;
+    }(Listener);
+    var Equip10 = function(_EquipItemsWithListen6) {
+      _inheritsLoose(Equip10, _EquipItemsWithListen6);
+      function Equip10() {
+        return _EquipItemsWithListen6.apply(this, arguments) || this;
+      }
+      var _proto13 = Equip10.prototype;
+      _proto13.init = function init(owner) {
+        _EquipItemsWithListen6.prototype.init.call(this, owner);
+        this.listener = new Equip10AddPyroSignListener(owner, ENDLESS_TIME);
+        this.game.listeners.AttackListeners.push(this.listener);
+      };
+      _proto13.evolve = function evolve() {};
+      return Equip10;
+    }(EquipItemsWithListener);
+    Equip10.id = 10;
+    Equip10.equip_name = "\u58a8\u708e";
+    Equip10.description = "\u6bcf\u6b21\u653b\u51fb\u4ea7\u751f\u66b4\u51fb\u65f6\u5bf9\u53d7\u51fb\u8005\u53e0\u52a03\u5c42\u706b\u5370\u8bb0";
+    Equip10.valid = true;
+    Equip10.upgrade_price = new Coin({
+      pyroCoins: 50
+    });
+    Equip10.evolve_level = [ 1 ];
+    var Equip10AddPyroSignListener = function(_Listener4) {
+      _inheritsLoose(Equip10AddPyroSignListener, _Listener4);
+      function Equip10AddPyroSignListener() {
+        return _Listener4.apply(this, arguments) || this;
+      }
+      var _proto14 = Equip10AddPyroSignListener.prototype;
+      _proto14.check = function check(player1, player2, kwargs) {
+        if (kwargs.critical) {
+          if (player1.code != this.owner.code) return;
+          this.game.addLog('\u201c\u58a8\u708e\u201d\u7684\u6548\u679c\u89e6\u53d1\uff0c{"code":' + player2.code + "}\u53e0\u52a03\u5c42\u706b\u5370\u8bb0", 3);
+          player2.pyroSign += 3;
+        }
+      };
+      return Equip10AddPyroSignListener;
+    }(Listener);
+    var Equip11 = function(_EquipItemsWithListen7) {
+      _inheritsLoose(Equip11, _EquipItemsWithListen7);
+      function Equip11() {
+        return _EquipItemsWithListen7.apply(this, arguments) || this;
+      }
+      var _proto15 = Equip11.prototype;
+      _proto15.init = function init(owner) {
+        _EquipItemsWithListen7.prototype.init.call(this, owner);
+        this.listener = new Equip11AddHydroSignListener(owner, ENDLESS_TIME);
+        this.game.listeners.AttackListeners.push(this.listener);
+      };
+      _proto15.evolve = function evolve() {};
+      return Equip11;
+    }(EquipItemsWithListener);
+    Equip11.id = 11;
+    Equip11.equip_name = "\u96e8\u9701";
+    Equip11.description = "\u6bcf\u6b21\u653b\u51fb\u4ea7\u751f\u66b4\u51fb\u65f6\u5bf9\u53d7\u51fb\u8005\u53e0\u52a0\u4e00\u5c42\u6c34\u5370\u8bb0\uff0c\u82e5\u8be5\u89d2\u8272\u5df2\u6709\u4e00\u5c42\u6c34\u5370\u8bb0\uff0c\u5219\u4f60\u83b7\u5f970.27\u7684\u4fee\u4e3a\u63d0\u5347";
+    Equip11.valid = true;
+    Equip11.upgrade_price = new Coin({
+      hydroCoins: 50
+    });
+    Equip11.buy_price = new Coin({
+      hydroCoins: 200
+    });
+    Equip11.evolve_level = [ 1 ];
+    var Equip11AddHydroSignListener = function(_Listener5) {
+      _inheritsLoose(Equip11AddHydroSignListener, _Listener5);
+      function Equip11AddHydroSignListener() {
+        return _Listener5.apply(this, arguments) || this;
+      }
+      var _proto16 = Equip11AddHydroSignListener.prototype;
+      _proto16.check = function check(player1, player2, kwargs) {
+        if (kwargs.critical) {
+          if (player1.code != this.owner.code) return;
+          this.game.addLog('\u201c\u96e8\u9701\u201d\u7684\u6548\u679c\u89e6\u53d1\uff0c{"code":' + player2.code + "}\u53e0\u52a01\u5c42\u6c34\u5370\u8bb0", 3);
+          player2.hydroSign > 0 ? player1.updateSpeed(.27) : player2.hydroSign++;
+        }
+      };
+      return Equip11AddHydroSignListener;
+    }(Listener);
+    var Equip12 = function(_EquipItemsWithListen8) {
+      _inheritsLoose(Equip12, _EquipItemsWithListen8);
+      function Equip12() {
+        return _EquipItemsWithListen8.apply(this, arguments) || this;
+      }
+      var _proto17 = Equip12.prototype;
+      _proto17.init = function init(owner) {
+        _EquipItemsWithListen8.prototype.init.call(this, owner);
+        this.listener = new Equip12EnergyRecoveringListener(owner, ENDLESS_TIME);
+        this.game.listeners.AttackListeners.push(this.listener);
+      };
+      _proto17.evolve = function evolve() {
+        this.listener.recover += 20;
+      };
+      return Equip12;
+    }(EquipItemsWithListener);
+    Equip12.id = 12;
+    Equip12.equip_name = "\u9752\u6eaa";
+    Equip12.description = "\u6bcf\u6b21\u653b\u51fb\u56de\u590d20\u70b9\u5185\u529b";
+    Equip12.valid = true;
+    Equip12.upgrade_price = new Coin({
+      hydroCoins: 50
+    });
+    Equip12.evolve_level = [ 1 ];
+    var Equip12EnergyRecoveringListener = function(_Listener6) {
+      _inheritsLoose(Equip12EnergyRecoveringListener, _Listener6);
+      function Equip12EnergyRecoveringListener() {
+        return _Listener6.apply(this, arguments) || this;
+      }
+      var _proto18 = Equip12EnergyRecoveringListener.prototype;
+      _proto18.init = function init() {
+        _Listener6.prototype.init.apply(this, arguments);
+        this.recover = 20;
+      };
+      _proto18.check = function check(player1, player2) {
+        player1.code == this.owner.code && this.game.addLog("\u201c\u9752\u6eaa\u201d\u7684\u6548\u679c\u89e6\u53d1\uff0c\u73a9\u5bb61\u56de\u590d20\u70b9\u5185\u529b\u503c", 3);
+        player1.energy += this.recover;
+      };
+      return Equip12EnergyRecoveringListener;
+    }(Listener);
+    var Equip13 = function(_EquipItemsWithListen9) {
+      _inheritsLoose(Equip13, _EquipItemsWithListen9);
+      function Equip13() {
+        return _EquipItemsWithListen9.apply(this, arguments) || this;
+      }
+      var _proto19 = Equip13.prototype;
+      _proto19.init = function init(owner) {
+        _EquipItemsWithListen9.prototype.init.call(this, owner);
+        this.listener = new Equip13CoinsListener(owner, ENDLESS_TIME);
+        this.game.listeners.CoinListeners.push(this.listener);
+      };
+      _proto19.evolve = function evolve() {
+        if (1 == this.level) {
+          this.listener.improve = .01;
+          this.listener.deprove = .99;
+        } else {
+          this.listener.improve += .001;
+          this.listener.deprove += .001;
+        }
+      };
+      return Equip13;
+    }(EquipItemsWithListener);
+    Equip13.id = 13;
+    Equip13.equip_name = "\u7075\u6cc9";
+    Equip13.description = "\u6bcf\u5f53\u4f60\u83b7\u5f9710\u679a\u91d1\u7075\u77f3/\u6c34\u7075\u77f3/\u706b\u7075\u77f3\uff0c\u7075\u529b\u63d0\u53470.01\u3002\u6bcf\u5f53\u4f60\u5931\u53bb10\u679a\u91d1\u7075\u77f3/\u6c34\u7075\u77f3/\u706b\u7075\u77f3\uff0c\u4fee\u4e3a\u964d\u4f4e0.01";
+    Equip13.valid = true;
+    Equip13.upgrade_price = new Coin({
+      geoCoins: 50
+    });
+    Equip13.evolve_level = [ 1 ];
+    var Equip13CoinsListener = function(_Listener7) {
+      _inheritsLoose(Equip13CoinsListener, _Listener7);
+      function Equip13CoinsListener() {
+        return _Listener7.apply(this, arguments) || this;
+      }
+      var _proto20 = Equip13CoinsListener.prototype;
+      _proto20.init = function init() {
+        _Listener7.prototype.init.apply(this, arguments);
+        this.improve = 1.001;
+        this.deprove = .999;
+      };
+      _proto20.check = function check(player1, coins) {
+        if (this.owner.code != player1.code) return;
+        var num = Math.floor((coins.totalValue() - coins.baseCoins) / 10);
+        if (0 == num) return;
+        this.game.addLog("\u201c\u7075\u6cc9\u201d\u7684\u6548\u679c\u89e6\u53d1", -1);
+        player1.updateSpeed(this.improve * num);
+      };
+      return Equip13CoinsListener;
+    }(Listener);
+    var Equip14 = function(_EquipItemsWithListen10) {
+      _inheritsLoose(Equip14, _EquipItemsWithListen10);
+      function Equip14() {
+        return _EquipItemsWithListen10.apply(this, arguments) || this;
+      }
+      var _proto21 = Equip14.prototype;
+      _proto21.init = function init(owner) {
+        _EquipItemsWithListen10.prototype.init.call(this, owner);
+        this.listener = new Equip14DistanceListener(owner, ENDLESS_TIME);
+        this.game.listeners.AttackListeners.push(this.listener);
+        this.game.listeners.ChallengeListeners.push(new Equip14ChallengeEnhanceMoveListener(owner, ENDLESS_TIME));
+        this.game.listeners.OperateListeners.push(new Equip14OperateResetMoveListener(owner, ENDLESS_TIME));
+      };
+      _proto21.evolve = function evolve() {
+        this.listener.value += .1;
+      };
+      return Equip14;
+    }(EquipItemsWithListener);
+    Equip14.id = 14;
+    Equip14.equip_name = "\u98de\u71d5";
+    Equip14.description = "\u653b\u51fb\u9020\u6210\u7684\u4f24\u5bb3\u63d0\u534710X%(X\u4e3a\u4f60\u4e0e\u53d7\u51fb\u8005\u7684\u8ddd\u79bb)\n\n\u6bcf\u5f53\u4f60\u53d1\u52a8\u4e00\u6b21\u8bba\u5251\u4e4b\u540e\uff0c\u4e0b\u4e00\u6b21\u53ef\u4ee5\u79fb\u52a8\u81f3\u653b\u51fb\u8303\u56f4\u5185\u4efb\u610f\u4f4d\u7f6e(\u82e5\u8fdb\u884c\u4e86\u5176\u5b83\u64cd\u4f5c\u5219\u6b64\u673a\u4f1a\u5931\u6548)";
     Equip14.valid = true;
     Equip14.upgrade_price = new Coin({
       auroCoins: 50
@@ -5066,7 +6436,7 @@ window.__require = function e(t, n, r) {
     var _require4 = require("./constants/timeConstants"), ENDLESS_TIME = _require4.ENDLESS_TIME, ENTER_TIME = _require4.ENTER_TIME;
     var typeUtils_1 = require("./utils/typeUtils");
     var _require5 = require("./Buffs"), DecreaseSpeedBuff = _require5.DecreaseSpeedBuff;
-    var _require6 = require("./Spell"), Equip14EnhancedMoveSpell = _require6.Equip14EnhancedMoveSpell;
+    var _require6 = require("./Spell"), Equip14EnhancedMoveSpell = _require6.Equip14EnhancedMoveSpell, MoveSpell = _require6.MoveSpell;
     var _require7 = require("./utils/mapUtils"), getItemIn33 = _require7.getItemIn33;
     cc._RF.pop();
   }, {
@@ -10585,6 +11955,95 @@ window.__require = function e(t, n, r) {
     "../templates/Listeners-clas0.0.2": "Listeners-clas0.0.2",
     "../wheels/TypeDict-clas0.0.2": "TypeDict-clas0.0.2"
   } ],
+  "ForgeListeners-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "35af4KwLkxAObMEOyfEQu6B", "ForgeListeners-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../templates/Listeners-clas0.0.3"), Listener = _require.Listener;
+    var ForgeListener = function(_Listener) {
+      _inheritsLoose(ForgeListener, _Listener);
+      function ForgeListener() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto = ForgeListener.prototype;
+      _proto.init = function init(owner, item) {
+        _Listener.prototype.init.call(this, owner, 30 * ONE_MINUTES);
+        this.item = item;
+      };
+      return ForgeListener;
+    }(Listener);
+    var UpgradeEquipListener = function(_ForgeListener) {
+      _inheritsLoose(UpgradeEquipListener, _ForgeListener);
+      function UpgradeEquipListener() {
+        return _ForgeListener.apply(this, arguments) || this;
+      }
+      var _proto2 = UpgradeEquipListener.prototype;
+      _proto2.expire = function expire() {
+        var equip = this.item;
+        var clazz = typeDict[equip.type];
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 1);
+        equip.upgrade();
+        equip.level in clazz.evolve_level && equip.evolve();
+      };
+      return UpgradeEquipListener;
+    }(ForgeListener);
+    var ForgeSpellListener = function(_ForgeListener2) {
+      _inheritsLoose(ForgeSpellListener, _ForgeListener2);
+      function ForgeSpellListener() {
+        return _ForgeListener2.apply(this, arguments) || this;
+      }
+      var _proto3 = ForgeSpellListener.prototype;
+      _proto3.expire = function expire() {
+        var clazz = typeDict[this.item.type];
+        this.game.addLog(logItem(this.owner) + "\u7684\u7075\u7b26\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 1);
+        this.item.num++;
+      };
+      return ForgeSpellListener;
+    }(ForgeListener);
+    var ForgeEquipListener = function(_ForgeListener3) {
+      _inheritsLoose(ForgeEquipListener, _ForgeListener3);
+      function ForgeEquipListener() {
+        return _ForgeListener3.apply(this, arguments) || this;
+      }
+      var _proto4 = ForgeEquipListener.prototype;
+      _proto4.expire = function expire() {
+        var clazz = typeDict[this.item];
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 1);
+        var equip = new clazz(this.owner);
+        this.owner.equipList.push(equip);
+        equip.upgrade();
+        equip.level in clazz.evolve_level && equip.evolve();
+      };
+      return ForgeEquipListener;
+    }(ForgeListener);
+    module.exports = {
+      ForgeListener: ForgeListener,
+      UpgradeEquipListener: UpgradeEquipListener,
+      ForgeSpellListener: ForgeSpellListener,
+      ForgeEquipListener: ForgeEquipListener
+    };
+    var _require2 = require("../wheels/TypeDict-clas0.0.3"), Equips = _require2.Equips, typeDict = _require2.typeDict;
+    var _require3 = require("../constants/timeConstants-clas0.0.3"), ENTER_TIME = _require3.ENTER_TIME, ONE_MINUTES = _require3.ONE_MINUTES;
+    var _require4 = require("../loggers/logUtils-clas0.0.3"), logItem = _require4.logItem;
+    cc._RF.pop();
+  }, {
+    "../constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "../loggers/logUtils-clas0.0.3": "logUtils-clas0.0.3",
+    "../templates/Listeners-clas0.0.3": "Listeners-clas0.0.3",
+    "../wheels/TypeDict-clas0.0.3": "TypeDict-clas0.0.3"
+  } ],
   ForgeListeners: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "6a5d3bJ0kRPPr/I5vLPAzZ+", "ForgeListeners");
@@ -10623,7 +12082,7 @@ window.__require = function e(t, n, r) {
       _proto2.expire = function expire() {
         var equip = this.item;
         var clazz = typeDict[equip.type];
-        this.game.addLog(logItem(this) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 1);
         equip.upgrade();
         equip.level in clazz.evolve_level && equip.evolve();
       };
@@ -10637,7 +12096,7 @@ window.__require = function e(t, n, r) {
       var _proto3 = ForgeSpellListener.prototype;
       _proto3.expire = function expire() {
         var clazz = typeDict[this.item.type];
-        this.game.addLog(logItem(this) + "\u7684\u7b26\u7b93\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u7075\u7b26\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 1);
         this.item.num++;
       };
       return ForgeSpellListener;
@@ -10650,7 +12109,7 @@ window.__require = function e(t, n, r) {
       var _proto4 = ForgeEquipListener.prototype;
       _proto4.expire = function expire() {
         var clazz = typeDict[this.item];
-        this.game.addLog(logItem(this) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 1);
         var equip = new clazz(this.owner);
         this.owner.equipList.push(equip);
         equip.upgrade();
@@ -10659,6 +12118,7 @@ window.__require = function e(t, n, r) {
       return ForgeEquipListener;
     }(ForgeListener);
     module.exports = {
+      ForgeListener: ForgeListener,
       UpgradeEquipListener: UpgradeEquipListener,
       ForgeSpellListener: ForgeSpellListener,
       ForgeEquipListener: ForgeEquipListener
@@ -11537,6 +12997,439 @@ window.__require = function e(t, n, r) {
     "./wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2",
     heap: 39
   } ],
+  "Game-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "e8ad4cZYN1GxJ0R0iilTV0A", "Game-clas0.0.3");
+    "use strict";
+    function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+      var it = "undefined" !== typeof Symbol && o[Symbol.iterator] || o["@@iterator"];
+      if (it) return (it = it.call(o)).next.bind(it);
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && "number" === typeof o.length) {
+        it && (o = it);
+        var i = 0;
+        return function() {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        };
+      }
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if ("string" === typeof o) return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      "Object" === n && o.constructor && (n = o.constructor.name);
+      if ("Map" === n || "Set" === n) return Array.from(o);
+      if ("Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+    function _arrayLikeToArray(arr, len) {
+      (null == len || len > arr.length) && (len = arr.length);
+      for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+      return arr2;
+    }
+    function _wrapNativeSuper(Class) {
+      var _cache = "function" === typeof Map ? new Map() : void 0;
+      _wrapNativeSuper = function _wrapNativeSuper(Class) {
+        if (null === Class || !_isNativeFunction(Class)) return Class;
+        if ("function" !== typeof Class) throw new TypeError("Super expression must either be null or a function");
+        if ("undefined" !== typeof _cache) {
+          if (_cache.has(Class)) return _cache.get(Class);
+          _cache.set(Class, Wrapper);
+        }
+        function Wrapper() {
+          return _construct(Class, arguments, _getPrototypeOf(this).constructor);
+        }
+        Wrapper.prototype = Object.create(Class.prototype, {
+          constructor: {
+            value: Wrapper,
+            enumerable: false,
+            writable: true,
+            configurable: true
+          }
+        });
+        return _setPrototypeOf(Wrapper, Class);
+      };
+      return _wrapNativeSuper(Class);
+    }
+    function _construct(Parent, args, Class) {
+      _construct = _isNativeReflectConstruct() ? Reflect.construct.bind() : function _construct(Parent, args, Class) {
+        var a = [ null ];
+        a.push.apply(a, args);
+        var Constructor = Function.bind.apply(Parent, a);
+        var instance = new Constructor();
+        Class && _setPrototypeOf(instance, Class.prototype);
+        return instance;
+      };
+      return _construct.apply(null, arguments);
+    }
+    function _isNativeReflectConstruct() {
+      if ("undefined" === typeof Reflect || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if ("function" === typeof Proxy) return true;
+      try {
+        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+    function _isNativeFunction(fn) {
+      return -1 !== Function.toString.call(fn).indexOf("[native code]");
+    }
+    function _getPrototypeOf(o) {
+      _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+      };
+      return _getPrototypeOf(o);
+    }
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        "value" in descriptor && (descriptor.writable = true);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
+    function _createClass(Constructor, protoProps, staticProps) {
+      protoProps && _defineProperties(Constructor.prototype, protoProps);
+      staticProps && _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
+      return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return "symbol" === typeof key ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if ("object" !== typeof input || null === input) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (void 0 !== prim) {
+        var res = prim.call(input, hint || "default");
+        if ("object" !== typeof res) return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === hint ? String : Number)(input);
+    }
+    function _assertThisInitialized(self) {
+      if (void 0 === self) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+      return self;
+    }
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./wheels/interfaces-clas0.0.3"), Item = _require.Item;
+    var Game = function(_Item) {
+      _inheritsLoose(Game, _Item);
+      function Game(data) {
+        var _this;
+        void 0 === data && (data = null);
+        _this = _Item.call(this) || this;
+        _Item.prototype.init.call(_assertThisInitialized(_this), null, false);
+        _this.code = 0;
+        _this.maxCode = 0;
+        _this.currTime = 0;
+        _this.recordNum = 0;
+        _this.map = new GameMap(_assertThisInitialized(_this));
+        _this.listeners = new ListenerDict(_assertThisInitialized(_this));
+        _this.endPQ = new EndingPQ(_assertThisInitialized(_this));
+        _this.unitDict = new ItemDict(_assertThisInitialized(_this));
+        _this.game = _assertThisInitialized(_this);
+        if (data) _this.JSONParse(data); else {
+          [ new Player(1, _assertThisInitialized(_this)), new Player(2, _assertThisInitialized(_this)), new Player(3, _assertThisInitialized(_this)) ].forEach(function(player, index) {
+            player.initialize();
+          });
+          _this.initialze();
+        }
+        return _this;
+      }
+      var _proto = Game.prototype;
+      _proto.initialze = function initialze() {
+        var dict = this.listeners;
+        dict.DamageListeners.push(new HarmImprovingMonitors(this, ENDLESS_TIME));
+        dict.DamageListeners.push(new RealDamageLogger(this, ENDLESS_TIME));
+        dict.AttackListeners.push(new AttackCriticalMonitors(this, ENDLESS_TIME));
+        dict.AttackListeners.push(new AttackDamageExecuter(this, ENDLESS_TIME));
+        dict.EnterListeners.push(new RefreshChallengeTimeMonitors(this, ENDLESS_TIME));
+        dict.InscopeCalculators.push(new BaseInScopeCalculators(this, ENDLESS_TIME));
+        new MiningMonitors(this, ONE_MINUTES);
+        new PetConvertingMonitors(this, 5 * ONE_MINUTES);
+        new SpellRecoveringMonitors(this, ONE_MINUTES);
+        var self = this;
+        edgeIndexs().forEach(function(loc, index) {
+          var y = loc[0], x = loc[1];
+          new BasePet(x, y, self.getPlayer(index % 3 + 1));
+        });
+      };
+      _proto.GenUniqueCode = function GenUniqueCode(item) {
+        var code = ++this.maxCode;
+        if (item) {
+          this.unitDict.set(code, item);
+          item.code = code;
+        }
+        return code;
+      };
+      _proto.isSleepTime = function isSleepTime() {
+        return this.currTime % 1440 < 540;
+      };
+      _proto.refreshAll = function refreshAll(time) {
+        var PQ = this.endPQ;
+        while (PQ.peekTime() <= time) {
+          this.currTime = PQ.peekTime();
+          var _obj = PQ.remove();
+          _obj.disabled = true;
+          _obj.expire();
+        }
+        this.logger && this.logger.aggregate();
+        this.currTime = time;
+      };
+      _proto.clearBuff = function clearBuff() {
+        var PQ = this.endPQ.PQ;
+        PQ.toArray().forEach(function(item) {
+          typeDict[item.type].temporary && !item.disabled && item.expire();
+        });
+      };
+      _proto.changeTime = function changeTime(time, player_index) {
+        this.currUser = this.getPlayer(player_index);
+        this.addLog("\u5728\u65e0\u4eba\u4fee\u884c\u7684\u8fd9\u6bb5\u65f6\u95f4\uff1a", 1);
+        this.refreshAll(time);
+      };
+      _proto.playerEnter = function playerEnter(time, player_index) {
+        this.changeTime(time, player_index);
+        this.addLog('{"code":' + player_index + "}\u5f00\u59cb\u4fee\u884c", 1);
+        this.listeners.EnterListeners.check(this.currUser);
+      };
+      _proto.setLevel = function setLevel(level) {
+        this.addLog('{"code":1,"x":-1,"y":-1},{"code":2,"x":-1,"y":-1},{"code":3,"x":-1,"y":-1}\u6765\u5230\u4e86' + (level + 1) + "\u7ea7\u798f\u5730\uff0c\u51c6\u5907\u5f00\u8d77\u4e00\u6bb5\u65b0\u7684\u5386\u7ec3", 1);
+        for (var i = 1; i <= 3; i++) this.getPlayer(i)._level = level + 2;
+      };
+      _proto.JSONParse = function JSONParse(obj) {
+        obj.logger && (this.logger = new BaseLoggers());
+        for (var key in obj) {
+          var value = obj[key];
+          if ("currUser" == key) {
+            var player = this.unitDict.get(value);
+            this[key] = player;
+          } else "object" == typeof value ? this[key].JSONParse(value) : this[key] = value;
+        }
+        return this;
+      };
+      _proto.JSONStringify = function JSONStringify() {
+        var _this2 = this;
+        var res = {};
+        [ "unitDict", "maxCode", "map", "listeners", "currTime", "endPQ", "record" ].forEach(function(key) {
+          var value = _this2[key];
+          res[key] = "object" == typeof value ? value.JSONStringify() : value;
+        });
+        this.currUser && (res.currUser = this.currUser.code);
+        return res;
+      };
+      _proto.getPlayer = function getPlayer(code) {
+        if (code > 3 || code < 1) return;
+        var res = this.unitDict.get(code);
+        return res;
+      };
+      _proto.nearest = function nearest(x, y, include) {
+        var temp = 9;
+        var res = [];
+        for (var i = 0; i < MAP_SIZE; i++) for (var j = 0; j < MAP_SIZE; j++) this.map[i][j] && i * MAP_SIZE + j != include[1] * MAP_SIZE + include[0] || getDistance(j, x, i, y) < temp && (res = [ j, i ]);
+        return res;
+      };
+      _proto.initForCocos = function initForCocos() {
+        this.logger = new BaseLoggers();
+        this.animationPlayer = new AnimationPlayer();
+      };
+      _proto.addLog = function addLog(sentence, level) {
+        if (!this.logger) return;
+        this.logger.addLog(this.currTime, level, sentence);
+      };
+      _proto.logStartInfo = function logStartInfo() {
+        this.addLog("\u6709\u4e09\u4f4d\u5251\u5ba2\u5f00\u542f\u4e86\u4e00\u573a\u65b0\u7684\u5386\u7ec3", 1);
+      };
+      _proto.addAnime = function addAnime(anime, options) {
+        if (!this.animationPlayer) return;
+        this.animationPlayer.push(anime);
+        if (!options) return;
+        options.postpone && (this.animationPlayer.postponeFrames += options.postpone);
+      };
+      _createClass(Game, [ {
+        key: "allMapElements",
+        get: function get() {
+          var res = [];
+          this.map.forEach(function(arr) {
+            arr.forEach(function(item) {
+              item && res.push(item);
+            });
+          });
+          return res;
+        }
+      } ]);
+      return Game;
+    }(Item);
+    var GameMap = function(_Array) {
+      _inheritsLoose(GameMap, _Array);
+      function GameMap(owner) {
+        var _this3;
+        _this3 = _Array.call(this) || this;
+        for (var i = 0; i < MAP_SIZE; i++) {
+          var arr = [];
+          for (var j = 0; j < MAP_SIZE; j++) arr.push(null);
+          _this3.push(arr);
+        }
+        _this3.owner = owner;
+        return _this3;
+      }
+      var _proto2 = GameMap.prototype;
+      _proto2.JSONStringify = function JSONStringify() {
+        return this.map(function(arr) {
+          return arr.map(function(item) {
+            return item ? item.code : null;
+          });
+        });
+      };
+      _proto2.JSONParse = function JSONParse(obj) {
+        var _this4 = this;
+        iter_36().forEach(function(loc) {
+          var x = loc[0], y = loc[1];
+          var code = obj[y][x];
+          if (!code) return;
+          var item = _this4.owner.unitDict.get(code);
+          _this4[y][x] = item;
+        });
+      };
+      return GameMap;
+    }(_wrapNativeSuper(Array));
+    var ItemDict = function(_Map) {
+      _inheritsLoose(ItemDict, _Map);
+      function ItemDict(owner) {
+        var _this5;
+        _this5 = _Map.call(this, [ [ 0, owner ] ]) || this;
+        _this5.owner = owner;
+        return _this5;
+      }
+      var _proto3 = ItemDict.prototype;
+      _proto3.JSONStringify = function JSONStringify() {
+        var unitDict = {};
+        for (var _iterator = _createForOfIteratorHelperLoose(this.entries()), _step; !(_step = _iterator()).done; ) {
+          var e = _step.value;
+          var k = e[0], v = e[1];
+          if (v["disabled"] || 0 == k) continue;
+          unitDict[k] = v.JSONStringify();
+        }
+        return unitDict;
+      };
+      _proto3.JSONParse = function JSONParse(unitDict) {
+        for (var k in unitDict) {
+          var info = unitDict[k];
+          var item = new typeDict[info.type]();
+          item.game = this.owner;
+          this.set(parseInt(k), item);
+        }
+        for (var _k in unitDict) {
+          var _info = unitDict[_k];
+          var _item = this.get(parseInt(_k));
+          _item.JSONParse(_info);
+        }
+      };
+      return ItemDict;
+    }(_wrapNativeSuper(Map));
+    var EndingPQ = function() {
+      function EndingPQ(owner) {
+        this.PQ = new heap(function(a, b) {
+          if (a.end_time == b.end_time) return a.code - b.code;
+          return a.end_time - b.end_time;
+        });
+        this.game = owner;
+      }
+      var _proto4 = EndingPQ.prototype;
+      _proto4.add = function add(obj) {
+        this.PQ.push(obj);
+      };
+      _proto4.peekTime = function peekTime() {
+        this.removeTrash();
+        return this.PQ.empty() ? Number.MAX_VALUE : this.PQ.peek().end_time;
+      };
+      _proto4.remove = function remove() {
+        this.removeTrash();
+        if (this.PQ.empty()) return null;
+        return this.PQ.pop();
+      };
+      _proto4.removeTrash = function removeTrash() {
+        while (!this.PQ.empty() && this.PQ.peek().disabled) this.PQ.pop();
+      };
+      _proto4.JSONStringify = function JSONStringify() {
+        var res = [];
+        this.PQ.toArray().forEach(function(item) {
+          item.disabled || res.push(item.code);
+        });
+        return res;
+      };
+      _proto4.JSONParse = function JSONParse(obj) {
+        var _this6 = this;
+        while (!this.PQ.empty()) this.PQ.pop();
+        obj.forEach(function(code) {
+          _this6.PQ.push(_this6.game.unitDict.get(code));
+        });
+      };
+      return EndingPQ;
+    }();
+    module.exports = {
+      Game: Game
+    };
+    var _require2 = require("./Player-clas0.0.3"), Player = _require2.Player;
+    var heap = require("heap");
+    var _require3 = require("./listeners/ListenerDict-clas0.0.3"), ListenerDict = _require3.ListenerDict;
+    var _require4 = require("./constants/timeConstants-clas0.0.3"), ENDLESS_TIME = _require4.ENDLESS_TIME, ONE_HOUR = _require4.ONE_HOUR, ONE_MINUTES = _require4.ONE_MINUTES;
+    var _require5 = require("./wheels/common-clas0.0.3"), getDistance = _require5.getDistance;
+    var _require6 = require("./constants/gameConstants-clas0.0.3"), MAP_SIZE = _require6.MAP_SIZE;
+    var _require7 = require("./OriginMonitors-clas0.0.3"), BaseInScopeCalculators = _require7.BaseInScopeCalculators, GoldCostFloorMonitors = _require7.GoldCostFloorMonitors, MiningMonitors = _require7.MiningMonitors, RefreshChallengeTimeMonitors = _require7.RefreshChallengeTimeMonitors, SpellCostFloorMonitors = _require7.SpellCostFloorMonitors, SpellRecoveringMonitors = _require7.SpellRecoveringMonitors, PetConvertingMonitors = _require7.PetConvertingMonitors;
+    var _require8 = require("./wheels/TypeDict-clas0.0.3"), typeDict = _require8.typeDict;
+    var _require9 = require("./utils/iterationUtils-clas0.0.3"), iter_36 = _require9.iter_36;
+    var _require10 = require("./Pets-clas0.0.3"), BasePet = _require10.BasePet;
+    var _require11 = require("./utils/mapUtils-clas0.0.3"), edgeIndexs = _require11.edgeIndexs;
+    var _require12 = require("./listeners/AttackListeners-clas0.0.3"), AttackCriticalMonitors = _require12.AttackCriticalMonitors, AttackDamageExecuter = _require12.AttackDamageExecuter;
+    var _require13 = require("./loggers/baseLoggers-clas0.0.3"), BaseLoggers = _require13.BaseLoggers;
+    var _require14 = require("./listeners/DamageListeners-clas0.0.3"), HarmImprovingMonitors = _require14.HarmImprovingMonitors, RealDamageLogger = _require14.RealDamageLogger;
+    var _require15 = require("./animations/animationPlayer-clas0.0.3"), AnimationPlayer = _require15.AnimationPlayer;
+    var obj = require("../gameLogicRoutes-clas0.0.3");
+    var _require16 = require("./Creature-clas0.0.3"), Creature = _require16.Creature;
+    cc._RF.pop();
+  }, {
+    "../gameLogicRoutes-clas0.0.3": "gameLogicRoutes-clas0.0.3",
+    "./Creature-clas0.0.3": "Creature-clas0.0.3",
+    "./OriginMonitors-clas0.0.3": "OriginMonitors-clas0.0.3",
+    "./Pets-clas0.0.3": "Pets-clas0.0.3",
+    "./Player-clas0.0.3": "Player-clas0.0.3",
+    "./animations/animationPlayer-clas0.0.3": "animationPlayer-clas0.0.3",
+    "./constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "./constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "./listeners/AttackListeners-clas0.0.3": "AttackListeners-clas0.0.3",
+    "./listeners/DamageListeners-clas0.0.3": "DamageListeners-clas0.0.3",
+    "./listeners/ListenerDict-clas0.0.3": "ListenerDict-clas0.0.3",
+    "./loggers/baseLoggers-clas0.0.3": "baseLoggers-clas0.0.3",
+    "./utils/iterationUtils-clas0.0.3": "iterationUtils-clas0.0.3",
+    "./utils/mapUtils-clas0.0.3": "mapUtils-clas0.0.3",
+    "./wheels/TypeDict-clas0.0.3": "TypeDict-clas0.0.3",
+    "./wheels/common-clas0.0.3": "common-clas0.0.3",
+    "./wheels/interfaces-clas0.0.3": "interfaces-clas0.0.3",
+    heap: 39
+  } ],
   Game: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "25ec9mk/m9A+LyMy0N9H2mE", "Game");
@@ -11977,7 +13870,7 @@ window.__require = function e(t, n, r) {
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
-    exports.foreigners = exports.music = exports.decoration = exports.journey = exports.auth = exports.top = exports.user = exports.config = void 0;
+    exports.imageBase64Url = exports.foreigners = exports.music = exports.decoration = exports.journey = exports.auth = exports.top = exports.user = exports.config = void 0;
     var config = {
       bgm: .7,
       sound: 1,
@@ -12019,6 +13912,8 @@ window.__require = function e(t, n, r) {
     exports.music = music;
     var foreigners = {};
     exports.foreigners = foreigners;
+    var imageBase64Url = {};
+    exports.imageBase64Url = imageBase64Url;
     cc._RF.pop();
   }, {} ],
   "ListenerDict-clas0.0.1": [ function(require, module, exports) {
@@ -12437,6 +14332,214 @@ window.__require = function e(t, n, r) {
     "../constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
     "./ListenerList-clas0.0.2": "ListenerList-clas0.0.2"
   } ],
+  "ListenerDict-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "09a5cdVcChJSYBCKtTq6HfI", "ListenerDict-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./ListenerList-clas0.0.3"), ListenerList = _require.ListenerList;
+    var OperateListeners = function(_ListenerList) {
+      _inheritsLoose(OperateListeners, _ListenerList);
+      function OperateListeners() {
+        return _ListenerList.apply(this, arguments) || this;
+      }
+      var _proto = OperateListeners.prototype;
+      _proto.check = function check(player) {
+        _ListenerList.prototype.check.call(this, player);
+      };
+      return OperateListeners;
+    }(ListenerList);
+    var ChallengeListeners = function(_ListenerList2) {
+      _inheritsLoose(ChallengeListeners, _ListenerList2);
+      function ChallengeListeners() {
+        return _ListenerList2.apply(this, arguments) || this;
+      }
+      var _proto2 = ChallengeListeners.prototype;
+      _proto2.check = function check(player1, player2) {
+        _ListenerList2.prototype.check.call(this, player1, player2);
+      };
+      return ChallengeListeners;
+    }(ListenerList);
+    var AttackListeners = function(_ListenerList3) {
+      _inheritsLoose(AttackListeners, _ListenerList3);
+      function AttackListeners() {
+        return _ListenerList3.apply(this, arguments) || this;
+      }
+      var _proto3 = AttackListeners.prototype;
+      _proto3.check = function check(player1, player2, kwargs) {
+        void 0 === kwargs && (kwargs = {});
+        _ListenerList3.prototype.check.call(this, player1, player2, kwargs);
+      };
+      return AttackListeners;
+    }(ListenerList);
+    var DamageListeners = function(_ListenerList4) {
+      _inheritsLoose(DamageListeners, _ListenerList4);
+      function DamageListeners() {
+        return _ListenerList4.apply(this, arguments) || this;
+      }
+      var _proto4 = DamageListeners.prototype;
+      _proto4.check = function check(player1, player2, damage) {
+        _ListenerList4.prototype.check.call(this, player1, player2, damage);
+      };
+      return DamageListeners;
+    }(ListenerList);
+    var MoveListeners = function(_ListenerList5) {
+      _inheritsLoose(MoveListeners, _ListenerList5);
+      function MoveListeners() {
+        return _ListenerList5.apply(this, arguments) || this;
+      }
+      var _proto5 = MoveListeners.prototype;
+      _proto5.check = function check(player1, x, y) {
+        _ListenerList5.prototype.check.call(this, player1, x, y);
+      };
+      return MoveListeners;
+    }(ListenerList);
+    var ScopeListeners = function(_ListenerList6) {
+      _inheritsLoose(ScopeListeners, _ListenerList6);
+      function ScopeListeners() {
+        return _ListenerList6.apply(this, arguments) || this;
+      }
+      var _proto6 = ScopeListeners.prototype;
+      _proto6.check = function check(player1, old_num, new_num) {
+        _ListenerList6.prototype.check.call(this, player1, old_num, new_num);
+      };
+      return ScopeListeners;
+    }(ListenerList);
+    var CoinListeners = function(_ListenerList7) {
+      _inheritsLoose(CoinListeners, _ListenerList7);
+      function CoinListeners() {
+        return _ListenerList7.apply(this, arguments) || this;
+      }
+      var _proto7 = CoinListeners.prototype;
+      _proto7.check = function check(player1, coins) {
+        _ListenerList7.prototype.check.call(this, player1, coins);
+      };
+      return CoinListeners;
+    }(ListenerList);
+    var EnterListeners = function(_ListenerList8) {
+      _inheritsLoose(EnterListeners, _ListenerList8);
+      function EnterListeners() {
+        return _ListenerList8.apply(this, arguments) || this;
+      }
+      var _proto8 = EnterListeners.prototype;
+      _proto8.check = function check(player) {
+        _ListenerList8.prototype.check.call(this, player);
+      };
+      return EnterListeners;
+    }(ListenerList);
+    var SpeedListeners = function(_ListenerList9) {
+      _inheritsLoose(SpeedListeners, _ListenerList9);
+      function SpeedListeners() {
+        return _ListenerList9.apply(this, arguments) || this;
+      }
+      var _proto9 = SpeedListeners.prototype;
+      _proto9.check = function check(player, value) {
+        _ListenerList9.prototype.check.call(this, player, value);
+      };
+      return SpeedListeners;
+    }(ListenerList);
+    var InScopeCalculators = function(_ListenerList10) {
+      _inheritsLoose(InScopeCalculators, _ListenerList10);
+      function InScopeCalculators() {
+        return _ListenerList10.apply(this, arguments) || this;
+      }
+      var _proto10 = InScopeCalculators.prototype;
+      _proto10.check = function check(player) {
+        var res = [];
+        for (var i = 0; i < gameConstants_1.MAP_SIZE; i++) res.push([]);
+        _ListenerList10.prototype.check.call(this, player, res);
+        return res;
+      };
+      return InScopeCalculators;
+    }(ListenerList);
+    var GoldCostCalculators = function(_ListenerList11) {
+      _inheritsLoose(GoldCostCalculators, _ListenerList11);
+      function GoldCostCalculators() {
+        return _ListenerList11.apply(this, arguments) || this;
+      }
+      var _proto11 = GoldCostCalculators.prototype;
+      _proto11.check = function check(cost, player) {
+        _ListenerList11.prototype.check.call(this, cost, player);
+      };
+      return GoldCostCalculators;
+    }(ListenerList);
+    var SpellCostCalculators = function(_ListenerList12) {
+      _inheritsLoose(SpellCostCalculators, _ListenerList12);
+      function SpellCostCalculators() {
+        return _ListenerList12.apply(this, arguments) || this;
+      }
+      var _proto12 = SpellCostCalculators.prototype;
+      _proto12.check = function check(info) {
+        _ListenerList12.prototype.check.call(this, info);
+      };
+      return SpellCostCalculators;
+    }(ListenerList);
+    var GeoSignListeners = function(_ListenerList13) {
+      _inheritsLoose(GeoSignListeners, _ListenerList13);
+      function GeoSignListeners() {
+        return _ListenerList13.apply(this, arguments) || this;
+      }
+      var _proto13 = GeoSignListeners.prototype;
+      _proto13.check = function check(player, incur) {
+        _ListenerList13.prototype.check.call(this, player, incur);
+      };
+      return GeoSignListeners;
+    }(ListenerList);
+    var ListenerDict = function() {
+      function ListenerDict(game) {
+        this.OperateListeners = new OperateListeners();
+        this.ChallengeListeners = new ChallengeListeners();
+        this.AttackListeners = new AttackListeners();
+        this.DamageListeners = new DamageListeners();
+        this.MoveListeners = new MoveListeners();
+        this.ScopeListeners = new ScopeListeners();
+        this.CoinListeners = new CoinListeners();
+        this.EnterListeners = new EnterListeners();
+        this.SpeedListeners = new SpeedListeners();
+        this.InscopeCalculators = new InScopeCalculators();
+        this.GoldCostCalculators = new GoldCostCalculators();
+        this.SpellCostCalculators = new SpellCostCalculators();
+        this.GeoSignListeners = new GeoSignListeners();
+        for (var key in this) {
+          if (!key.endsWith("Listeners") && !key.endsWith("Calculators")) continue;
+          var listener = this[key];
+          listener.game = game;
+          listener.init();
+        }
+      }
+      var _proto14 = ListenerDict.prototype;
+      _proto14.JSONStringify = function JSONStringify() {
+        var res = {};
+        for (var k in this) {
+          var key = k.toString();
+          var value = this[key];
+          value instanceof ListenerList && (res[key] = value.JSONStringify());
+        }
+        return res;
+      };
+      _proto14.JSONParse = function JSONParse(obj) {
+        for (var key in obj) this[key].JSONParse(obj[key]);
+      };
+      return ListenerDict;
+    }();
+    exports.ListenerDict = ListenerDict;
+    var gameConstants_1 = require("../constants/gameConstants-clas0.0.3");
+    cc._RF.pop();
+  }, {
+    "../constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "./ListenerList-clas0.0.3": "ListenerList-clas0.0.3"
+  } ],
   ListenerDict: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "1ac30qstxdBGbTwMpoEGQY8", "ListenerDict");
@@ -12751,6 +14854,59 @@ window.__require = function e(t, n, r) {
   }, {
     heap: 39
   } ],
+  "ListenerList-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "8947dMKkiNFnpfoPaiBJO0m", "ListenerList-clas0.0.3");
+    "use strict";
+    var ListenerList = function() {
+      function ListenerList() {
+        this.list = new heap(function(a, b) {
+          if (a.priority == b.priority) return a.code - b.code;
+          return a.priority - b.priority;
+        });
+      }
+      var _proto = ListenerList.prototype;
+      _proto.init = function init() {};
+      _proto.push = function push(listener) {
+        this.list.push(listener);
+      };
+      _proto.check = function check() {
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) args[_key] = arguments[_key];
+        var new_list = new heap(function(a, b) {
+          return a.priority - b.priority;
+        });
+        this.list.toArray().forEach(function(item) {
+          if (item.disabled) return;
+          new_list.push(item);
+          item.check.apply(item, args);
+        });
+        this.list = new_list;
+      };
+      _proto.JSONStringify = function JSONStringify() {
+        return this.list.toArray().filter(function(listener) {
+          return !listener.disabled;
+        }).map(function(listener) {
+          return listener.code;
+        });
+      };
+      _proto.JSONParse = function JSONParse(obj) {
+        var _this = this;
+        while (!this.list.empty()) this.list.pop();
+        obj.forEach(function(code) {
+          var listener = _this.game.unitDict.get(code);
+          _this.push(listener);
+        });
+      };
+      return ListenerList;
+    }();
+    module.exports = {
+      ListenerList: ListenerList
+    };
+    var heap = require("heap");
+    cc._RF.pop();
+  }, {
+    heap: 39
+  } ],
   ListenerList: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "4c299hJv/dA0b9pLvlq3qNE", "ListenerList");
@@ -12823,6 +14979,22 @@ window.__require = function e(t, n, r) {
   "ListenerPriorities-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "e1323eGGWtCDrd2QBnyYTwV", "ListenerPriorities-clas0.0.2");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.PRIORITY_DICT = void 0;
+    var ORDER = [ "\u91cd\u4f24\u72b6\u6001\u4e0b\u4e0d\u53ef\u64cd\u4f5c", "\u64cd\u4f5c\u53e0\u52a0\u9ec4\u91d1\u5c42\u6570", "\u6b8b\u5f71:\u4e24\u6b21\u64cd\u4f5c\u91cd\u7f6e", "Equip9AttackAllListener", "AttackCriticalMonitors", "Equip14DistanceListener", "AttackDamageExecuter", "Equip1AttackSpeedUpListener", "Equip6AttackWeakenListener", "Equip10AddPyroSignListener", "Equip11AddHydroSignListener", "Equip12EnergyRecoveringListener", "RealDamageLogger", "HarmImprovingMonitors", "\u5730\u706b: \u707c\u70e7\u8fdb\u5165\u4f4d\u7f6e\u7684\u89d2\u8272", "\u4f4d\u79fb\u6cd5\u672f:\u65bd\u52a0\u6708\u5f71\u6807\u8bb0", "\u5ba0\u72694: \u653b\u51fb\u8303\u56f4\u6539\u53d8", "\u9ec4\u91d1\u5c42\u6570\u91cd\u7f6e", "\u6b66\u566823: \u91d1\u5e01\u51cf\u4ef7", "\u635f\u5931\u751f\u547d\u503c\u4ee4\u81ea\u8eab\u5b9e\u529b\u589e\u52a0", "\u56de\u590d\u8840\u91cf\u53ef\u4ee5\u63d0\u5347\u6218\u529b", "\u635f\u5931\u751f\u547d\u503c\u540e\u65bd\u52a0\u7206\u7834\u6548\u679c", "\u8840\u91cf\u4f4e\u4e8e\u4e0b\u9650\u5219\u8fdb\u5165\u91cd\u4f24\u72b6\u6001", "GoldCostFloorMonitors", "HydroCoinFreeListener", "SpellCostFloorMonitors", "HydroSpellFreeListener", "\u5723\u57df\u8fc7\u671f\u540e\u53e0\u52a0\u5723\u57df", "\u6bcf\u5c42\u5723\u57df\u53e0\u52a0\u901f\u5ea6" ];
+    var PRIORITY_DICT = new Map();
+    exports.PRIORITY_DICT = PRIORITY_DICT;
+    ORDER.forEach(function(value, index) {
+      PRIORITY_DICT[value] = index / ORDER.length;
+    });
+    cc._RF.pop();
+  }, {} ],
+  "ListenerPriorities-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "2f099vSTbtLhpnciaw/Cno4", "ListenerPriorities-clas0.0.3");
     "use strict";
     Object.defineProperty(exports, "__esModule", {
       value: true
@@ -13027,6 +15199,95 @@ window.__require = function e(t, n, r) {
     "../Player-clas0.0.2": "Player-clas0.0.2",
     "../listeners/ListenerPriorities-clas0.0.2": "ListenerPriorities-clas0.0.2",
     "../wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2"
+  } ],
+  "Listeners-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "4b180P/2WNAQId6bS5i3BHf", "Listeners-clas0.0.3");
+    "use strict";
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        "value" in descriptor && (descriptor.writable = true);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
+    function _createClass(Constructor, protoProps, staticProps) {
+      protoProps && _defineProperties(Constructor.prototype, protoProps);
+      staticProps && _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
+      return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return "symbol" === typeof key ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if ("object" !== typeof input || null === input) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (void 0 !== prim) {
+        var res = prim.call(input, hint || "default");
+        if ("object" !== typeof res) return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === hint ? String : Number)(input);
+    }
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../wheels/interfaces-clas0.0.3"), Item = _require.Item;
+    var Listener = function(_Item) {
+      _inheritsLoose(Listener, _Item);
+      function Listener() {
+        return _Item.apply(this, arguments) || this;
+      }
+      var _proto = Listener.prototype;
+      _proto.init = function init(owner, duration) {
+        _Item.prototype.init.call(this, owner.game);
+        this.owner = owner;
+        this.end_time = this.game.currTime + duration;
+        this.game.endPQ.add(this);
+      };
+      _proto.check = function check() {};
+      _proto.checkOwner = function checkOwner(item) {
+        return this.owner.code == item.code;
+      };
+      _proto.expire = function expire() {};
+      _proto.end = function end() {};
+      _createClass(Listener, [ {
+        key: "priority",
+        get: function get() {
+          return PRIORITY_DICT[this.type];
+        }
+      } ]);
+      return Listener;
+    }(Item);
+    Listener.category = "listener";
+    Listener.uiDisplay = false;
+    Listener.description = function(item) {
+      return "";
+    };
+    Listener.temporary = false;
+    exports.Listener = Listener;
+    var _require2 = require("../listeners/ListenerPriorities-clas0.0.3"), PRIORITY_DICT = _require2.PRIORITY_DICT;
+    var _require3 = require("../Player-clas0.0.3"), Player = _require3.Player;
+    cc._RF.pop();
+  }, {
+    "../Player-clas0.0.3": "Player-clas0.0.3",
+    "../listeners/ListenerPriorities-clas0.0.3": "ListenerPriorities-clas0.0.3",
+    "../wheels/interfaces-clas0.0.3": "interfaces-clas0.0.3"
   } ],
   Listeners: [ function(require, module, exports) {
     "use strict";
@@ -13739,9 +16000,9 @@ window.__require = function e(t, n, r) {
     "./objects/Coin-clas0.0.2": "Coin-clas0.0.2",
     "./templates/Listeners-clas0.0.2": "Listeners-clas0.0.2"
   } ],
-  OriginMonitors: [ function(require, module, exports) {
+  "OriginMonitors-clas0.0.3": [ function(require, module, exports) {
     "use strict";
-    cc._RF.push(module, "97ec0oDIIFITJsM7SKglTEN", "OriginMonitors");
+    cc._RF.push(module, "2a463thZoNKj7UqsAL6YzUh", "OriginMonitors-clas0.0.3");
     "use strict";
     function _inheritsLoose(subClass, superClass) {
       subClass.prototype = Object.create(superClass.prototype);
@@ -13755,7 +16016,7 @@ window.__require = function e(t, n, r) {
       };
       return _setPrototypeOf(o, p);
     }
-    var _require = require("./templates/Listeners"), Listener = _require.Listener;
+    var _require = require("./templates/Listeners-clas0.0.3"), Listener = _require.Listener;
     var MiningMonitors = function(_Listener) {
       _inheritsLoose(MiningMonitors, _Listener);
       function MiningMonitors() {
@@ -13766,10 +16027,10 @@ window.__require = function e(t, n, r) {
         for (var i = 1; i <= 3; i++) {
           var player = this.game.getPlayer(i);
           player.changeCoins(new Coin({
-            baseCoins: 2
+            baseCoins: 10
           }));
         }
-        new MiningMonitors(this.game, ONE_MINUTES);
+        new MiningMonitors(this.game, 5 * ONE_MINUTES);
       };
       return MiningMonitors;
     }(Listener);
@@ -13803,7 +16064,155 @@ window.__require = function e(t, n, r) {
       _proto3.expire = function expire() {
         for (var i = 1; i <= 3; i++) {
           var player = this.game.getPlayer(i);
-          player.energy = Math.min(player.energy + 3, 1e3);
+          player.energy = Math.min(player.energy + 3, 2e3);
+        }
+        new SpellRecoveringMonitors(this.game, ONE_MINUTES);
+      };
+      return SpellRecoveringMonitors;
+    }(Listener);
+    var RefreshChallengeTimeMonitors = function(_Listener4) {
+      _inheritsLoose(RefreshChallengeTimeMonitors, _Listener4);
+      function RefreshChallengeTimeMonitors() {
+        return _Listener4.apply(this, arguments) || this;
+      }
+      var _proto4 = RefreshChallengeTimeMonitors.prototype;
+      _proto4.init = function init() {
+        _Listener4.prototype.init.apply(this, arguments);
+        this.challenge_time = [ 0, 3, 3, 3 ];
+      };
+      _proto4.check = function check(player) {
+        player.challenge_times = this.challenge_time[player.code];
+      };
+      return RefreshChallengeTimeMonitors;
+    }(Listener);
+    var BaseInScopeCalculators = function(_Listener5) {
+      _inheritsLoose(BaseInScopeCalculators, _Listener5);
+      function BaseInScopeCalculators() {
+        return _Listener5.apply(this, arguments) || this;
+      }
+      var _proto5 = BaseInScopeCalculators.prototype;
+      _proto5.check = function check(player, grids) {
+        this.game.allMapElements.filter(function(e) {
+          var x = e.x, y = e.y;
+          if ((x - player.x) * (x - player.x) + (y - player.y) * (y - player.y) > player.scope * player.scope) return;
+          if (e.code == player.code) return;
+          grids[y][x] = true;
+        });
+      };
+      return BaseInScopeCalculators;
+    }(Listener);
+    var GoldCostFloorMonitors = function(_Listener6) {
+      _inheritsLoose(GoldCostFloorMonitors, _Listener6);
+      function GoldCostFloorMonitors() {
+        return _Listener6.apply(this, arguments) || this;
+      }
+      var _proto6 = GoldCostFloorMonitors.prototype;
+      _proto6.init = function init() {
+        _Listener6.prototype.init.apply(this, arguments);
+        this.description = "\u552e\u4ef7\u4e0d\u4f1a\u4f4e\u4e8e5";
+      };
+      _proto6.check = function check(info) {
+        info.cost = Math.max(5, info.cost);
+      };
+      return GoldCostFloorMonitors;
+    }(Listener);
+    var SpellCostFloorMonitors = function(_Listener7) {
+      _inheritsLoose(SpellCostFloorMonitors, _Listener7);
+      function SpellCostFloorMonitors() {
+        return _Listener7.apply(this, arguments) || this;
+      }
+      var _proto7 = SpellCostFloorMonitors.prototype;
+      _proto7.init = function init() {
+        _Listener7.prototype.init.apply(this, arguments);
+        this.description = "\u6cd5\u672f\u6d88\u8017\u4e0d\u4f1a\u4f4e\u4e8e5";
+      };
+      _proto7.check = function check(info) {
+        info.cost = Math.max(5, info.cost);
+      };
+      return SpellCostFloorMonitors;
+    }(Listener);
+    module.exports = {
+      MiningMonitors: MiningMonitors,
+      PetConvertingMonitors: PetConvertingMonitors,
+      SpellRecoveringMonitors: SpellRecoveringMonitors,
+      RefreshChallengeTimeMonitors: RefreshChallengeTimeMonitors,
+      BaseInScopeCalculators: BaseInScopeCalculators,
+      GoldCostFloorMonitors: GoldCostFloorMonitors,
+      SpellCostFloorMonitors: SpellCostFloorMonitors
+    };
+    var _require2 = require("./objects/Coin-clas0.0.3"), Coin = _require2.Coin;
+    var _require3 = require("./constants/timeConstants-clas0.0.3"), ONE_MINUTES = _require3.ONE_MINUTES;
+    cc._RF.pop();
+  }, {
+    "./constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "./objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "./templates/Listeners-clas0.0.3": "Listeners-clas0.0.3"
+  } ],
+  OriginMonitors: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "97ec0oDIIFITJsM7SKglTEN", "OriginMonitors");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./templates/Listeners"), Listener = _require.Listener;
+    var MiningMonitors = function(_Listener) {
+      _inheritsLoose(MiningMonitors, _Listener);
+      function MiningMonitors() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto = MiningMonitors.prototype;
+      _proto.expire = function expire() {
+        for (var i = 1; i <= 3; i++) {
+          var player = this.game.getPlayer(i);
+          player.changeCoins(new Coin({
+            baseCoins: 10
+          }));
+        }
+        new MiningMonitors(this.game, 5 * ONE_MINUTES);
+      };
+      return MiningMonitors;
+    }(Listener);
+    var PetConvertingMonitors = function(_Listener2) {
+      _inheritsLoose(PetConvertingMonitors, _Listener2);
+      function PetConvertingMonitors() {
+        return _Listener2.apply(this, arguments) || this;
+      }
+      var _proto2 = PetConvertingMonitors.prototype;
+      _proto2.expire = function expire() {
+        this.game.allMapElements.forEach(function(creature) {
+          if ("Player" != creature.type) {
+            if (!creature.mining_type) return;
+            if (creature.owner.coins.baseCoins < 2) return;
+            creature.owner.changeCoins(new Coin({
+              baseCoins: -2
+            }));
+            creature.mining_num[creature.mining_type] += 2;
+          }
+        });
+        new PetConvertingMonitors(this.game, 5 * ONE_MINUTES);
+      };
+      return PetConvertingMonitors;
+    }(Listener);
+    var SpellRecoveringMonitors = function(_Listener3) {
+      _inheritsLoose(SpellRecoveringMonitors, _Listener3);
+      function SpellRecoveringMonitors() {
+        return _Listener3.apply(this, arguments) || this;
+      }
+      var _proto3 = SpellRecoveringMonitors.prototype;
+      _proto3.expire = function expire() {
+        for (var i = 1; i <= 3; i++) {
+          var player = this.game.getPlayer(i);
+          player.energy = Math.min(player.energy + 3, 2e3);
         }
         new SpellRecoveringMonitors(this.game, ONE_MINUTES);
       };
@@ -14637,6 +17046,381 @@ window.__require = function e(t, n, r) {
     "./utils/mapUtils-clas0.0.2": "mapUtils-clas0.0.2",
     "./wheels/common-clas0.0.2": "common-clas0.0.2"
   } ],
+  "Pets-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "73a38zjAGtHD4ynFeqe4CFY", "Pets-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./templates/PetsItems-clas0.0.3"), PetsItems = _require.PetsItems;
+    var _require2 = require("./templates/Listeners-clas0.0.3"), Listener = _require2.Listener;
+    var _require3 = require("./objects/Coin-clas0.0.3"), Coin = _require3.Coin;
+    var BasePet = function(_PetsItems) {
+      _inheritsLoose(BasePet, _PetsItems);
+      function BasePet() {
+        return _PetsItems.apply(this, arguments) || this;
+      }
+      return BasePet;
+    }(PetsItems);
+    BasePet.id = 0;
+    BasePet.pet_name = "\u5e7b\u68a6\u7075\u72d0";
+    BasePet.description = "";
+    BasePet.uiDisplay = false;
+    BasePet.iconUrl = "pets/\u5e7b\u5f62\u517d.png";
+    BasePet.description = function() {
+      return "";
+    };
+    var GeoSignTransferPetsItems = function(_PetsItems2) {
+      _inheritsLoose(GeoSignTransferPetsItems, _PetsItems2);
+      function GeoSignTransferPetsItems() {
+        return _PetsItems2.apply(this, arguments) || this;
+      }
+      var _proto = GeoSignTransferPetsItems.prototype;
+      _proto.init = function init() {
+        _PetsItems2.prototype.init.apply(this, arguments);
+        this.transfer_time = 0;
+      };
+      return GeoSignTransferPetsItems;
+    }(PetsItems);
+    var GeoToAuroPet = function(_GeoSignTransferPetsI) {
+      _inheritsLoose(GeoToAuroPet, _GeoSignTransferPetsI);
+      function GeoToAuroPet() {
+        return _GeoSignTransferPetsI.apply(this, arguments) || this;
+      }
+      var _proto2 = GeoToAuroPet.prototype;
+      _proto2.init = function init(x, y, owner) {
+        _GeoSignTransferPetsI.prototype.init.call(this, x, y, owner);
+        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+      };
+      return GeoToAuroPet;
+    }(GeoSignTransferPetsItems);
+    GeoToAuroPet.id = 1;
+    GeoToAuroPet.pet_name = "\u5764\u91d1\u517d";
+    GeoToAuroPet.iconUrl = "pets/\u5764\u91d1\u517d.png";
+    GeoToAuroPet.price = new Coin({
+      auroCoins: 100
+    });
+    var GeoToHydroPet = function(_GeoSignTransferPetsI2) {
+      _inheritsLoose(GeoToHydroPet, _GeoSignTransferPetsI2);
+      function GeoToHydroPet() {
+        return _GeoSignTransferPetsI2.apply(this, arguments) || this;
+      }
+      var _proto3 = GeoToHydroPet.prototype;
+      _proto3.init = function init(x, y, owner) {
+        _GeoSignTransferPetsI2.prototype.init.call(this, x, y, owner);
+        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+      };
+      return GeoToHydroPet;
+    }(GeoSignTransferPetsItems);
+    GeoToHydroPet.id = 2;
+    GeoToHydroPet.pet_name = "\u6d41\u6e0a\u517d";
+    GeoToHydroPet.iconUrl = "pets/\u6d41\u6e0a\u517d.png";
+    GeoToHydroPet.price = new Coin({
+      hydroCoins: 100
+    });
+    var GeoToPyroPet = function(_GeoSignTransferPetsI3) {
+      _inheritsLoose(GeoToPyroPet, _GeoSignTransferPetsI3);
+      function GeoToPyroPet() {
+        return _GeoSignTransferPetsI3.apply(this, arguments) || this;
+      }
+      var _proto4 = GeoToPyroPet.prototype;
+      _proto4.init = function init(x, y, owner) {
+        _GeoSignTransferPetsI3.prototype.init.call(this, x, y, owner);
+        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+      };
+      return GeoToPyroPet;
+    }(GeoSignTransferPetsItems);
+    GeoToPyroPet.id = 3;
+    GeoToPyroPet.pet_name = "\u70ec\u706b\u7075";
+    GeoToPyroPet.iconUrl = "pets/\u70ec\u706b\u7075.png";
+    GeoToPyroPet.price = new Coin({
+      pyroCoins: 100
+    });
+    var GeoSignTransferListener = function(_Listener) {
+      _inheritsLoose(GeoSignTransferListener, _Listener);
+      function GeoSignTransferListener() {
+        return _Listener.apply(this, arguments) || this;
+      }
+      var _proto5 = GeoSignTransferListener.prototype;
+      _proto5.init = function init(owner, duration, pet, incur) {
+        _Listener.prototype.init.call(this, owner, duration);
+        this.duration = duration;
+        this.pet = pet;
+      };
+      _proto5.expire = function expire() {
+        this.pet.transfer_time += this.incur;
+        new GeoSignTransferListener(this.owner, this.duration, this.pet, this.incur);
+      };
+      return GeoSignTransferListener;
+    }(Listener);
+    var AddGeoPet = function(_PetsItems3) {
+      _inheritsLoose(AddGeoPet, _PetsItems3);
+      function AddGeoPet() {
+        return _PetsItems3.apply(this, arguments) || this;
+      }
+      var _proto6 = AddGeoPet.prototype;
+      _proto6.init = function init(x, y, owner) {
+        _PetsItems3.prototype.init.call(this, x, y, owner);
+        this.listener = new AddGeoPetListener(owner, timeConstants_1.ENDLESS_TIME);
+        this.game.listeners.GeoSignListeners.push(this.listener);
+      };
+      return AddGeoPet;
+    }(PetsItems);
+    AddGeoPet.id = 4;
+    AddGeoPet.pet_name = "\u571f\u8574\u7075\u7280";
+    AddGeoPet.iconUrl = "pets/\u571f\u7eb9\u7075\u7280.png";
+    AddGeoPet.price = new Coin({
+      geoCoins: 100
+    });
+    var AddGeoPetListener = function(_Listener2) {
+      _inheritsLoose(AddGeoPetListener, _Listener2);
+      function AddGeoPetListener() {
+        return _Listener2.apply(this, arguments) || this;
+      }
+      var _proto7 = AddGeoPetListener.prototype;
+      _proto7.init = function init() {
+        _Listener2.prototype.init.apply(this, arguments);
+        this.count = 0;
+      };
+      _proto7.check = function check(player, incur) {
+        if (player.code != this.owner.code) return;
+        this.count += incur;
+        if (this.count >= 7) {
+          this.count -= 7;
+          player._geoSign++;
+        }
+      };
+      return AddGeoPetListener;
+    }(Listener);
+    var AddHydroPet = function(_PetsItems4) {
+      _inheritsLoose(AddHydroPet, _PetsItems4);
+      function AddHydroPet() {
+        return _PetsItems4.apply(this, arguments) || this;
+      }
+      var _proto8 = AddHydroPet.prototype;
+      _proto8.init = function init(x, y, owner) {
+        _PetsItems4.prototype.init.call(this, x, y, owner);
+        this.game.listeners.EnterListeners.push(new AddHydroPetListener(this, timeConstants_1.ENDLESS_TIME));
+      };
+      return AddHydroPet;
+    }(PetsItems);
+    AddHydroPet.id = 5;
+    AddHydroPet.pet_name = "\u6c34\u7eb9\u7075\u86df";
+    AddHydroPet.iconUrl = "pets/\u6c34\u7eb9\u7075\u86df.png";
+    AddHydroPet.price = new Coin({
+      hydroCoins: 100
+    });
+    var AddHydroPetListener = function(_Listener3) {
+      _inheritsLoose(AddHydroPetListener, _Listener3);
+      function AddHydroPetListener() {
+        return _Listener3.apply(this, arguments) || this;
+      }
+      var _proto9 = AddHydroPetListener.prototype;
+      _proto9.check = function check(player) {
+        if (player.code != this.owner.owner.code) return;
+        this.owner.hydroSign++;
+      };
+      return AddHydroPetListener;
+    }(Listener);
+    var AddPyroPet = function(_PetsItems5) {
+      _inheritsLoose(AddPyroPet, _PetsItems5);
+      function AddPyroPet() {
+        return _PetsItems5.apply(this, arguments) || this;
+      }
+      var _proto10 = AddPyroPet.prototype;
+      _proto10.init = function init(x, y, owner) {
+        _PetsItems5.prototype.init.call(this, x, y, owner);
+        this.game.listeners.EnterListeners.push(new AddPyroPetListener(this, timeConstants_1.ENDLESS_TIME));
+      };
+      return AddPyroPet;
+    }(PetsItems);
+    AddPyroPet.id = 6;
+    AddPyroPet.pet_name = "\u706b\u821e\u7075\u72d0";
+    AddPyroPet.iconUrl = "pets/\u706b\u7eb9\u7075\u72d0.png";
+    AddPyroPet.price = new Coin({
+      pyroCoins: 100
+    });
+    var AddPyroPetListener = function(_Listener4) {
+      _inheritsLoose(AddPyroPetListener, _Listener4);
+      function AddPyroPetListener() {
+        return _Listener4.apply(this, arguments) || this;
+      }
+      var _proto11 = AddPyroPetListener.prototype;
+      _proto11.check = function check(player) {
+        if (player.code != this.owner.owner.code) return;
+        this.owner.pyroSign += 5;
+      };
+      return AddPyroPetListener;
+    }(Listener);
+    var DisplacePet = function(_PetsItems6) {
+      _inheritsLoose(DisplacePet, _PetsItems6);
+      function DisplacePet() {
+        return _PetsItems6.apply(this, arguments) || this;
+      }
+      return DisplacePet;
+    }(PetsItems);
+    DisplacePet.id = 7;
+    DisplacePet.pet_name = "\u5f52\u9014\u7075\u9e64";
+    DisplacePet.iconUrl = "pets/\u5f52\u9014\u7075\u9e64.png";
+    DisplacePet.price = new Coin({
+      hydroCoins: 50
+    });
+    var AddScopePet = function(_PetsItems7) {
+      _inheritsLoose(AddScopePet, _PetsItems7);
+      function AddScopePet() {
+        return _PetsItems7.apply(this, arguments) || this;
+      }
+      var _proto12 = AddScopePet.prototype;
+      _proto12.init = function init(x, y, owner) {
+        _PetsItems7.prototype.init.call(this, x, y, owner);
+        this.game.listeners.InscopeCalculators.push(new AddScopePetListener(this, timeConstants_1.ENDLESS_TIME));
+      };
+      return AddScopePet;
+    }(PetsItems);
+    AddScopePet.id = 8;
+    AddScopePet.pet_name = "\u5fa1\u9635\u4ed9\u7075";
+    AddScopePet.iconUrl = "pets/\u5fa1\u9635\u4ed9\u7075.png";
+    AddScopePet.price = new Coin({
+      auroCoins: 50
+    });
+    AddScopePet.description = function() {
+      return "\u81ea\u8eab3*3\u7684\u8303\u56f4\u5185\u7684\u5355\u4f4d\u4e5f\u5c5e\u4e8e\u4e3b\u4eba\u7684\u653b\u51fb\u8303\u56f4\u5185";
+    };
+    var AddScopePetListener = function(_Listener5) {
+      _inheritsLoose(AddScopePetListener, _Listener5);
+      function AddScopePetListener() {
+        return _Listener5.apply(this, arguments) || this;
+      }
+      var _proto13 = AddScopePetListener.prototype;
+      _proto13.check = function check(player, res) {
+        getLocInScope(this.owner, 1.5).forEach(function(loc) {
+          var x = loc[0], y = loc[1];
+          res[y][x] = true;
+        });
+      };
+      return AddScopePetListener;
+    }(Listener);
+    var AddDistanceDamagePet = function(_PetsItems8) {
+      _inheritsLoose(AddDistanceDamagePet, _PetsItems8);
+      function AddDistanceDamagePet() {
+        return _PetsItems8.apply(this, arguments) || this;
+      }
+      var _proto14 = AddDistanceDamagePet.prototype;
+      _proto14.init = function init(x, y, owner) {
+        _PetsItems8.prototype.init.call(this, x, y, owner);
+        var listener = new AddDistanceDamagePetListener(this, timeConstants_1.ENDLESS_TIME);
+        listener.buff = new StrongBuff(owner, timeConstants_1.ENDLESS_TIME, 1);
+        listener.check(owner);
+        this.game.listeners.MoveListeners.push(listener);
+      };
+      return AddDistanceDamagePet;
+    }(PetsItems);
+    AddDistanceDamagePet.id = 10;
+    AddDistanceDamagePet.pet_name = "\u9010\u5f71\u7075\u9a79";
+    AddDistanceDamagePet.iconUrl = "pets/\u9010\u5f71\u4ed9\u9a79.png";
+    AddDistanceDamagePet.price = new Coin({
+      auroCoins: 100
+    });
+    var AddDistanceDamagePetListener = function(_Listener6) {
+      _inheritsLoose(AddDistanceDamagePetListener, _Listener6);
+      function AddDistanceDamagePetListener() {
+        return _Listener6.apply(this, arguments) || this;
+      }
+      var _proto15 = AddDistanceDamagePetListener.prototype;
+      _proto15.check = function check(player1) {
+        if (player1.code != this.code || player1.code != this.owner.code) return;
+        var distance = this.distance(this.owner);
+        var ratio = 1 + .1 * distance;
+        this.buff.ratio = ratio;
+      };
+      return AddDistanceDamagePetListener;
+    }(Listener);
+    var ChasePet = function(_PetsItems9) {
+      _inheritsLoose(ChasePet, _PetsItems9);
+      function ChasePet() {
+        return _PetsItems9.apply(this, arguments) || this;
+      }
+      return ChasePet;
+    }(PetsItems);
+    ChasePet.id = 9;
+    ChasePet.pet_name = "\u6b65\u5c18\u4e4b\u5f71";
+    ChasePet.iconUrl = "pets/\u6b65\u5c18\u4e4b\u5f71.png";
+    ChasePet.price = new Coin({
+      pyroCoins: 50
+    });
+    var ChasePetListener = function(_Listener7) {
+      _inheritsLoose(ChasePetListener, _Listener7);
+      function ChasePetListener() {
+        return _Listener7.apply(this, arguments) || this;
+      }
+      var _proto16 = ChasePetListener.prototype;
+      _proto16.check = function check(player1, x, y) {
+        var _this = this;
+        if (this.owner.code != player1.code) return;
+        var moved = false;
+        var map = this.game.map;
+        getLocInScope(player1, 1).forEach(function(loc) {
+          if (moved) return;
+          var x = loc[0], y = loc[1];
+          if (map[y][x]) return;
+          _this.owner.move(x, y);
+          moved = true;
+        });
+        getLocInScope(player1, 1.5).forEach(function(loc) {
+          if (moved) return;
+          var x = loc[0], y = loc[1];
+          if (map[y][x]) return;
+          _this.owner.move(x, y);
+          moved = true;
+        });
+      };
+      return ChasePetListener;
+    }(Listener);
+    module.exports = {
+      BasePet: BasePet,
+      GeoSignTransferPetsItems: GeoSignTransferPetsItems,
+      GeoToAuroPet: GeoToAuroPet,
+      GeoToHydroPet: GeoToHydroPet,
+      GeoToPyroPet: GeoToPyroPet,
+      GeoSignTransferListener: GeoSignTransferListener,
+      AddGeoPet: AddGeoPet,
+      AddGeoPetListener: AddGeoPetListener,
+      AddHydroPet: AddHydroPet,
+      AddHydroPetListener: AddHydroPetListener,
+      AddPyroPet: AddPyroPet,
+      AddPyroPetListener: AddPyroPetListener,
+      DisplacePet: DisplacePet,
+      AddScopePet: AddScopePet,
+      AddScopePetListener: AddScopePetListener,
+      AddDistanceDamagePet: AddDistanceDamagePet,
+      AddDistanceDamagePetListener: AddDistanceDamagePetListener,
+      ChasePet: ChasePet,
+      ChasePetListener: ChasePetListener
+    };
+    var _require4 = require("./wheels/common-clas0.0.3"), SameLocation = _require4.SameLocation;
+    var timeConstants_1 = require("./constants/timeConstants-clas0.0.3");
+    var _require5 = require("./utils/mapUtils-clas0.0.3"), getLocInScope = _require5.getLocInScope;
+    var _require6 = require("./Buffs-clas0.0.3"), VulnerBuff = _require6.VulnerBuff, StrongBuff = _require6.StrongBuff;
+    cc._RF.pop();
+  }, {
+    "./Buffs-clas0.0.3": "Buffs-clas0.0.3",
+    "./constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "./objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "./templates/Listeners-clas0.0.3": "Listeners-clas0.0.3",
+    "./templates/PetsItems-clas0.0.3": "PetsItems-clas0.0.3",
+    "./utils/mapUtils-clas0.0.3": "mapUtils-clas0.0.3",
+    "./wheels/common-clas0.0.3": "common-clas0.0.3"
+  } ],
   "PetsItems-clas0.0.1": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "63184X17l5FnZXmPij0Q1mc", "PetsItems-clas0.0.1");
@@ -14754,6 +17538,65 @@ window.__require = function e(t, n, r) {
   }, {
     "../Creature-clas0.0.2": "Creature-clas0.0.2",
     "../objects/Coin-clas0.0.2": "Coin-clas0.0.2"
+  } ],
+  "PetsItems-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "58cce+zVCRHcaheE54vheZY", "PetsItems-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../Creature-clas0.0.3"), Creature = _require.Creature;
+    var _require2 = require("../objects/Coin-clas0.0.3"), Coin = _require2.Coin;
+    var PetsItems = function(_Creature) {
+      _inheritsLoose(PetsItems, _Creature);
+      function PetsItems() {
+        return _Creature.apply(this, arguments) || this;
+      }
+      var _proto = PetsItems.prototype;
+      _proto.init = function init(x, y, owner) {
+        _Creature.prototype.init.call(this, x, y, owner.game);
+        this.owner = owner;
+        this.mining_num = new Coin({});
+      };
+      _proto.harvest = function harvest() {
+        this.owner.changeCoins(this.mining_num);
+        this.mining_num = new Coin({});
+      };
+      _proto.JSONParse = function JSONParse(info) {
+        _Creature.prototype.JSONParse.call(this, info);
+        this.mining_num = new Coin(this.mining_num);
+      };
+      return PetsItems;
+    }(Creature);
+    PetsItems.id = -1;
+    PetsItems.valid = true;
+    PetsItems.pet_name = "";
+    PetsItems.category = "pet";
+    PetsItems.price = new Coin({
+      baseCoins: 114514
+    });
+    PetsItems.energy_cost = 50;
+    PetsItems.description = function() {
+      return "";
+    };
+    PetsItems.uiDisplay = true;
+    PetsItems.overviewDisplay = true;
+    PetsItems.iconUrl = "";
+    exports.PetsItems = PetsItems;
+    cc._RF.pop();
+  }, {
+    "../Creature-clas0.0.3": "Creature-clas0.0.3",
+    "../objects/Coin-clas0.0.3": "Coin-clas0.0.3"
   } ],
   PetsItems: [ function(require, module, exports) {
     "use strict";
@@ -15338,7 +18181,7 @@ window.__require = function e(t, n, r) {
         var clazz = Pets[id];
         var pet = this.game.map[y][x];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u5ba0\u7269\u4e0d\u5b58\u5728");
-        if (!pet || pet.owner.code != this.code) throw new GameLogicError("\u53ea\u80fd\u5e7b\u5316\u81ea\u5df1\u7684\u7075\u517d");
+        if (!pet || pet.owner.code != this.code) throw new GameLogicError("\u53ea\u80fd\u5e7b\u5316\u81ea\u5df1\u7684\u4ed9\u517d");
         var price = this.calculatePrice(clazz.price);
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
@@ -15350,17 +18193,17 @@ window.__require = function e(t, n, r) {
         var newPet = this.game.map[y][x];
         newPet.mining_num = new Coin(pet.mining_num);
         newPet.mining_type = pet.mining_type;
-        this.game.addLog('{"code":' + this.code + '}\u5c06\u624b\u4e0b\u7075\u517d\u5e7b\u5316\u4e3a\u201c{"code":' + this.game.map[y][x].code + "}\u201d", 1);
+        this.game.addLog('{"code":' + this.code + '}\u5c06\u624b\u4e0b\u4ed9\u517d\u5e7b\u5316\u4e3a\u201c{"code":' + this.game.map[y][x].code + "}\u201d", 1);
       };
       _proto.harvest = function harvest(x, y) {
         var item = this.game.map[y][x];
-        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u7075\u517d\u6240\u5728\u7684\u683c\u5b50");
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
         this.game.addLog('{"code":' + this.code + '}\u9886\u53d6\u4e86\u624b\u4e0b{"code":' + item.code + "}\u70bc\u5316\u7684\u7075\u77f3", 1);
         item.harvest();
       };
       _proto.changeMiningType = function changeMiningType(x, y, key_id) {
         var item = this.game.map[y][x];
-        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u7075\u517d\u6240\u5728\u7684\u683c\u5b50");
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
         if (0 != key_id) {
           item.mining_type = COIN_KEYS[key_id];
           this.game.addLog('{"code":' + this.code + '}\u624b\u4e0b{"code":' + item.code + "}\u5f00\u59cb\u70bc\u5316" + COIN_KEYS_NAME_MAP[item.mining_type], 1);
@@ -15671,7 +18514,7 @@ window.__require = function e(t, n, r) {
         var clazz = Pets[id];
         var pet = this.game.map[y][x];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u5ba0\u7269\u4e0d\u5b58\u5728");
-        if (!pet || pet.owner.code != this.code) throw new GameLogicError("\u53ea\u80fd\u5e7b\u5316\u81ea\u5df1\u7684\u7075\u517d");
+        if (!pet || pet.owner.code != this.code) throw new GameLogicError("\u53ea\u80fd\u5e7b\u5316\u81ea\u5df1\u7684\u4ed9\u517d");
         var price = this.calculatePrice(clazz.price);
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
@@ -15683,17 +18526,17 @@ window.__require = function e(t, n, r) {
         var newPet = this.game.map[y][x];
         newPet.mining_num = new Coin(pet.mining_num);
         newPet.mining_type = pet.mining_type;
-        this.game.addLog('{"code":' + this.code + '}\u5c06\u624b\u4e0b\u7075\u517d\u5e7b\u5316\u4e3a\u201c{"code":' + this.game.map[y][x].code + "}\u201d", 1);
+        this.game.addLog('{"code":' + this.code + '}\u5c06\u624b\u4e0b\u4ed9\u517d\u5e7b\u5316\u4e3a\u201c{"code":' + this.game.map[y][x].code + "}\u201d", 1);
       };
       _proto.harvest = function harvest(x, y) {
         var item = this.game.map[y][x];
-        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u7075\u517d\u6240\u5728\u7684\u683c\u5b50");
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
         this.game.addLog('{"code":' + this.code + '}\u9886\u53d6\u4e86\u624b\u4e0b{"code":' + item.code + "}\u70bc\u5316\u7684\u7075\u77f3", 1);
         item.harvest();
       };
       _proto.changeMiningType = function changeMiningType(x, y, key_id) {
         var item = this.game.map[y][x];
-        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u7075\u517d\u6240\u5728\u7684\u683c\u5b50");
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
         if (0 != key_id) {
           item.mining_type = COIN_KEYS[key_id];
           this.game.addLog('{"code":' + this.code + '}\u624b\u4e0b{"code":' + item.code + "}\u5f00\u59cb\u70bc\u5316" + COIN_KEYS_NAME_MAP[item.mining_type], 1);
@@ -15849,9 +18692,9 @@ window.__require = function e(t, n, r) {
     "./wheels/TypeDict-clas0.0.2": "TypeDict-clas0.0.2",
     "./wheels/common-clas0.0.2": "common-clas0.0.2"
   } ],
-  Player: [ function(require, module, exports) {
+  "Player-clas0.0.3": [ function(require, module, exports) {
     "use strict";
-    cc._RF.push(module, "c34f9wOkrhM37nXIAlS+Z+a", "Player");
+    cc._RF.push(module, "0452bHDZm5GZJGIZ6QBq0Fw", "Player-clas0.0.3");
     "use strict";
     function _defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
@@ -15896,7 +18739,7 @@ window.__require = function e(t, n, r) {
       };
       return _setPrototypeOf(o, p);
     }
-    var _require = require("./Creature"), Creature = _require.Creature;
+    var _require = require("./Creature-clas0.0.3"), Creature = _require.Creature;
     var xs = [ 2, 3, 4 ];
     var ys = [ 3, 2, 3 ];
     var Player = function(_Creature) {
@@ -15907,15 +18750,15 @@ window.__require = function e(t, n, r) {
       var _proto = Player.prototype;
       _proto.init = function init(code, source) {
         _Creature.prototype.init.call(this, xs[code - 1], ys[code - 1], source);
-        this._power = 7;
+        this._power = 7.777;
         this.equipList = [];
         this.spellList = [];
         this.forgingList = [];
         this.coins = new Coin({
-          baseCoins: 100
+          baseCoins: 700
         });
-        this.energy = 100;
-        this.grow = 1.025;
+        this.energy = 700;
+        this.grow = .03;
       };
       _proto.initialize = function initialize() {
         this.spellList.push(new MoveSpell(this));
@@ -16030,7 +18873,7 @@ window.__require = function e(t, n, r) {
         var clazz = Pets[id];
         var pet = this.game.map[y][x];
         if (!clazz || !clazz.valid) throw new GameLogicError("\u5ba0\u7269\u4e0d\u5b58\u5728");
-        if (!pet || pet.owner.code != this.code) throw new GameLogicError("\u53ea\u80fd\u5e7b\u5316\u81ea\u5df1\u7684\u7075\u517d");
+        if (!pet || pet.owner.code != this.code) throw new GameLogicError("\u53ea\u80fd\u5e7b\u5316\u81ea\u5df1\u7684\u4ed9\u517d");
         var price = this.calculatePrice(clazz.price);
         var energy = this.calculateEnergyCost(clazz.energy_cost);
         if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
@@ -16042,17 +18885,376 @@ window.__require = function e(t, n, r) {
         var newPet = this.game.map[y][x];
         newPet.mining_num = new Coin(pet.mining_num);
         newPet.mining_type = pet.mining_type;
-        this.game.addLog('{"code":' + this.code + '}\u5c06\u624b\u4e0b\u7075\u517d\u5e7b\u5316\u4e3a\u201c{"code":' + this.game.map[y][x].code + "}\u201d", 1);
+        this.game.addLog('{"code":' + this.code + '}\u5c06\u624b\u4e0b\u4ed9\u517d\u5e7b\u5316\u4e3a\u201c{"code":' + this.game.map[y][x].code + "}\u201d", 1);
       };
       _proto.harvest = function harvest(x, y) {
         var item = this.game.map[y][x];
-        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u7075\u517d\u6240\u5728\u7684\u683c\u5b50");
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
         this.game.addLog('{"code":' + this.code + '}\u9886\u53d6\u4e86\u624b\u4e0b{"code":' + item.code + "}\u70bc\u5316\u7684\u7075\u77f3", 1);
         item.harvest();
       };
       _proto.changeMiningType = function changeMiningType(x, y, key_id) {
         var item = this.game.map[y][x];
-        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u7075\u517d\u6240\u5728\u7684\u683c\u5b50");
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
+        if (0 != key_id) {
+          item.mining_type = COIN_KEYS[key_id];
+          this.game.addLog('{"code":' + this.code + '}\u624b\u4e0b{"code":' + item.code + "}\u5f00\u59cb\u70bc\u5316" + COIN_KEYS_NAME_MAP[item.mining_type], 1);
+        } else {
+          item.mining_type = null;
+          this.game.addLog('{"code":' + this.code + '}\u624b\u4e0b{"code":' + item.code + "}\u505c\u6b62\u70bc\u5316\u7075\u77f3", 1);
+        }
+        item.harvest();
+      };
+      _proto.bidding = function bidding(val) {
+        this.coins.baseCoins -= val;
+        this.game.addLog('{"code":' + this.code + "}\u7ade\u4ef7\u82b1\u8d39" + val + "\u9897\u7075\u77f3", 1);
+      };
+      _proto.findEquip = function findEquip(id) {
+        var name = Equips[id].name;
+        return this.equipList.find(function(e) {
+          return e["type"] == name;
+        });
+      };
+      _proto.findSpell = function findSpell(id) {
+        return this.spellList.find(function(e) {
+          return typeDict[e["type"]].id == id;
+        });
+      };
+      _proto.isForgingEquip = function isForgingEquip(id) {
+        var _this = this;
+        var clazz = Equips[id];
+        return void 0 != this.forgingList.filter(function(forging) {
+          return "ForgeEquipListener" == forging.type;
+        }).filter(function(forging) {
+          return forging.item == clazz.name;
+        }).find(function(forging) {
+          return forging.owner.code == _this.code;
+        });
+      };
+      _proto.getSpellPrice = function getSpellPrice(id) {
+        var clazz = Spell[id];
+        if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
+        var price = new Coin({});
+        if (this.findSpell(id)) price.add(new Coin(clazz.price)); else {
+          var spellNum = 0;
+          this.spellList.forEach(function(spell) {
+            spellNum += typeDict[spell.type].size;
+          });
+          spellNum >= 5 && price.add(new Coin({
+            baseCoins: 200
+          }));
+        }
+        this.game.listeners.GoldCostCalculators.check(price, this);
+        return price;
+      };
+      _proto.calculatePrice = function calculatePrice(prize) {
+        var price = new Coin(prize);
+        this.game.listeners.GoldCostCalculators.check(price, this);
+        return price;
+      };
+      _proto.calculateEnergyCost = function calculateEnergyCost(energy) {
+        var res = {
+          cost: energy
+        };
+        this.game.listeners.SpellCostCalculators.check(res, this);
+        return res.cost;
+      };
+      _proto.JSONStringify = function JSONStringify() {
+        var res = _Creature.prototype.JSONStringify.call(this);
+        res.spellList = this.spellList.map(function(spell) {
+          return {
+            isItem: true,
+            code: spell.code
+          };
+        });
+        res.equipList = this.equipList.map(function(equip) {
+          return {
+            isItem: true,
+            code: equip.code
+          };
+        });
+        res.forgingList = this.forgingList.filter(function(forging) {
+          return forging;
+        }).map(function(forging) {
+          return {
+            isItem: true,
+            code: forging.code
+          };
+        });
+        return res;
+      };
+      _proto.JSONParse = function JSONParse(info) {
+        _Creature.prototype.JSONParse.call(this, info);
+        var dict = this.game.unitDict;
+        this.spellList = this.spellList.map(function(spell) {
+          return dict.get(spell.code);
+        });
+        this.equipList = this.equipList.map(function(equip) {
+          return dict.get(equip.code);
+        });
+        this.forgingList = this.forgingList.map(function(forging) {
+          return dict.get(forging.code);
+        }).filter(function(forging) {
+          return forging;
+        });
+        this.coins = new Coin(this.coins);
+      };
+      _createClass(Player, [ {
+        key: "Pets",
+        get: function get() {
+          var _this2 = this;
+          return this.game.allMapElements.filter(function(item) {
+            return item.owner && item.owner.code == _this2.code;
+          });
+        }
+      }, {
+        key: "challengeAbleItems",
+        get: function get() {
+          var _this3 = this;
+          return this.itemsInScope().filter(function(item) {
+            return item.code != _this3.code;
+          }).map(function(item) {
+            return [ item.x, item.y ];
+          });
+        }
+      } ]);
+      return Player;
+    }(Creature);
+    Player.challengable = true;
+    Player.category = "player";
+    exports.Player = Player;
+    var _require2 = require("./wheels/common-clas0.0.3"), GameLogicError = _require2.GameLogicError;
+    var _require3 = require("./objects/Coin-clas0.0.3"), COIN_KEYS = _require3.COIN_KEYS, Coin = _require3.Coin, COIN_KEYS_NAME_MAP = _require3.COIN_KEYS_NAME_MAP;
+    var _require4 = require("./Spell-clas0.0.3"), MoveSpell = _require4.MoveSpell;
+    var _require5 = require("./wheels/TypeDict-clas0.0.3"), typeDict = _require5.typeDict, Pets = _require5.Pets, Equips = _require5.Equips, Spell = _require5.Spell;
+    var _require6 = require("./templates/SpellItems-clas0.0.3"), SpellItem = _require6.SpellItem;
+    var _require7 = require("./templates/EquipItems-clas0.0.3"), EquipItems = _require7.EquipItems;
+    var _require8 = require("./loggers/logUtils-clas0.0.3"), logCoinInfo = _require8.logCoinInfo, logItem = _require8.logItem;
+    var _require9 = require("./constants/gameConstants-clas0.0.3"), MAP_SIZE = _require9.MAP_SIZE;
+    var _require10 = require("./utils/iterationUtils-clas0.0.3"), iter_36 = _require10.iter_36;
+    var _require11 = require("./animations/spellAnimation-clas0.0.3"), InkAnimation = _require11.InkAnimation;
+    var _require12 = require("./animations/challengeAnimation-clas0.0.3"), AttackAnimation = _require12.AttackAnimation, ChallengeAnimation = _require12.ChallengeAnimation;
+    var _require13 = require("./listeners/ForgeListeners-clas0.0.3"), ForgeSpellListener = _require13.ForgeSpellListener, UpgradeEquipListener = _require13.UpgradeEquipListener, ForgeEquipListener = _require13.ForgeEquipListener;
+    cc._RF.pop();
+  }, {
+    "./Creature-clas0.0.3": "Creature-clas0.0.3",
+    "./Spell-clas0.0.3": "Spell-clas0.0.3",
+    "./animations/challengeAnimation-clas0.0.3": "challengeAnimation-clas0.0.3",
+    "./animations/spellAnimation-clas0.0.3": "spellAnimation-clas0.0.3",
+    "./constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "./listeners/ForgeListeners-clas0.0.3": "ForgeListeners-clas0.0.3",
+    "./loggers/logUtils-clas0.0.3": "logUtils-clas0.0.3",
+    "./objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "./templates/EquipItems-clas0.0.3": "EquipItems-clas0.0.3",
+    "./templates/SpellItems-clas0.0.3": "SpellItems-clas0.0.3",
+    "./utils/iterationUtils-clas0.0.3": "iterationUtils-clas0.0.3",
+    "./wheels/TypeDict-clas0.0.3": "TypeDict-clas0.0.3",
+    "./wheels/common-clas0.0.3": "common-clas0.0.3"
+  } ],
+  Player: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "c34f9wOkrhM37nXIAlS+Z+a", "Player");
+    "use strict";
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        "value" in descriptor && (descriptor.writable = true);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
+    function _createClass(Constructor, protoProps, staticProps) {
+      protoProps && _defineProperties(Constructor.prototype, protoProps);
+      staticProps && _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
+      return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return "symbol" === typeof key ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if ("object" !== typeof input || null === input) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (void 0 !== prim) {
+        var res = prim.call(input, hint || "default");
+        if ("object" !== typeof res) return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === hint ? String : Number)(input);
+    }
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./Creature"), Creature = _require.Creature;
+    var xs = [ 2, 3, 4 ];
+    var ys = [ 3, 2, 3 ];
+    var Player = function(_Creature) {
+      _inheritsLoose(Player, _Creature);
+      function Player() {
+        return _Creature.apply(this, arguments) || this;
+      }
+      var _proto = Player.prototype;
+      _proto.init = function init(code, source) {
+        _Creature.prototype.init.call(this, xs[code - 1], ys[code - 1], source);
+        this._power = 7.777;
+        this.equipList = [];
+        this.spellList = [];
+        this.forgingList = [];
+        this.coins = new Coin({
+          baseCoins: 700
+        });
+        this.energy = 700;
+        this.grow = .03;
+      };
+      _proto.initialize = function initialize() {
+        this.spellList.push(new MoveSpell(this));
+      };
+      _proto.challenge = function challenge(player2) {
+        if (!player2) throw new GameLogicError("\u4e0d\u80fd\u5411\u6ca1\u6709\u5355\u4f4d\u7684\u5730\u65b9\u53d1\u52a8\u653b\u51fb");
+        if (this.inScope(player2.x, player2.y)) throw new GameLogicError("\u653b\u51fb\u8ddd\u79bb\u4e0d\u591f");
+        if (this.challenge_times <= 0) throw new GameLogicError("\u6311\u6218\u6b21\u6570\u5df2\u7528\u5b8c");
+        if (!typeDict[player2.type].challengable) throw new GameLogicError("\u8be5\u5355\u4f4d\u4e0d\u53ef\u653b\u51fb");
+        this.game.addLog(logItem(this) + "\u5411" + logItem(player2) + "\u53d1\u8d77\u8bba\u5251", 1);
+        this.game.addAnime(new ChallengeAnimation(), {
+          postpone: 75
+        });
+        this.game.listeners.ChallengeListeners.check(this, player2);
+        var level1 = this.level, level2 = player2.level;
+        var attacks1 = 1, attacks2 = 1;
+        while (attacks1 < level1 || attacks2 < level2) {
+          this.game.addAnime(new AttackAnimation(77, 77, attacks1 + attacks2 - 2), {
+            postpone: 60
+          });
+          if (attacks2 / level2 < attacks1 / level1) {
+            player2.attack(this);
+            attacks2++;
+          } else {
+            this.attack(player2);
+            attacks1++;
+          }
+        }
+        return "at00";
+      };
+      _proto.changeCoins = function changeCoins(coin) {
+        this.coins.add(coin);
+        logCoinInfo(this, coin);
+        this.game.listeners.CoinListeners.check(this, coin);
+      };
+      _proto.buyEquip = function buyEquip(id) {
+        var clazz = Equips[id];
+        if (!clazz || !clazz.valid) throw new GameLogicError("\u6b66\u5668\u4e0d\u5b58\u5728");
+        if (this.isForgingEquip(id)) throw new GameLogicError("\u5df2\u5728\u953b\u9020\u4e2d\uff0c\u8bf7\u52ff\u91cd\u590d\u70b9\u51fb");
+        var price = this.calculatePrice(clazz.buy_price);
+        var energy = this.calculateEnergyCost(clazz.energy_cost);
+        if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
+        if (this.energy < clazz.energy_cost) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
+        if (this.findEquip(id)) throw new GameLogicError("\u60a8\u5df2\u8d2d\u4e70\u8be5\u6b66\u5668");
+        this.game.addLog('{"code":' + this.code + "}\u8d2d\u4e70\u4e86\u201c" + clazz.equip_name + "\u201d", 1);
+        this.energy -= energy;
+        this.changeCoins(price.opposite());
+        this.forgingList.push(new ForgeEquipListener(this, clazz.name));
+      };
+      _proto.upgradeEquip = function upgradeEquip(id) {
+        var equip = this.findEquip(id);
+        if (!equip) throw new GameLogicError("\u6b66\u5668\u4e0d\u5b58\u5728");
+        var clazz = Equips[id];
+        var price = this.calculatePrice(clazz.upgrade_price);
+        var energy = this.calculateEnergyCost(clazz.energy_cost);
+        if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
+        if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
+        var upgrading = this.forgingList.filter(function(listener) {
+          return listener.equip && listener.equip.code == equip.code;
+        }).length;
+        if (equip.level + upgrading >= 20) throw new GameLogicError("\u6b66\u5668\u5df2\u6ee1\u7ea7");
+        this.game.addLog(logItem(this) + "\u5f00\u59cb\u5347\u7ea7\u201c" + clazz.equip_name + "\u201d", 1);
+        this.energy -= energy;
+        this.changeCoins(price.opposite());
+        this.forgingList.push(new UpgradeEquipListener(this, equip));
+      };
+      _proto.learnSpell = function learnSpell(id) {
+        var clazz = Spell[id];
+        if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
+        if (this.findSpell(id)) throw new GameLogicError("\u4f60\u5df2\u7ecf\u5b66\u4e60\u8fc7\u8be5\u672f\u6cd5\u4e86");
+        var price = new Coin({});
+        var spellNum = 0;
+        this.spellList.forEach(function(spell) {
+          spellNum += typeDict[spell.type].size;
+        });
+        spellNum >= 5 && price.add(new Coin({
+          baseCoins: 200
+        }));
+        this.game.listeners.GoldCostCalculators.check(price, this);
+        if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
+        this.game.addLog(logItem(this) + "\u5b66\u4e60\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.spellList.push(new clazz(this));
+      };
+      _proto.buySpell = function buySpell(id) {
+        var clazz = Spell[id];
+        if (!clazz || !clazz.valid) throw new GameLogicError("\u6cd5\u672f\u4e0d\u5b58\u5728");
+        var spell = this.findSpell(id);
+        if (!spell) throw new GameLogicError("\u8bf7\u5148\u5b66\u4e60\u8be5\u672f\u6cd5");
+        var price = this.calculatePrice(clazz.price);
+        var energy = this.calculateEnergyCost(clazz.energy_cost);
+        if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
+        if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
+        this.game.addLog(logItem(this) + "\u5f00\u59cb\u70bc\u5236\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.forgingList.push(new ForgeSpellListener(this, spell));
+        this.energy -= energy;
+        this.changeCoins(price.opposite());
+      };
+      _proto.useSpell = function useSpell(id, x, y, extra) {
+        var spell = this.findSpell(id);
+        if (!spell) throw new GameLogicError("\u8bf7\u5148\u5b66\u4e60\u8be5\u672f\u6cd5");
+        if (!spell.num) throw new GameLogicError("\u7075\u7b26\u5df2\u7528\u5b8c\uff0c\u8bf7\u5148\u70bc\u5236\u7075\u7b26");
+        var clazz = Spell[id];
+        var energy = this.calculateEnergyCost(clazz.energy_cost);
+        if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
+        var locStr = x < MAP_SIZE ? "\u5bf9(" + (x + 1) + "," + (MAP_SIZE - y) + ")" : "";
+        this.game.addLog("" + logItem(this) + locStr + "\u4f7f\u7528\u4e86\u672f\u6cd5\u201c" + clazz.spellName + "\u201d", 1);
+        this.energy -= energy;
+        spell.num--;
+        this.findSpell(id).use(x, y, extra);
+      };
+      _proto.buyPet = function buyPet(id, x, y) {
+        var clazz = Pets[id];
+        var pet = this.game.map[y][x];
+        if (!clazz || !clazz.valid) throw new GameLogicError("\u5ba0\u7269\u4e0d\u5b58\u5728");
+        if (!pet || pet.owner.code != this.code) throw new GameLogicError("\u53ea\u80fd\u5e7b\u5316\u81ea\u5df1\u7684\u4ed9\u517d");
+        var price = this.calculatePrice(clazz.price);
+        var energy = this.calculateEnergyCost(clazz.energy_cost);
+        if (!this.coins.compare(price)) throw new GameLogicError("\u6750\u6599\u4e0d\u8db3");
+        if (this.energy < energy) throw new GameLogicError("\u5185\u529b\u4e0d\u8db3");
+        this.energy -= energy;
+        this.changeCoins(price.opposite());
+        this.game.map[y][x] = null;
+        this.game.map[y][x] = new clazz(x, y, this);
+        var newPet = this.game.map[y][x];
+        newPet.mining_num = new Coin(pet.mining_num);
+        newPet.mining_type = pet.mining_type;
+        this.game.addLog('{"code":' + this.code + '}\u5c06\u624b\u4e0b\u4ed9\u517d\u5e7b\u5316\u4e3a\u201c{"code":' + this.game.map[y][x].code + "}\u201d", 1);
+      };
+      _proto.harvest = function harvest(x, y) {
+        var item = this.game.map[y][x];
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
+        this.game.addLog('{"code":' + this.code + '}\u9886\u53d6\u4e86\u624b\u4e0b{"code":' + item.code + "}\u70bc\u5316\u7684\u7075\u77f3", 1);
+        item.harvest();
+      };
+      _proto.changeMiningType = function changeMiningType(x, y, key_id) {
+        var item = this.game.map[y][x];
+        if (!item || item.owner.code != this.code) throw new GameLogicError("\u8bf7\u9009\u62e9\u6709\u5df1\u65b9\u4ed9\u517d\u6240\u5728\u7684\u683c\u5b50");
         if (0 != key_id) {
           item.mining_type = COIN_KEYS[key_id];
           this.game.addLog('{"code":' + this.code + '}\u624b\u4e0b{"code":' + item.code + "}\u5f00\u59cb\u70bc\u5316" + COIN_KEYS_NAME_MAP[item.mining_type], 1);
@@ -16420,7 +19622,7 @@ window.__require = function e(t, n, r) {
     });
     GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
     GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534712+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
     };
     var HydroCoreSpell = function(_SpellItem6) {
       _inheritsLoose(HydroCoreSpell, _SpellItem6);
@@ -17247,7 +20449,7 @@ window.__require = function e(t, n, r) {
     });
     EnergyToPowerSpell.spellName = "\u771f\u6c14\u5316\u5143";
     EnergyToPowerSpell.description = function() {
-      return "\u6d88\u8017\u81ea\u8eab30%\u7684\u5185\u529b\uff0c\u6bcf\u6d88\u801710\u70b9\u5185\u529b\u90fd\u4f1a\u63d0\u5347\u81ea\u8eab1%\u7684\u4fee\u4e3a";
+      return "\u6d88\u8017\u81ea\u8eab30%\u7684\u5185\u529b\uff0c\u6bcf\u6d88\u801710\u70b9\u5185\u529b\u90fd\u4f1a\u63d0\u5347\u81ea\u8eab0.01\u7684\u4fee\u4e3a";
     };
     EnergyToPowerSpell.validLocations = function() {
       return null;
@@ -17265,7 +20467,7 @@ window.__require = function e(t, n, r) {
       _proto6.use = function use(x, y) {
         var player2 = this.game.map[y][x];
         if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
-        if ("Player" != player2.type && player2.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
+        if ("Player" != player2.type && player2.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u4ed9\u517d\u4f7f\u7528");
         player2.updateSpeed(1.07);
         this.game.addAnime(new GeoCoreSpellAnimation(x, y));
         if (7 == getThirdDigit(player2.power)) {
@@ -17290,7 +20492,7 @@ window.__require = function e(t, n, r) {
     });
     GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
     GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u7075\u517d\u4fee\u4e3a\u63d0\u53477%\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u63d0\u534718+5X%\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09\u7684\u4fee\u4e3a";
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u4fee\u4e3a+0.07\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u767e\u5206\u4f4d\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u4f7f\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u52a00.18+0.05X\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09";
     };
     var HydroCoreSpell = function(_SpellItem6) {
       _inheritsLoose(HydroCoreSpell, _SpellItem6);
@@ -17392,1033 +20594,7 @@ window.__require = function e(t, n, r) {
     });
     HydroCoreSpell.spellName = "\u6d41\u6ce2\u78a7\u5f71";
     HydroCoreSpell.description = function() {
-      return "\u79fb\u52a8\u81f3\u5730\u56fe\u4e2d\u4efb\u610f\u8fb9\u7f18\u4f4d\u7f6e\uff0c\u82e5\u79fb\u52a8\u7684\u8def\u5f84\u4e0a\u6709\u5355\u4f4d\u5e26\u6709\u6c34\u5370\u8bb0\uff0c\u5219\u4f60\u63d0\u534730%\u4fee\u4e3a\uff0c\u4e14\u4e0b\u4e00\u6b21\u64cd\u4f5c\u4e0d\u6d88\u8017\u6750\u6599\u4e0e\u5185\u529b\u3002\u82e5\u5e26\u6709\u6c34\u5370\u8bb0\u7684\u5355\u4f4d\u4e0d\u6b62\u4e00\u4e2a\uff0c\u5219\u6bcf\u4e2a\u989d\u5916\u7684\u5355\u4f4d\u4ee4\u4f60\u63d0\u534715%\u4fee\u4e3a";
-    };
-    HydroCoreSpell.validLocations = function(player) {
-      var map = player.game.map;
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        return !map[y][x];
-      });
-    };
-    var PyroCoreSpell = function(_SpellItem7) {
-      _inheritsLoose(PyroCoreSpell, _SpellItem7);
-      function PyroCoreSpell() {
-        return _SpellItem7.apply(this, arguments) || this;
-      }
-      var _proto8 = PyroCoreSpell.prototype;
-      _proto8.use = function use(x, y) {
-        var target = this.game.map[y][x];
-        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
-        this.explode(target, 2);
-      };
-      _proto8.explode = function explode(target, log_level) {
-        var _this3 = this;
-        if (!target) return;
-        this.game.addLog('{"code":' + target.code + "}\u88ab\u9644\u52a01\u5c42\u706b\u5370\u8bb0", log_level);
-        target.pyroSign++;
-        this.owner.harm(target, new Damage_1.Damage(Damage_1.Damage.SPELL, 100));
-        if (target.pyroSign < 9) return;
-        this.game.addLog('{"code":' + target.code + "}\u706b\u5370\u8bb0\u6570\u91cf\u8fbe\u5230" + target.pyroSign + "\u5c42\uff0c\u518d\u6b21\u89e6\u53d1\u3010\u4e5d\u7130\u711a\u5929\u3011", 2);
-        this.game.addAnime(new InkAnimation(target.x, target.y, [ 255, 35, 5 ]), {
-          postpone: 10
-        });
-        target.pyroSign -= 9;
-        getItemIn33(target).forEach(function(new_target) {
-          _this3.explode(new_target, 3);
-        });
-      };
-      return PyroCoreSpell;
-    }(SpellItem);
-    PyroCoreSpell.id = 6;
-    PyroCoreSpell.price = new Coin({
-      pyroCoins: 50
-    });
-    PyroCoreSpell.spellName = "\u4e5d\u7130\u711a\u5929";
-    PyroCoreSpell.description = function() {
-      return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u9020\u6210200\u70b9\u4f24\u5bb3\u5e76\u53e0\u52a0\u4e00\u5c42\u706b\u5370\u8bb0\uff0c\u82e5\u6b64\u65f6\u8be5\u5355\u4f4d\u6709\u8d85\u8fc7\u4e5d\u5c42\u706b\u5370\u8bb0\u5219\u5f15\u53d1\u7206\u70b8\uff0c\u5bf9\u5176\u6240\u57283*3\u8303\u56f4\u5185\u6240\u6709\u5355\u4f4d\u5168\u90e8\u65bd\u52a0\u4e00\u6b21\u3010\u4e5d\u7130\u711a\u5929\u3011";
-    };
-    var DisplaceSpell = function(_SpellItem8) {
-      _inheritsLoose(DisplaceSpell, _SpellItem8);
-      function DisplaceSpell() {
-        return _SpellItem8.apply(this, arguments) || this;
-      }
-      var _proto9 = DisplaceSpell.prototype;
-      _proto9.use = function use(x, y, extra) {
-        var map = this.game.map;
-        var oldX = this.owner.x, oldY = this.owner.y;
-        var item1 = this.owner, item2 = map[y][x];
-        map[y][x] = item1;
-        map[oldY][oldX] = item2;
-        item1.x = x;
-        item1.y = y;
-        if (null != item2) {
-          console.log("item2 is not null");
-          if (item2.code == item1.code) throw new GameLogicError("\u4e0d\u80fd\u6307\u5b9a\u81ea\u5df1");
-          item2.x = oldX;
-          item2.y = oldY;
-          this.game.listeners.MoveListeners.check(item2, x, y);
-          this.game.addLog('{"code":' + item2.code + ',"x":' + x + ',"y":' + y + "}\u79fb\u52a8\u81f3" + logVertex(oldX, oldY), 0);
-        }
-        this.game.listeners.MoveListeners.check(item1, oldX, oldY);
-        this.game.addLog('{"code":' + item1.code + ',"x":' + oldX + ',"y":' + oldY + "}\u79fb\u52a8\u81f3" + logVertex(x, y), 0);
-        this.game.addAnime(new DisplaceSpellAnimation(x, y));
-        this.game.addAnime(new DisplaceSpellAnimation(oldX, oldY));
-      };
-      return DisplaceSpell;
-    }(SpellItem);
-    DisplaceSpell.id = 7;
-    DisplaceSpell.price = new Coin({
-      auroCoins: 50
-    });
-    DisplaceSpell.spellName = "\u661f\u79fb\u6597\u8f6c";
-    DisplaceSpell.description = function() {
-      return "\u4ee4\u4efb\u610f\u5355\u4f4d\u79fb\u52a8\u5230\u4efb\u610f\u4f4d\u7f6e";
-    };
-    DisplaceSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        return player.x != axis[0] || player.y != axis[1];
-      });
-    };
-    var BounceSpell = function(_SpellItem9) {
-      _inheritsLoose(BounceSpell, _SpellItem9);
-      function BounceSpell() {
-        return _SpellItem9.apply(this, arguments) || this;
-      }
-      var _proto10 = BounceSpell.prototype;
-      _proto10.use = function use(x, y) {
-        var _this4 = this;
-        eightDirections(this.owner).forEach(function(direction) {
-          direction.reverse();
-          var items = direction.map(function(loc) {
-            return _this4.game.map[loc[1]][loc[0]];
-          }).filter(function(item) {
-            return null != item;
-          });
-          items.forEach(function(item, i) {
-            var x = direction[i][0], y = direction[i][1];
-            item.move(x, y);
-          });
-        });
-      };
-      _proto10.validLocations = function validLocations() {
-        return null;
-      };
-      return BounceSpell;
-    }(SpellItem);
-    BounceSpell.id = 8;
-    BounceSpell.price = new Coin({
-      baseCoins: 50
-    });
-    BounceSpell.spellName = "\u516b\u65b9\u98ce\u6563";
-    BounceSpell.description = function() {
-      return "\u5c06\u81ea\u8eab\u516b\u4e2a\u65b9\u4f4d\u7684\u5355\u4f4d\u5168\u90e8\u5f39\u5f00\u81f3\u6700\u8fdc\u4f4d\u7f6e";
-    };
-    BounceSpell.validLocations = function() {
-      return null;
-    };
-    var AttractSpell = function(_SpellItem10) {
-      _inheritsLoose(AttractSpell, _SpellItem10);
-      function AttractSpell() {
-        return _SpellItem10.apply(this, arguments) || this;
-      }
-      var _proto11 = AttractSpell.prototype;
-      _proto11.use = function use(x, y) {
-        var _this5 = this;
-        eightDirections(this.owner).forEach(function(direction) {
-          var items = direction.map(function(loc) {
-            return _this5.game.map[loc[1]][loc[0]];
-          }).filter(function(item) {
-            return null != item;
-          });
-          items.forEach(function(item, i) {
-            var x = direction[i][0], y = direction[i][1];
-            if (item.x == x && item.y == y) return;
-            item.move(x, y);
-          });
-        });
-      };
-      _proto11.validLocations = function validLocations() {
-        return null;
-      };
-      return AttractSpell;
-    }(SpellItem);
-    AttractSpell.id = 9;
-    AttractSpell.price = new Coin({
-      baseCoins: 50
-    });
-    AttractSpell.spellName = "\u516b\u65b9\u5f52\u5f15";
-    AttractSpell.description = function() {
-      return "\u5c06\u81ea\u8eab\u516b\u4e2a\u65b9\u5411\u79bb\u81ea\u5df1\u6700\u8fd1\u7684\u5355\u4f4d\u62c9\u81f3\u8eab\u8fb9";
-    };
-    AttractSpell.validLocations = function() {
-      return null;
-    };
-    var HydrateOneDirectionSpell = function(_SpellItem11) {
-      _inheritsLoose(HydrateOneDirectionSpell, _SpellItem11);
-      function HydrateOneDirectionSpell() {
-        return _SpellItem11.apply(this, arguments) || this;
-      }
-      var _proto12 = HydrateOneDirectionSpell.prototype;
-      _proto12.use = function use(x, y) {
-        var _this6 = this;
-        var has = false;
-        var self = this;
-        eightDirections(this.owner).forEach(function(direction) {
-          if (!direction.find(function(loc) {
-            return loc[0] == x && loc[1] == y;
-          })) return;
-          has = true;
-          direction.map(function(loc) {
-            return _this6.game.map[loc[1]][loc[0]];
-          }).filter(function(item) {
-            return null != item;
-          }).forEach(function(item) {
-            item.hydroSign++;
-            self.game.addAnime(new InkAnimation(item.x, item.y, [ 40, 75, 178 ]));
-          });
-        });
-        if (!has) throw new GameLogicError("\u53ea\u80fd\u6307\u5b9a\u76f4\u7ebf\u6216\u659c\u5bf9\u89d2\u7684\u65b9\u5411");
-      };
-      _proto12.validLocations = function validLocations() {
-        var _this7 = this;
-        return iter_36().filter(function(axis) {
-          return _this7.owner.x != axis[0] || _this7.owner.y != axis[1];
-        });
-      };
-      return HydrateOneDirectionSpell;
-    }(SpellItem);
-    HydrateOneDirectionSpell.id = 10;
-    HydrateOneDirectionSpell.price = new Coin({
-      hydroCoins: 50
-    });
-    HydrateOneDirectionSpell.spellName = "\u6d9f\u6f2a\u7eb5\u75d5";
-    HydrateOneDirectionSpell.description = function() {
-      return "\u5bf9\u4e00\u4e2a\u65b9\u5411\u4e0a\u7684\u6240\u6709\u5355\u4f4d\u65bd\u52a0\u6c34\u5370\u8bb0";
-    };
-    HydrateOneDirectionSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        return player.x != axis[0] || player.y != axis[1];
-      });
-    };
-    var PyrateSpell = function(_SpellItem12) {
-      _inheritsLoose(PyrateSpell, _SpellItem12);
-      function PyrateSpell() {
-        return _SpellItem12.apply(this, arguments) || this;
-      }
-      var _proto13 = PyrateSpell.prototype;
-      _proto13.use = function use(x, y) {
-        var player2 = this.game.map[y][x];
-        if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
-        this.game.addLog('{"code":' + player2.code + "}\u88ab\u9644\u52a07\u5c42\u706b\u5370\u8bb0", 2);
-        this.game.addAnime(new InkAnimation(x, y, [ 255, 35, 5 ]));
-        player2.pyroSign += 7;
-      };
-      return PyrateSpell;
-    }(SpellItem);
-    PyrateSpell.id = 11;
-    PyrateSpell.price = new Coin({
-      pyroCoins: 50
-    });
-    PyrateSpell.spellName = "\u4e03\u6627\u771f\u706b";
-    PyrateSpell.description = function() {
-      return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u65bd\u52a0\u4e03\u5c42\u706b\u5370\u8bb0";
-    };
-    var Geo33Spell = function(_SpellItem13) {
-      _inheritsLoose(Geo33Spell, _SpellItem13);
-      function Geo33Spell() {
-        return _SpellItem13.apply(this, arguments) || this;
-      }
-      var _proto14 = Geo33Spell.prototype;
-      _proto14.use = function use(x, y) {
-        var player = this.owner;
-        getItemIn33({
-          game: this.game,
-          x: x,
-          y: y
-        }).forEach(function(item) {
-          7 == getThirdDigit(item.power) && player.geoSign++;
-        });
-      };
-      _proto14.validLocations = function validLocations() {
-        return iter_36();
-      };
-      return Geo33Spell;
-    }(SpellItem);
-    Geo33Spell.id = 12;
-    Geo33Spell.price = new Coin({
-      geoCoins: 50
-    });
-    Geo33Spell.spellName = "\u7075\u58e4\u5f52\u97f5";
-    Geo33Spell.description = function() {
-      return "\u6307\u5b9a\u4f4d\u7f6e3*3\u8303\u56f4\u5185\uff0c\u6bcf\u4e2a\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a7\u7684\u5355\u4f4d\u90fd\u4f1a\u4f7f\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0";
-    };
-    Geo33Spell.validLocations = function() {
-      return iter_36();
-    };
-    var GeoToPyroSpell = function(_SpellItem14) {
-      _inheritsLoose(GeoToPyroSpell, _SpellItem14);
-      function GeoToPyroSpell() {
-        return _SpellItem14.apply(this, arguments) || this;
-      }
-      var _proto15 = GeoToPyroSpell.prototype;
-      _proto15.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u70ec\u706b\u7075\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u70ec\u706b\u5370\u8bb0\u4e0d\u8db3");
-        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
-        this.owner.geoSign--;
-        this.owner.changeCoins({
-          pyroCoins: 50
-        });
-      };
-      _proto15.validLocations = function validLocations() {
-        var _this8 = this;
-        return iter_36().filter(function(axis) {
-          var x = axis[0], y = axis[1];
-          var target = _this8.game.map[y][x];
-          if (!target || "GeoToPyroPet" != target.type || target.owner.code != _this8.owner.code) return false;
-          return true;
-        });
-      };
-      return GeoToPyroSpell;
-    }(SpellItem);
-    GeoToPyroSpell.id = 13;
-    GeoToPyroSpell.size = 0;
-    GeoToPyroSpell.price = new Coin({});
-    GeoToPyroSpell.spellName = "\u7075\u94f8\xb7\u70ec\u706b";
-    GeoToPyroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u70ec\u706b\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u706b\u7075\u77f3";
-    };
-    GeoToPyroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
-    };
-    var GeoToHydroSpell = function(_SpellItem15) {
-      _inheritsLoose(GeoToHydroSpell, _SpellItem15);
-      function GeoToHydroSpell() {
-        return _SpellItem15.apply(this, arguments) || this;
-      }
-      var _proto16 = GeoToHydroSpell.prototype;
-      _proto16.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToHydroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u6d41\u6e0a\u517d\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u6d41\u6e0a\u5370\u8bb0\u4e0d\u8db3");
-        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
-        this.owner.geoSign--;
-        this.owner.changeCoins({
-          hydroCoins: 50
-        });
-      };
-      _proto16.validLocations = function validLocations() {
-        var _this10 = this;
-        return iter_36().filter(function(axis) {
-          var x = axis[0], y = axis[1];
-          var target = _this10.game.map[y][x];
-          if (!target || "GeoToHydroPet" != target.type || target.owner.code != _this10.owner.code) return false;
-          return true;
-        });
-      };
-      return GeoToHydroSpell;
-    }(SpellItem);
-    GeoToHydroSpell.id = 14;
-    GeoToHydroSpell.size = 0;
-    GeoToHydroSpell.price = new Coin({});
-    GeoToHydroSpell.spellName = "\u7075\u94f8\xb7\u6d41\u6e0a";
-    GeoToHydroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u6d41\u6e0a\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u6c34\u7075\u77f3";
-    };
-    GeoToHydroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToHydroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
-    };
-    var GeoToAuroSpell = function(_SpellItem16) {
-      _inheritsLoose(GeoToAuroSpell, _SpellItem16);
-      function GeoToAuroSpell() {
-        return _SpellItem16.apply(this, arguments) || this;
-      }
-      var _proto17 = GeoToAuroSpell.prototype;
-      _proto17.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u5764\u91d1\u517d\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u5764\u91d1\u5370\u8bb0\u4e0d\u8db3");
-        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
-        this.owner.geoSign--;
-        this.owner.changeCoins({
-          auroCoins: 50
-        });
-      };
-      _proto17.validLocations = function validLocations() {
-        var _this11 = this;
-        return iter_36().filter(function(axis) {
-          var x = axis[0], y = axis[1];
-          var target = _this11.game.map[y][x];
-          if (!target || "GeoToAuroPet" != target.type || target.owner.code != _this11.owner.code) return false;
-          return true;
-        });
-      };
-      return GeoToAuroSpell;
-    }(SpellItem);
-    GeoToAuroSpell.id = 15;
-    GeoToAuroSpell.size = 0;
-    GeoToAuroSpell.price = new Coin({});
-    GeoToAuroSpell.spellName = "\u7075\u94f8\xb7\u5764\u91d1";
-    GeoToAuroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u5764\u91d1\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u91d1\u7075\u77f3";
-    };
-    GeoToAuroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToAuroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
-    };
-    var DisplaceToPetSpell = function(_SpellItem17) {
-      _inheritsLoose(DisplaceToPetSpell, _SpellItem17);
-      function DisplaceToPetSpell() {
-        return _SpellItem17.apply(this, arguments) || this;
-      }
-      var _proto18 = DisplaceToPetSpell.prototype;
-      _proto18.use = function use(x, y, extra) {
-        if (!this.scope[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u5df1\u65b9\u5f52\u9014\u7075\u9e643*3\u8303\u56f4\u5185");
-        this.owner.move(x, y);
-      };
-      _proto18.validLocations = function validLocations() {
-        var scope = this.scope;
-        return iter_36().filter(function(axis) {
-          return scope[axis[1]][scope[axis[0]]];
-        });
-      };
-      _createClass(DisplaceToPetSpell, [ {
-        key: "scope",
-        get: function get() {
-          var _this12 = this;
-          var res = emptyMap();
-          this.game.allMapElements.forEach(function(item) {
-            if ("DisplacePet" != item.type) return;
-            if (item.owner.code != _this12.owner.code) return;
-            getLocInScope(item, 1.5).forEach(function(loc) {
-              var x = loc[0], y = loc[1];
-              _this12.game.map[y][x] || (res[y][x] = true);
-            });
-          });
-          return res;
-        }
-      } ]);
-      return DisplaceToPetSpell;
-    }(SpellItem);
-    DisplaceToPetSpell.id = 16;
-    DisplaceToPetSpell.size = 0;
-    DisplaceToPetSpell.spellName = "\u7075\u9e64\xb7\u5f52\u9014";
-    DisplaceToPetSpell.description = function() {
-      return "\u79fb\u52a8\u81f3\u4efb\u610f\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
-    };
-    DisplaceToPetSpell.validLocations = function(player) {
-      var spell = new DisplaceToPetSpell();
-      spell.owner = player;
-      spell.game = player.game;
-      var scope = _this9.scope;
-      return iter_36().filter(function(axis) {
-        return scope[axis[1]][scope[axis[0]]];
-      });
-    };
-    PowerSpell.iconUrl = "spell/\u4ed9\u8109.png";
-    TempPowerSpell.iconUrl = "spell/\u7075\u6e90.png";
-    GeoCoreSpell.iconUrl = "spell/\u4e03\u66dc\u571f\u7075.png";
-    HydroCoreSpell.iconUrl = "spell/\u6d41\u6ce2\u78a7\u5f71.png";
-    PyroCoreSpell.iconUrl = "spell/\u4e5d\u7130\u711a\u5929.png";
-    DisplaceSpell.iconUrl = "spell/\u661f\u79fb\u6597\u8f6c.png";
-    BounceSpell.iconUrl = "spell/\u516b\u65b9\u98ce\u6563.png";
-    AttractSpell.iconUrl = "spell/\u516b\u65b9\u5f52\u5f15.png";
-    HydrateOneDirectionSpell.iconUrl = "spell/\u6d9f\u6f2a\u7eb5\u75d5.png";
-    PyrateSpell.iconUrl = "spell/\u4e03\u6627\u771f\u706b.png";
-    Geo33Spell.iconUrl = "spell/\u7075\u58e4\u5f52\u97f5.png";
-    EnergyToPowerSpell.iconUrl = "spell/\u771f\u6c14\u5316\u5143.png";
-    GeoToAuroSpell.iconUrl = "pets/\u5764\u91d1\u517d.png";
-    GeoToHydroSpell.iconUrl = "pets/\u6d41\u6e0a\u517d.png";
-    GeoToPyroSpell.iconUrl = "pets/\u70ec\u706b\u7075.png";
-    DisplaceToPetSpell.iconUrl = "pets/\u5f52\u9014\u7075\u9e64.png";
-    module.exports = {
-      MoveSpell: MoveSpell,
-      Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
-      PowerSpell: PowerSpell,
-      TempPowerSpell: TempPowerSpell,
-      EnergyToPowerSpell: EnergyToPowerSpell,
-      GeoCoreSpell: GeoCoreSpell,
-      HydroCoreSpell: HydroCoreSpell,
-      PyroCoreSpell: PyroCoreSpell,
-      DisplaceSpell: DisplaceSpell,
-      BounceSpell: BounceSpell,
-      AttractSpell: AttractSpell,
-      HydrateOneDirectionSpell: HydrateOneDirectionSpell,
-      PyrateSpell: PyrateSpell,
-      Geo33Spell: Geo33Spell,
-      GeoToPyroSpell: GeoToPyroSpell,
-      GeoToHydroSpell: GeoToHydroSpell,
-      GeoToAuroSpell: GeoToAuroSpell,
-      DisplaceToPetSpell: DisplaceToPetSpell
-    };
-    var _require4 = require("./wheels/common-clas0.0.2"), GameLogicError = _require4.GameLogicError;
-    var Damage_1 = require("./objects/Damage-clas0.0.2");
-    var _require5 = require("./utils/numberUtils-clas0.0.2"), getThirdDigit = _require5.getThirdDigit, roundIfInteger = _require5.roundIfInteger, between = _require5.between;
-    var _require6 = require("./constants/timeConstants-clas0.0.2"), ONE_MINUTES = _require6.ONE_MINUTES, ENDLESS_TIME = _require6.ENDLESS_TIME, ENTER_TIME = _require6.ENTER_TIME;
-    var _require7 = require("./utils/mapUtils-clas0.0.2"), getLocInScope = _require7.getLocInScope, getItemIn33 = _require7.getItemIn33, eightDirections = _require7.eightDirections, emptyMap = _require7.emptyMap;
-    var _require8 = require("./constants/gameConstants-clas0.0.2"), MAP_SIZE = _require8.MAP_SIZE;
-    var _require9 = require("./Buffs-clas0.0.2"), IncreaseSpeedBuff = _require9.IncreaseSpeedBuff;
-    var _require10 = require("./utils/iterationUtils-clas0.0.2"), iter_36 = _require10.iter_36;
-    var _require11 = require("./animations/spellAnimation-clas0.0.2"), ShowIconAnimation = _require11.ShowIconAnimation, InkAnimation = _require11.InkAnimation, DisplaceSpellAnimation = _require11.DisplaceSpellAnimation, GeoCoreSpellAnimation = _require11.GeoCoreSpellAnimation;
-    var _require12 = require("./loggers/logUtils-clas0.0.2"), logVertex = _require12.logVertex, logItem = _require12.logItem;
-    cc._RF.pop();
-  }, {
-    "./Buffs-clas0.0.2": "Buffs-clas0.0.2",
-    "./animations/spellAnimation-clas0.0.2": "spellAnimation-clas0.0.2",
-    "./constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
-    "./constants/timeConstants-clas0.0.2": "timeConstants-clas0.0.2",
-    "./loggers/logUtils-clas0.0.2": "logUtils-clas0.0.2",
-    "./objects/Coin-clas0.0.2": "Coin-clas0.0.2",
-    "./objects/Damage-clas0.0.2": "Damage-clas0.0.2",
-    "./templates/Listeners-clas0.0.2": "Listeners-clas0.0.2",
-    "./templates/SpellItems-clas0.0.2": "SpellItems-clas0.0.2",
-    "./utils/iterationUtils-clas0.0.2": "iterationUtils-clas0.0.2",
-    "./utils/mapUtils-clas0.0.2": "mapUtils-clas0.0.2",
-    "./utils/numberUtils-clas0.0.2": "numberUtils-clas0.0.2",
-    "./wheels/common-clas0.0.2": "common-clas0.0.2"
-  } ],
-  "SpellItems-clas0.0.1": [ function(require, module, exports) {
-    "use strict";
-    cc._RF.push(module, "390e19J35RHCIigsUWkqT/I", "SpellItems-clas0.0.1");
-    "use strict";
-    function _inheritsLoose(subClass, superClass) {
-      subClass.prototype = Object.create(superClass.prototype);
-      subClass.prototype.constructor = subClass;
-      _setPrototypeOf(subClass, superClass);
-    }
-    function _setPrototypeOf(o, p) {
-      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-        o.__proto__ = p;
-        return o;
-      };
-      return _setPrototypeOf(o, p);
-    }
-    var _require = require("../objects/Coin-clas0.0.1"), Coin = _require.Coin;
-    var _require2 = require("../wheels/interfaces-clas0.0.1"), Item = _require2.Item;
-    var SpellItem = function(_Item) {
-      _inheritsLoose(SpellItem, _Item);
-      function SpellItem() {
-        return _Item.apply(this, arguments) || this;
-      }
-      var _proto = SpellItem.prototype;
-      _proto.init = function init(owner) {
-        _Item.prototype.init.call(this, owner.game);
-        this.owner = owner;
-      };
-      _proto.upgrade = function upgrade() {
-        this.owner.updateSpeed(1.05);
-        this.level++;
-        this.upgrade_special();
-      };
-      _proto.upgrade_special = function upgrade_special() {};
-      _proto.use = function use(x, y, extra) {};
-      _proto.validLocations = function validLocations() {
-        return this.game.allMapElements.map(function(item) {
-          return [ item.x, item.y ];
-        });
-      };
-      return SpellItem;
-    }(Item);
-    SpellItem.id = 0;
-    SpellItem.category = "spell";
-    SpellItem.valid = true;
-    SpellItem.size = 1;
-    SpellItem.price = new Coin({});
-    SpellItem.energy_cost = 50;
-    SpellItem.uiDisplay = true;
-    SpellItem.overviewDisplay = true;
-    SpellItem.spellName = "";
-    SpellItem.description = function() {
-      return "";
-    };
-    SpellItem.validLocations = function(player) {
-      return player.game.allMapElements.map(function(item) {
-        return [ item.x, item.y ];
-      });
-    };
-    module.exports = {
-      SpellItem: SpellItem
-    };
-    cc._RF.pop();
-  }, {
-    "../objects/Coin-clas0.0.1": "Coin-clas0.0.1",
-    "../wheels/interfaces-clas0.0.1": "interfaces-clas0.0.1"
-  } ],
-  "SpellItems-clas0.0.2": [ function(require, module, exports) {
-    "use strict";
-    cc._RF.push(module, "a78f1K6RHdALrxuCWUgr2Mb", "SpellItems-clas0.0.2");
-    "use strict";
-    function _inheritsLoose(subClass, superClass) {
-      subClass.prototype = Object.create(superClass.prototype);
-      subClass.prototype.constructor = subClass;
-      _setPrototypeOf(subClass, superClass);
-    }
-    function _setPrototypeOf(o, p) {
-      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-        o.__proto__ = p;
-        return o;
-      };
-      return _setPrototypeOf(o, p);
-    }
-    var _require = require("../objects/Coin-clas0.0.2"), Coin = _require.Coin;
-    var _require2 = require("../wheels/interfaces-clas0.0.2"), Item = _require2.Item;
-    var SpellItem = function(_Item) {
-      _inheritsLoose(SpellItem, _Item);
-      function SpellItem() {
-        return _Item.apply(this, arguments) || this;
-      }
-      var _proto = SpellItem.prototype;
-      _proto.init = function init(owner) {
-        _Item.prototype.init.call(this, owner.game);
-        this.owner = owner;
-        this.num = 0;
-      };
-      _proto.upgrade = function upgrade() {
-        this.owner.updateSpeed(1.05);
-        this.level++;
-        this.upgrade_special();
-      };
-      _proto.upgrade_special = function upgrade_special() {};
-      _proto.use = function use(x, y, extra) {};
-      _proto.validLocations = function validLocations() {
-        return this.game.allMapElements.map(function(item) {
-          return [ item.x, item.y ];
-        });
-      };
-      return SpellItem;
-    }(Item);
-    SpellItem.id = 0;
-    SpellItem.category = "spell";
-    SpellItem.valid = true;
-    SpellItem.size = 1;
-    SpellItem.price = new Coin({});
-    SpellItem.energy_cost = 50;
-    SpellItem.uiDisplay = true;
-    SpellItem.overviewDisplay = true;
-    SpellItem.spellName = "";
-    SpellItem.description = function() {
-      return "";
-    };
-    SpellItem.validLocations = function(player) {
-      return player.game.allMapElements.map(function(item) {
-        return [ item.x, item.y ];
-      });
-    };
-    module.exports = {
-      SpellItem: SpellItem
-    };
-    cc._RF.pop();
-  }, {
-    "../objects/Coin-clas0.0.2": "Coin-clas0.0.2",
-    "../wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2"
-  } ],
-  SpellItems: [ function(require, module, exports) {
-    "use strict";
-    cc._RF.push(module, "55d72wVWSxGWpN5A40+1/mv", "SpellItems");
-    "use strict";
-    function _inheritsLoose(subClass, superClass) {
-      subClass.prototype = Object.create(superClass.prototype);
-      subClass.prototype.constructor = subClass;
-      _setPrototypeOf(subClass, superClass);
-    }
-    function _setPrototypeOf(o, p) {
-      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-        o.__proto__ = p;
-        return o;
-      };
-      return _setPrototypeOf(o, p);
-    }
-    var _require = require("../objects/Coin"), Coin = _require.Coin;
-    var _require2 = require("../wheels/interfaces"), Item = _require2.Item;
-    var SpellItem = function(_Item) {
-      _inheritsLoose(SpellItem, _Item);
-      function SpellItem() {
-        return _Item.apply(this, arguments) || this;
-      }
-      var _proto = SpellItem.prototype;
-      _proto.init = function init(owner) {
-        _Item.prototype.init.call(this, owner.game);
-        this.owner = owner;
-        this.num = 0;
-      };
-      _proto.upgrade = function upgrade() {
-        this.owner.updateSpeed(1.05);
-        this.level++;
-        this.upgrade_special();
-      };
-      _proto.upgrade_special = function upgrade_special() {};
-      _proto.use = function use(x, y, extra) {};
-      _proto.validLocations = function validLocations() {
-        return this.game.allMapElements.map(function(item) {
-          return [ item.x, item.y ];
-        });
-      };
-      return SpellItem;
-    }(Item);
-    SpellItem.id = 0;
-    SpellItem.category = "spell";
-    SpellItem.valid = true;
-    SpellItem.size = 1;
-    SpellItem.price = new Coin({});
-    SpellItem.energy_cost = 50;
-    SpellItem.uiDisplay = true;
-    SpellItem.overviewDisplay = true;
-    SpellItem.spellName = "";
-    SpellItem.description = function() {
-      return "";
-    };
-    SpellItem.validLocations = function(player) {
-      return player.game.allMapElements.map(function(item) {
-        return [ item.x, item.y ];
-      });
-    };
-    module.exports = {
-      SpellItem: SpellItem
-    };
-    cc._RF.pop();
-  }, {
-    "../objects/Coin": "Coin",
-    "../wheels/interfaces": "interfaces"
-  } ],
-  Spell: [ function(require, module, exports) {
-    "use strict";
-    cc._RF.push(module, "a7ddcb0FKdOzr+A7N+yrVHM", "Spell");
-    "use strict";
-    var _this9 = void 0;
-    function _defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        "value" in descriptor && (descriptor.writable = true);
-        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
-      }
-    }
-    function _createClass(Constructor, protoProps, staticProps) {
-      protoProps && _defineProperties(Constructor.prototype, protoProps);
-      staticProps && _defineProperties(Constructor, staticProps);
-      Object.defineProperty(Constructor, "prototype", {
-        writable: false
-      });
-      return Constructor;
-    }
-    function _toPropertyKey(arg) {
-      var key = _toPrimitive(arg, "string");
-      return "symbol" === typeof key ? key : String(key);
-    }
-    function _toPrimitive(input, hint) {
-      if ("object" !== typeof input || null === input) return input;
-      var prim = input[Symbol.toPrimitive];
-      if (void 0 !== prim) {
-        var res = prim.call(input, hint || "default");
-        if ("object" !== typeof res) return res;
-        throw new TypeError("@@toPrimitive must return a primitive value.");
-      }
-      return ("string" === hint ? String : Number)(input);
-    }
-    function _inheritsLoose(subClass, superClass) {
-      subClass.prototype = Object.create(superClass.prototype);
-      subClass.prototype.constructor = subClass;
-      _setPrototypeOf(subClass, superClass);
-    }
-    function _setPrototypeOf(o, p) {
-      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-        o.__proto__ = p;
-        return o;
-      };
-      return _setPrototypeOf(o, p);
-    }
-    var _require = require("./templates/SpellItems"), SpellItem = _require.SpellItem;
-    var _require2 = require("./objects/Coin"), Coin = _require2.Coin, COIN_KEYS = _require2.COIN_KEYS;
-    var _require3 = require("./templates/Listeners"), Listener = _require3.Listener;
-    var MoveSpell = function(_SpellItem) {
-      _inheritsLoose(MoveSpell, _SpellItem);
-      function MoveSpell() {
-        return _SpellItem.apply(this, arguments) || this;
-      }
-      var _proto = MoveSpell.prototype;
-      _proto.init = function init(owner) {
-        _SpellItem.prototype.init.call(this, owner);
-        this.num = 999999;
-      };
-      _proto.use = function use(x, y) {
-        var player = this.owner;
-        if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u6ca1\u6709\u5355\u4f4d\u7684\u5730\u65b9");
-        if (!this.validLocations().find(function(loc) {
-          return loc[0] == x && loc[1] == y;
-        })) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u4e00\u683c");
-        player.move(x, y);
-      };
-      _proto.validLocations = function validLocations() {
-        var player = this.owner, map = this.game.map;
-        return getLocInScope(player, 1).filter(function(loc) {
-          return loc[0] != player.x || loc[1] != player.y;
-        }).filter(function(loc) {
-          return !map[loc[1]][loc[0]];
-        });
-      };
-      return MoveSpell;
-    }(SpellItem);
-    MoveSpell.id = 0;
-    MoveSpell.size = 0;
-    MoveSpell.price = new Coin({
-      baseCoins: 10
-    });
-    MoveSpell.spellName = "\u6b65\u884c";
-    MoveSpell.uiDisplay = false;
-    MoveSpell.overviewDisplay = false;
-    MoveSpell.description = function() {
-      return "\u79fb\u52a8\u4e00\u683c";
-    };
-    var Equip14EnhancedMoveSpell = function(_MoveSpell) {
-      _inheritsLoose(Equip14EnhancedMoveSpell, _MoveSpell);
-      function Equip14EnhancedMoveSpell() {
-        return _MoveSpell.apply(this, arguments) || this;
-      }
-      var _proto2 = Equip14EnhancedMoveSpell.prototype;
-      _proto2.validLocations = function validLocations() {
-        var _this = this;
-        var scope = this.game.listeners.InscopeCalculators.check(this.owner);
-        return iter_36().filter(function(loc) {
-          var x = loc[0], y = loc[1];
-          return scope[y][x] && !_this.game.map[y][x];
-        });
-      };
-      return Equip14EnhancedMoveSpell;
-    }(MoveSpell);
-    Equip14EnhancedMoveSpell.spellName = "\u3010\u98de\u71d5\u3011\u98de\u884c";
-    var PowerSpell = function(_SpellItem2) {
-      _inheritsLoose(PowerSpell, _SpellItem2);
-      function PowerSpell() {
-        return _SpellItem2.apply(this, arguments) || this;
-      }
-      var _proto3 = PowerSpell.prototype;
-      _proto3.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
-        target.updateSpeed(1.07);
-        this.game.addAnime(new ShowIconAnimation(PowerSpell.iconUrl));
-      };
-      return PowerSpell;
-    }(SpellItem);
-    PowerSpell.id = 1;
-    PowerSpell.price = new Coin({
-      baseCoins: 50
-    });
-    PowerSpell.spellName = "\u4ed9\u8109";
-    PowerSpell.description = function() {
-      return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u4fee\u4e3a\u63d0\u53477%";
-    };
-    var TempPowerSpell = function(_SpellItem3) {
-      _inheritsLoose(TempPowerSpell, _SpellItem3);
-      function TempPowerSpell() {
-        return _SpellItem3.apply(this, arguments) || this;
-      }
-      var _proto4 = TempPowerSpell.prototype;
-      _proto4.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
-        new IncreaseSpeedBuff(target, ENTER_TIME, 1.07);
-        this.game.addAnime(new ShowIconAnimation(TempPowerSpell.iconUrl));
-      };
-      return TempPowerSpell;
-    }(SpellItem);
-    TempPowerSpell.id = 2;
-    TempPowerSpell.price = new Coin({
-      baseCoins: 10
-    });
-    TempPowerSpell.spellName = "\u7075\u6e90";
-    TempPowerSpell.description = function() {
-      return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u83b7\u5f97\u4e00\u4e2a\u4fee\u4e3a\u63d0\u53477%\u7684\u589e\u5e45\u6548\u679c\uff0c\u6301\u7eed5\u5206\u949f";
-    };
-    var EnergyToPowerSpell = function(_SpellItem4) {
-      _inheritsLoose(EnergyToPowerSpell, _SpellItem4);
-      function EnergyToPowerSpell() {
-        return _SpellItem4.apply(this, arguments) || this;
-      }
-      var _proto5 = EnergyToPowerSpell.prototype;
-      _proto5.use = function use(x, y, extra) {
-        var energy = .3 * this.owner.energy;
-        this.owner.energy -= energy;
-        this.owner.updateSpeed(Math.pow(1.01, energy / 10));
-        this.game.addAnime(new ShowIconAnimation(EnergyToPowerSpell.iconUrl));
-      };
-      _proto5.validLocations = function validLocations() {
-        return null;
-      };
-      return EnergyToPowerSpell;
-    }(SpellItem);
-    EnergyToPowerSpell.id = 3;
-    EnergyToPowerSpell.price = new Coin({
-      baseCoins: 50
-    });
-    EnergyToPowerSpell.spellName = "\u771f\u6c14\u5316\u5143";
-    EnergyToPowerSpell.description = function() {
-      return "\u6d88\u8017\u81ea\u8eab30%\u7684\u5185\u529b\uff0c\u6bcf\u6d88\u801710\u70b9\u5185\u529b\u90fd\u4f1a\u63d0\u5347\u81ea\u8eab1%\u7684\u4fee\u4e3a";
-    };
-    EnergyToPowerSpell.validLocations = function() {
-      return null;
-    };
-    var GeoCoreSpell = function(_SpellItem5) {
-      _inheritsLoose(GeoCoreSpell, _SpellItem5);
-      function GeoCoreSpell() {
-        return _SpellItem5.apply(this, arguments) || this;
-      }
-      var _proto6 = GeoCoreSpell.prototype;
-      _proto6.init = function init() {
-        _SpellItem5.prototype.init.apply(this, arguments);
-        this.special = [ 7 ];
-      };
-      _proto6.use = function use(x, y) {
-        var player2 = this.game.map[y][x];
-        if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
-        if ("Player" != player2.type && player2.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u7075\u517d\u4f7f\u7528");
-        player2.updateSpeed(1.07);
-        this.game.addAnime(new GeoCoreSpellAnimation(x, y));
-        if (7 == getSecondDigit(player2.power)) {
-          this.game.addLog('{"code":' + player2.code + '}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a7,{"code":' + this.owner.code + "}\u83b7\u5f97\u571f\u5370\u8bb0\u5e76\u63d0\u5347\u4fee\u4e3a", 2);
-          this.owner.geoSign++;
-          var ratio = 1.18 + .05 * this.owner.geoSign;
-          this.owner.updateSpeed(ratio);
-          this.game.addAnime(new InkAnimation(x, y, [ 140, 108, 85 ]));
-          this.game.addAnime(new InkAnimation(this.owner.x, this.owner.y, [ 140, 108, 85 ]));
-        }
-      };
-      _proto6.upgrade_special = function upgrade_special() {
-        7 == this.level && this.special.push(3);
-        13 == this.level && this.special.push(5);
-        20 == this.level && this.special.push(0);
-      };
-      return GeoCoreSpell;
-    }(SpellItem);
-    GeoCoreSpell.id = 4;
-    GeoCoreSpell.price = new Coin({
-      geoCoins: 50
-    });
-    GeoCoreSpell.spellName = "\u4e03\u66dc\u571f\u7075";
-    GeoCoreSpell.description = function() {
-      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570+7\uff0c\u82e5\u6b64\u65f6\u5176\u4fee\u4e3a\u7684\u7b2c\u4e09\u4f4d\u6570\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u4f7f\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u52a018+5X\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09";
-    };
-    var HydroCoreSpell = function(_SpellItem6) {
-      _inheritsLoose(HydroCoreSpell, _SpellItem6);
-      function HydroCoreSpell() {
-        return _SpellItem6.apply(this, arguments) || this;
-      }
-      var _proto7 = HydroCoreSpell.prototype;
-      _proto7.init = function init(player) {
-        _SpellItem6.prototype.init.call(this, player);
-      };
-      _proto7.use = function use(x, y) {
-        var _this2 = this;
-        if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u7a7a\u4f4d");
-        if (0 != x && x != MAP_SIZE - 1 && 0 != y && y != MAP_SIZE - 1) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u8fb9\u7f18\u4f4d\u7f6e");
-        var dest_x = x, dest_y = y;
-        var owner = this.owner;
-        var PointsInLine = function() {
-          var res = [];
-          var old_x = owner.x + .5, old_y = owner.y + .5;
-          x += .5, y += .5;
-          var x_diff = x - old_x, y_diff = y - old_y;
-          var a = y_diff / x_diff, b = y - a * x;
-          if (old_x > x) {
-            var _ref = [ old_x, x ];
-            x = _ref[0];
-            old_x = _ref[1];
-          }
-          if (old_y > y) {
-            var _ref2 = [ old_y, y ];
-            y = _ref2[0];
-            old_y = _ref2[1];
-          }
-          if (x == old_x) {
-            for (var i = Math.floor(old_y); i <= y; i++) res.push([ Math.floor(x), i ]);
-            return res;
-          }
-          if (y == old_y) {
-            for (var _i = Math.floor(old_x); _i <= x; _i++) res.push([ _i, Math.floor(y) ]);
-            return res;
-          }
-          var intersects = [];
-          for (var _i2 = Math.floor(old_x); _i2 <= x + 1; _i2++) intersects.push([ _i2, roundIfInteger(a * _i2 + b) ]);
-          for (var _i3 = Math.floor(old_y); _i3 <= y + 1; _i3++) intersects.push([ roundIfInteger((_i3 - b) / a), _i3 ]);
-          var _loop = function _loop(_i4) {
-            var _loop2 = function _loop2(j) {
-              var points = intersects.filter(function(point) {
-                return between(point[0], _i4, _i4 + 1) && between(point[1], j, j + 1);
-              });
-              var num = points.length;
-              var duplicates = new Set();
-              points.forEach(function(point) {
-                var val = point[0] * MAP_SIZE + point[1];
-                duplicates.has(val) ? num-- : duplicates.add(val);
-              });
-              2 == num && res.push([ _i4, j ]);
-            };
-            for (var j = Math.floor(old_y); j <= y; j++) _loop2(j);
-          };
-          for (var _i4 = Math.floor(old_x); _i4 <= x; _i4++) _loop(_i4);
-          return res;
-        }();
-        var self = this;
-        var addHydroSpell = false;
-        PointsInLine.forEach(function(location) {
-          var x = location[0], y = location[1];
-          if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return;
-          if (x == self.owner.x && y == self.owner.y) return;
-          var target = self.game.map[y][x];
-          if (!(target && target.hydroSign > 0)) return;
-          target.hydroSign = 0;
-          if (addHydroSpell) {
-            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e", 2);
-            self.owner.updateSpeed(1.1);
-          } else {
-            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e\uff0c" + logItem(_this2.owner) + "\u83b7\u5f97\u3010\u6d41\u6ce2\u78a7\u5f71\u3011\u5377\u8f74", 2);
-            addHydroSpell = true;
-            self.owner.findSpell(HydroCoreSpell.id).num++;
-            self.owner.updateSpeed(1.3);
-          }
-        });
-        x = this.owner.x, y = this.owner.y;
-        this.game.addAnime(new InkAnimation(x, y, [ 40, 75, 178 ]), {
-          postpone: 30
-        });
-        this.owner.move(dest_x, dest_y);
-      };
-      _proto7.validLocations = function validLocations() {
-        var map = this.game.map;
-        return iter_36().filter(function(axis) {
-          var x = axis[0], y = axis[1];
-          return !map[y][x];
-        });
-      };
-      return HydroCoreSpell;
-    }(SpellItem);
-    HydroCoreSpell.id = 5;
-    HydroCoreSpell.price = new Coin({
-      hydroCoins: 50
-    });
-    HydroCoreSpell.spellName = "\u6d41\u6ce2\u78a7\u5f71";
-    HydroCoreSpell.description = function() {
-      return "\u79fb\u52a8\u81f3\u5730\u56fe\u4e2d\u4efb\u610f\u8fb9\u7f18\u4f4d\u7f6e\uff0c\u82e5\u79fb\u52a8\u7684\u8def\u5f84\u4e0a\u6709\u5355\u4f4d\u5e26\u6709\u6c34\u5370\u8bb0\uff0c\u5219\u4f60\u63d0\u534730%\u4fee\u4e3a\uff0c\u4e14\u4e0b\u4e00\u6b21\u64cd\u4f5c\u4e0d\u6d88\u8017\u6750\u6599\u4e0e\u5185\u529b\u3002\u82e5\u5e26\u6709\u6c34\u5370\u8bb0\u7684\u5355\u4f4d\u4e0d\u6b62\u4e00\u4e2a\uff0c\u5219\u6bcf\u4e2a\u989d\u5916\u7684\u5355\u4f4d\u4ee4\u4f60\u63d0\u534715%\u4fee\u4e3a";
+      return "\u79fb\u52a8\u81f3\u5730\u56fe\u4e2d\u4efb\u610f\u8fb9\u7f18\u4f4d\u7f6e\uff0c\u82e5\u79fb\u52a8\u7684\u8def\u5f84\u4e0a\u6709\u5355\u4f4d\u5e26\u6709\u6c34\u5370\u8bb0\uff0c\u5219\u4f60\u4fee\u4e3a+0.27\uff0c\u4e14\u4e0b\u4e00\u6b21\u64cd\u4f5c\u4e0d\u6d88\u8017\u6750\u6599\u4e0e\u5185\u529b\u3002\u82e5\u5e26\u6709\u6c34\u5370\u8bb0\u7684\u5355\u4f4d\u4e0d\u6b62\u4e00\u4e2a\uff0c\u5219\u6bcf\u4e2a\u989d\u5916\u7684\u5355\u4f4d\u4ee4\u4f60\u63d0\u534715%\u4fee\u4e3a";
     };
     HydroCoreSpell.validLocations = function(player) {
       var map = player.game.map;
@@ -18897,13 +21073,1926 @@ window.__require = function e(t, n, r) {
       GeoToAuroSpell: GeoToAuroSpell,
       DisplaceToPetSpell: DisplaceToPetSpell
     };
+    var _require4 = require("./wheels/common-clas0.0.2"), GameLogicError = _require4.GameLogicError;
+    var Damage_1 = require("./objects/Damage-clas0.0.2");
+    var _require5 = require("./utils/numberUtils-clas0.0.2"), getThirdDigit = _require5.getThirdDigit, roundIfInteger = _require5.roundIfInteger, between = _require5.between, getSecondDigit = _require5.getSecondDigit;
+    var _require6 = require("./constants/timeConstants-clas0.0.2"), ONE_MINUTES = _require6.ONE_MINUTES, ENDLESS_TIME = _require6.ENDLESS_TIME, ENTER_TIME = _require6.ENTER_TIME;
+    var _require7 = require("./utils/mapUtils-clas0.0.2"), getLocInScope = _require7.getLocInScope, getItemIn33 = _require7.getItemIn33, eightDirections = _require7.eightDirections, emptyMap = _require7.emptyMap;
+    var _require8 = require("./constants/gameConstants-clas0.0.2"), MAP_SIZE = _require8.MAP_SIZE;
+    var _require9 = require("./Buffs-clas0.0.2"), IncreaseSpeedBuff = _require9.IncreaseSpeedBuff;
+    var _require10 = require("./utils/iterationUtils-clas0.0.2"), iter_36 = _require10.iter_36;
+    var _require11 = require("./animations/spellAnimation-clas0.0.2"), ShowIconAnimation = _require11.ShowIconAnimation, InkAnimation = _require11.InkAnimation, DisplaceSpellAnimation = _require11.DisplaceSpellAnimation, GeoCoreSpellAnimation = _require11.GeoCoreSpellAnimation;
+    var _require12 = require("./loggers/logUtils-clas0.0.2"), logVertex = _require12.logVertex, logItem = _require12.logItem;
+    cc._RF.pop();
+  }, {
+    "./Buffs-clas0.0.2": "Buffs-clas0.0.2",
+    "./animations/spellAnimation-clas0.0.2": "spellAnimation-clas0.0.2",
+    "./constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
+    "./constants/timeConstants-clas0.0.2": "timeConstants-clas0.0.2",
+    "./loggers/logUtils-clas0.0.2": "logUtils-clas0.0.2",
+    "./objects/Coin-clas0.0.2": "Coin-clas0.0.2",
+    "./objects/Damage-clas0.0.2": "Damage-clas0.0.2",
+    "./templates/Listeners-clas0.0.2": "Listeners-clas0.0.2",
+    "./templates/SpellItems-clas0.0.2": "SpellItems-clas0.0.2",
+    "./utils/iterationUtils-clas0.0.2": "iterationUtils-clas0.0.2",
+    "./utils/mapUtils-clas0.0.2": "mapUtils-clas0.0.2",
+    "./utils/numberUtils-clas0.0.2": "numberUtils-clas0.0.2",
+    "./wheels/common-clas0.0.2": "common-clas0.0.2"
+  } ],
+  "Spell-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "9f7416kQ5JG0ZiQ6BQUpRsP", "Spell-clas0.0.3");
+    "use strict";
+    var _this9 = void 0;
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        "value" in descriptor && (descriptor.writable = true);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
+    function _createClass(Constructor, protoProps, staticProps) {
+      protoProps && _defineProperties(Constructor.prototype, protoProps);
+      staticProps && _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
+      return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return "symbol" === typeof key ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if ("object" !== typeof input || null === input) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (void 0 !== prim) {
+        var res = prim.call(input, hint || "default");
+        if ("object" !== typeof res) return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === hint ? String : Number)(input);
+    }
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./templates/SpellItems-clas0.0.3"), SpellItem = _require.SpellItem;
+    var _require2 = require("./objects/Coin-clas0.0.3"), Coin = _require2.Coin, COIN_KEYS = _require2.COIN_KEYS;
+    var _require3 = require("./templates/Listeners-clas0.0.3"), Listener = _require3.Listener;
+    var MoveSpell = function(_SpellItem) {
+      _inheritsLoose(MoveSpell, _SpellItem);
+      function MoveSpell() {
+        return _SpellItem.apply(this, arguments) || this;
+      }
+      var _proto = MoveSpell.prototype;
+      _proto.init = function init(owner) {
+        _SpellItem.prototype.init.call(this, owner);
+        this.num = 999999;
+      };
+      _proto.use = function use(x, y) {
+        var player = this.owner;
+        if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u6ca1\u6709\u5355\u4f4d\u7684\u5730\u65b9");
+        if (!this.validLocations().find(function(loc) {
+          return loc[0] == x && loc[1] == y;
+        })) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u4e00\u683c");
+        player.move(x, y);
+      };
+      _proto.validLocations = function validLocations() {
+        var player = this.owner, map = this.game.map;
+        return getLocInScope(player, 1).filter(function(loc) {
+          return loc[0] != player.x || loc[1] != player.y;
+        }).filter(function(loc) {
+          return !map[loc[1]][loc[0]];
+        });
+      };
+      return MoveSpell;
+    }(SpellItem);
+    MoveSpell.id = 0;
+    MoveSpell.size = 0;
+    MoveSpell.price = new Coin({
+      baseCoins: 10
+    });
+    MoveSpell.spellName = "\u6b65\u884c";
+    MoveSpell.uiDisplay = false;
+    MoveSpell.overviewDisplay = false;
+    MoveSpell.description = function() {
+      return "\u79fb\u52a8\u4e00\u683c";
+    };
+    var Equip14EnhancedMoveSpell = function(_MoveSpell) {
+      _inheritsLoose(Equip14EnhancedMoveSpell, _MoveSpell);
+      function Equip14EnhancedMoveSpell() {
+        return _MoveSpell.apply(this, arguments) || this;
+      }
+      var _proto2 = Equip14EnhancedMoveSpell.prototype;
+      _proto2.init = function init(owner) {
+        _MoveSpell.prototype.init.call(this, owner);
+        this.num = 999999;
+      };
+      _proto2.validLocations = function validLocations() {
+        var _this = this;
+        var scope = this.game.listeners.InscopeCalculators.check(this.owner);
+        return iter_36().filter(function(loc) {
+          var x = loc[0], y = loc[1];
+          return scope[y][x] && !_this.game.map[y][x];
+        });
+      };
+      return Equip14EnhancedMoveSpell;
+    }(MoveSpell);
+    Equip14EnhancedMoveSpell.spellName = "\u3010\u98de\u71d5\u3011\u98de\u884c";
+    var AscendSpell = function(_SpellItem2) {
+      _inheritsLoose(AscendSpell, _SpellItem2);
+      function AscendSpell() {
+        return _SpellItem2.apply(this, arguments) || this;
+      }
+      var _proto3 = AscendSpell.prototype;
+      _proto3.use = function use(x, y) {
+        var player = this.owner;
+        if (player._power < 2) throw new GameLogicError("\u4ec5\u7075\u529b\u5927\u4e8e2\u65f6\u53ef\u4ee5\u4f7f\u7528");
+        player.updateSpeed(4 * player._power);
+        this.game.addAnime(new ShowIconAnimation(AscendSpell.iconUrl));
+      };
+      _proto3.validLocations = function validLocations() {
+        return iter_36();
+      };
+      return AscendSpell;
+    }(SpellItem);
+    AscendSpell.id = 1;
+    AscendSpell.price = new Coin({
+      baseCoins: 50
+    });
+    AscendSpell.spellName = "\u767d\u65e5\u98de\u5347";
+    AscendSpell.description = function() {
+      return "\u7075\u529b\u5927\u4e8e2\u65f6\u53ef\u4ee5\u4f7f\u7528\uff1a\u4f7f\u4f60\u7684\u7075\u529b\u63d0\u5347\u81f3\u73b0\u5728\u76845\u500d";
+    };
+    AscendSpell.validLocations = function() {
+      return null;
+    };
+    AscendSpell.uiDisplay = true;
+    var PowerSpell = function(_SpellItem3) {
+      _inheritsLoose(PowerSpell, _SpellItem3);
+      function PowerSpell() {
+        return _SpellItem3.apply(this, arguments) || this;
+      }
+      var _proto4 = PowerSpell.prototype;
+      _proto4.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
+        target.updateSpeed(.17);
+        this.game.addAnime(new ShowIconAnimation(PowerSpell.iconUrl));
+      };
+      return PowerSpell;
+    }(SpellItem);
+    PowerSpell.id = 2;
+    PowerSpell.price = new Coin({
+      baseCoins: 50
+    });
+    PowerSpell.spellName = "\u4ed9\u8109\u7075\u6e90";
+    PowerSpell.description = function() {
+      return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u7075\u529b\u63d0\u53470.17";
+    };
+    var EnergyToPowerSpell = function(_SpellItem4) {
+      _inheritsLoose(EnergyToPowerSpell, _SpellItem4);
+      function EnergyToPowerSpell() {
+        return _SpellItem4.apply(this, arguments) || this;
+      }
+      var _proto5 = EnergyToPowerSpell.prototype;
+      _proto5.use = function use(x, y, extra) {
+        var energy = this.owner.energy;
+        var energyBlock = Math.floor(energy / 30);
+        this.owner.energy -= 10 * energyBlock;
+        this.owner.updateSpeed(.07 + .01 * energyBlock);
+        this.game.addAnime(new ShowIconAnimation(EnergyToPowerSpell.iconUrl));
+      };
+      _proto5.validLocations = function validLocations() {
+        return null;
+      };
+      return EnergyToPowerSpell;
+    }(SpellItem);
+    EnergyToPowerSpell.id = 3;
+    EnergyToPowerSpell.price = new Coin({
+      baseCoins: 50
+    });
+    EnergyToPowerSpell.spellName = "\u771f\u6c14\u5316\u5143";
+    EnergyToPowerSpell.description = function() {
+      return "\u63d0\u53470.17\u7684\u7075\u529b\uff0c\u6bcf\u62e5\u670930\u70b9\u5185\u529b\u90fd\u4f1a\u6d88\u801710\u70b9\u5185\u529b\u4f7f\u63d0\u5347\u7684\u7075\u529b+0.01";
+    };
+    EnergyToPowerSpell.validLocations = function() {
+      return null;
+    };
+    EnergyToPowerSpell.energy_cost = 20;
+    var GeoCoreSpell = function(_SpellItem5) {
+      _inheritsLoose(GeoCoreSpell, _SpellItem5);
+      function GeoCoreSpell() {
+        return _SpellItem5.apply(this, arguments) || this;
+      }
+      var _proto6 = GeoCoreSpell.prototype;
+      _proto6.init = function init() {
+        _SpellItem5.prototype.init.apply(this, arguments);
+        this.special = [ 7 ];
+      };
+      _proto6.use = function use(x, y) {
+        var player2 = this.game.map[y][x];
+        if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
+        if ("Player" != player2.type && player2.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u4ed9\u517d\u4f7f\u7528");
+        player2.updateSpeed(.07);
+        this.game.addAnime(new GeoCoreSpellAnimation(x, y));
+        if (7 == getThirdDigit(player2.power)) {
+          this.game.addLog('{"code":' + player2.code + '}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a7,{"code":' + this.owner.code + "}\u83b7\u5f97\u571f\u5370\u8bb0\u5e76\u63d0\u5347\u4fee\u4e3a", 2);
+          this.owner.geoSign++;
+          var ratio = .18 + .05 * this.owner.geoSign;
+          this.owner.updateSpeed(ratio);
+          this.game.addAnime(new InkAnimation(x, y, [ 140, 108, 85 ]));
+          this.game.addAnime(new InkAnimation(this.owner.x, this.owner.y, [ 140, 108, 85 ]));
+        }
+      };
+      _proto6.upgrade_special = function upgrade_special() {
+        7 == this.level && this.special.push(3);
+        13 == this.level && this.special.push(5);
+        20 == this.level && this.special.push(0);
+      };
+      return GeoCoreSpell;
+    }(SpellItem);
+    GeoCoreSpell.id = 4;
+    GeoCoreSpell.price = new Coin({
+      geoCoins: 50
+    });
+    GeoCoreSpell.spellName = "\u5f52\u5c18\u97f5";
+    GeoCoreSpell.description = function() {
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u7075\u529b+0.07\uff0c\u82e5\u6b64\u65f6\u5176\u7075\u529b\u7684\u767e\u5206\u4f4d\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u4f7f\u7075\u529b\u7b2c\u4e09\u4f4d\u6570\u52a00.18+0.05X\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09";
+    };
+    var HydroCoreSpell = function(_SpellItem6) {
+      _inheritsLoose(HydroCoreSpell, _SpellItem6);
+      function HydroCoreSpell() {
+        return _SpellItem6.apply(this, arguments) || this;
+      }
+      var _proto7 = HydroCoreSpell.prototype;
+      _proto7.init = function init(player) {
+        _SpellItem6.prototype.init.call(this, player);
+      };
+      _proto7.use = function use(x, y) {
+        var _this2 = this;
+        if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u7a7a\u4f4d");
+        if (0 != x && x != MAP_SIZE - 1 && 0 != y && y != MAP_SIZE - 1) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u8fb9\u7f18\u4f4d\u7f6e");
+        var dest_x = x, dest_y = y;
+        var owner = this.owner;
+        var PointsInLine = function() {
+          var res = [];
+          var old_x = owner.x + .5, old_y = owner.y + .5;
+          x += .5, y += .5;
+          var x_diff = x - old_x, y_diff = y - old_y;
+          var a = y_diff / x_diff, b = y - a * x;
+          if (old_x > x) {
+            var _ref = [ old_x, x ];
+            x = _ref[0];
+            old_x = _ref[1];
+          }
+          if (old_y > y) {
+            var _ref2 = [ old_y, y ];
+            y = _ref2[0];
+            old_y = _ref2[1];
+          }
+          if (x == old_x) {
+            for (var i = Math.floor(old_y); i <= y; i++) res.push([ Math.floor(x), i ]);
+            return res;
+          }
+          if (y == old_y) {
+            for (var _i = Math.floor(old_x); _i <= x; _i++) res.push([ _i, Math.floor(y) ]);
+            return res;
+          }
+          var intersects = [];
+          for (var _i2 = Math.floor(old_x); _i2 <= x + 1; _i2++) intersects.push([ _i2, roundIfInteger(a * _i2 + b) ]);
+          for (var _i3 = Math.floor(old_y); _i3 <= y + 1; _i3++) intersects.push([ roundIfInteger((_i3 - b) / a), _i3 ]);
+          var _loop = function _loop(_i4) {
+            var _loop2 = function _loop2(j) {
+              var points = intersects.filter(function(point) {
+                return between(point[0], _i4, _i4 + 1) && between(point[1], j, j + 1);
+              });
+              var num = points.length;
+              var duplicates = new Set();
+              points.forEach(function(point) {
+                var val = point[0] * MAP_SIZE + point[1];
+                duplicates.has(val) ? num-- : duplicates.add(val);
+              });
+              2 == num && res.push([ _i4, j ]);
+            };
+            for (var j = Math.floor(old_y); j <= y; j++) _loop2(j);
+          };
+          for (var _i4 = Math.floor(old_x); _i4 <= x; _i4++) _loop(_i4);
+          return res;
+        }();
+        var self = this;
+        var addHydroSpell = false;
+        PointsInLine.forEach(function(location) {
+          var x = location[0], y = location[1];
+          if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return;
+          if (x == self.owner.x && y == self.owner.y) return;
+          var target = self.game.map[y][x];
+          if (!(target && target.hydroSign > 0)) return;
+          target.hydroSign = 0;
+          if (addHydroSpell) {
+            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e", 2);
+            self.owner.updateSpeed(.1);
+          } else {
+            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e\uff0c" + logItem(_this2.owner) + "\u83b7\u5f97\u3010\u6d41\u6ce2\u78a7\u5f71\u3011\u5377\u8f74", 2);
+            addHydroSpell = true;
+            _this2.num++;
+            self.owner.energy += 50;
+            self.owner.updateSpeed(.27);
+          }
+        });
+        x = this.owner.x, y = this.owner.y;
+        this.game.addAnime(new InkAnimation(x, y, [ 40, 75, 178 ]), {
+          postpone: 30
+        });
+        this.owner.move(dest_x, dest_y);
+      };
+      _proto7.validLocations = function validLocations() {
+        var map = this.game.map;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          return !map[y][x];
+        });
+      };
+      return HydroCoreSpell;
+    }(SpellItem);
+    HydroCoreSpell.id = 5;
+    HydroCoreSpell.price = new Coin({
+      hydroCoins: 50
+    });
+    HydroCoreSpell.spellName = "\u6f5c\u6e0a\u8dc3\u6d6a";
+    HydroCoreSpell.description = function() {
+      return "\u79fb\u52a8\u81f3\u5730\u56fe\u4e2d\u4efb\u610f\u8fb9\u7f18\u4f4d\u7f6e\uff0c\u82e5\u79fb\u52a8\u7684\u8def\u5f84\u4e0a\u6709\u5355\u4f4d\u5e26\u6709\u6c34\u5370\u8bb0\uff0c\u5219\u4f60\u7075\u529b+0.27\uff0c\u5e76\u518d\u83b7\u5f97\u4e00\u4e2a\u3010\u6f5c\u6e0a\u8dc3\u6d6a\u3011\u7075\u7b26\u4e0e50\u5185\u529b\u3002\u82e5\u5e26\u6709\u6c34\u5370\u8bb0\u7684\u5355\u4f4d\u4e0d\u6b62\u4e00\u4e2a\uff0c\u5219\u6bcf\u4e2a\u989d\u5916\u7684\u5355\u4f4d\u4ee4\u4f60\u63d0\u53470.1\u7075\u529b";
+    };
+    HydroCoreSpell.validLocations = function(player) {
+      var map = player.game.map;
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        return !map[y][x];
+      });
+    };
+    var PyroCoreSpell = function(_SpellItem7) {
+      _inheritsLoose(PyroCoreSpell, _SpellItem7);
+      function PyroCoreSpell() {
+        return _SpellItem7.apply(this, arguments) || this;
+      }
+      var _proto8 = PyroCoreSpell.prototype;
+      _proto8.use = function use(x, y) {
+        var target = this.game.map[y][x];
+        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
+        this.explode(target, 2);
+      };
+      _proto8.explode = function explode(target, log_level) {
+        var _this3 = this;
+        if (!target) return;
+        this.game.addLog('{"code":' + target.code + "}\u88ab\u9644\u52a01\u5c42\u706b\u5370\u8bb0", log_level);
+        target.pyroSign++;
+        this.owner.harm(target, new Damage_1.Damage(Damage_1.Damage.SPELL, 100));
+        if (target.pyroSign < 7) return;
+        this.game.addLog('{"code":' + target.code + "}\u706b\u5370\u8bb0\u6570\u91cf\u8fbe\u5230" + target.pyroSign + "\u5c42\uff0c\u518d\u6b21\u89e6\u53d1\u3010\u4e5d\u7130\u711a\u5929\u3011", 2);
+        this.game.addAnime(new InkAnimation(target.x, target.y, [ 255, 35, 5 ]), {
+          postpone: 10
+        });
+        target.pyroSign -= 7;
+        getItemIn33(target).forEach(function(new_target) {
+          _this3.explode(new_target, 3);
+        });
+      };
+      return PyroCoreSpell;
+    }(SpellItem);
+    PyroCoreSpell.id = 6;
+    PyroCoreSpell.price = new Coin({
+      pyroCoins: 50
+    });
+    PyroCoreSpell.spellName = "\u70bd\u7130\u711a\u8bd7";
+    PyroCoreSpell.description = function() {
+      return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u9020\u6210200\u70b9\u4f24\u5bb3\u5e76\u53e0\u52a01\u5c42\u706b\u5370\u8bb0\uff0c\u82e5\u6b64\u65f6\u8be5\u5355\u4f4d\u6709\u8d85\u8fc77\u5c42\u706b\u5370\u8bb0\u5219\u5f15\u53d1\u7206\u70b8\uff0c\u5bf9\u5176\u6240\u57283*3\u8303\u56f4\u5185\u6240\u6709\u5355\u4f4d\u5168\u90e8\u65bd\u52a0\u4e00\u6b21\u3010\u70bd\u7130\u711a\u8bd7\u3011";
+    };
+    var DisplaceSpell = function(_SpellItem8) {
+      _inheritsLoose(DisplaceSpell, _SpellItem8);
+      function DisplaceSpell() {
+        return _SpellItem8.apply(this, arguments) || this;
+      }
+      var _proto9 = DisplaceSpell.prototype;
+      _proto9.use = function use(x, y, extra) {
+        var map = this.game.map;
+        var oldX = this.owner.x, oldY = this.owner.y;
+        var item1 = this.owner, item2 = map[y][x];
+        map[y][x] = item1;
+        map[oldY][oldX] = item2;
+        item1.x = x;
+        item1.y = y;
+        if (null != item2) {
+          console.log("item2 is not null");
+          if (item2.code == item1.code) throw new GameLogicError("\u4e0d\u80fd\u6307\u5b9a\u81ea\u5df1");
+          item2.x = oldX;
+          item2.y = oldY;
+          this.game.listeners.MoveListeners.check(item2, x, y);
+          this.game.addLog('{"code":' + item2.code + ',"x":' + x + ',"y":' + y + "}\u79fb\u52a8\u81f3" + logVertex(oldX, oldY), 0);
+        }
+        this.game.listeners.MoveListeners.check(item1, oldX, oldY);
+        this.game.addLog('{"code":' + item1.code + ',"x":' + oldX + ',"y":' + oldY + "}\u79fb\u52a8\u81f3" + logVertex(x, y), 0);
+        this.game.addAnime(new DisplaceSpellAnimation(x, y));
+        this.game.addAnime(new DisplaceSpellAnimation(oldX, oldY));
+      };
+      return DisplaceSpell;
+    }(SpellItem);
+    DisplaceSpell.id = 7;
+    DisplaceSpell.price = new Coin({
+      auroCoins: 50
+    });
+    DisplaceSpell.spellName = "\u661f\u79fb\u6597\u8f6c";
+    DisplaceSpell.description = function() {
+      return "\u4ee4\u4efb\u610f\u5355\u4f4d\u79fb\u52a8\u5230\u4efb\u610f\u4f4d\u7f6e";
+    };
+    DisplaceSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        return player.x != axis[0] || player.y != axis[1];
+      });
+    };
+    var BounceSpell = function(_SpellItem9) {
+      _inheritsLoose(BounceSpell, _SpellItem9);
+      function BounceSpell() {
+        return _SpellItem9.apply(this, arguments) || this;
+      }
+      var _proto10 = BounceSpell.prototype;
+      _proto10.use = function use(x, y) {
+        var _this4 = this;
+        eightDirections(this.owner).forEach(function(direction) {
+          direction.reverse();
+          var items = direction.map(function(loc) {
+            return _this4.game.map[loc[1]][loc[0]];
+          }).filter(function(item) {
+            return null != item;
+          });
+          items.forEach(function(item, i) {
+            var x = direction[i][0], y = direction[i][1];
+            item.move(x, y);
+          });
+        });
+      };
+      _proto10.validLocations = function validLocations() {
+        return null;
+      };
+      return BounceSpell;
+    }(SpellItem);
+    BounceSpell.id = 8;
+    BounceSpell.price = new Coin({
+      baseCoins: 50
+    });
+    BounceSpell.spellName = "\u5fa1\u98ce\u9a71\u4e91";
+    BounceSpell.description = function() {
+      return "\u5c06\u81ea\u8eab\u516b\u4e2a\u65b9\u4f4d\u7684\u5355\u4f4d\u5168\u90e8\u5f39\u5f00\u81f3\u6700\u8fdc\u4f4d\u7f6e";
+    };
+    BounceSpell.validLocations = function() {
+      return null;
+    };
+    var AttractSpell = function(_SpellItem10) {
+      _inheritsLoose(AttractSpell, _SpellItem10);
+      function AttractSpell() {
+        return _SpellItem10.apply(this, arguments) || this;
+      }
+      var _proto11 = AttractSpell.prototype;
+      _proto11.use = function use(x, y) {
+        var _this5 = this;
+        eightDirections(this.owner).forEach(function(direction) {
+          var items = direction.map(function(loc) {
+            return _this5.game.map[loc[1]][loc[0]];
+          }).filter(function(item) {
+            return null != item;
+          });
+          items.forEach(function(item, i) {
+            var x = direction[i][0], y = direction[i][1];
+            if (item.x == x && item.y == y) return;
+            item.move(x, y);
+          });
+        });
+      };
+      _proto11.validLocations = function validLocations() {
+        return null;
+      };
+      return AttractSpell;
+    }(SpellItem);
+    AttractSpell.id = 9;
+    AttractSpell.price = new Coin({
+      baseCoins: 50
+    });
+    AttractSpell.spellName = "\u7275\u4e91\u5f15\u96fe";
+    AttractSpell.description = function() {
+      return "\u5c06\u81ea\u8eab\u516b\u4e2a\u65b9\u5411\u79bb\u81ea\u5df1\u6700\u8fd1\u7684\u5355\u4f4d\u62c9\u81f3\u8eab\u8fb9";
+    };
+    AttractSpell.validLocations = function() {
+      return null;
+    };
+    var HydrateOneDirectionSpell = function(_SpellItem11) {
+      _inheritsLoose(HydrateOneDirectionSpell, _SpellItem11);
+      function HydrateOneDirectionSpell() {
+        return _SpellItem11.apply(this, arguments) || this;
+      }
+      var _proto12 = HydrateOneDirectionSpell.prototype;
+      _proto12.use = function use(x, y) {
+        var _this6 = this;
+        var has = false;
+        var self = this;
+        eightDirections(this.owner).forEach(function(direction) {
+          if (!direction.find(function(loc) {
+            return loc[0] == x && loc[1] == y;
+          })) return;
+          has = true;
+          direction.map(function(loc) {
+            return _this6.game.map[loc[1]][loc[0]];
+          }).filter(function(item) {
+            return null != item;
+          }).forEach(function(item) {
+            item.hydroSign++;
+            self.game.addAnime(new InkAnimation(item.x, item.y, [ 40, 75, 178 ]));
+          });
+        });
+        if (!has) throw new GameLogicError("\u53ea\u80fd\u6307\u5b9a\u76f4\u7ebf\u6216\u659c\u5bf9\u89d2\u7684\u65b9\u5411");
+      };
+      _proto12.validLocations = function validLocations() {
+        var _this7 = this;
+        return iter_36().filter(function(axis) {
+          return _this7.owner.x != axis[0] || _this7.owner.y != axis[1];
+        });
+      };
+      return HydrateOneDirectionSpell;
+    }(SpellItem);
+    HydrateOneDirectionSpell.id = 10;
+    HydrateOneDirectionSpell.price = new Coin({
+      hydroCoins: 50
+    });
+    HydrateOneDirectionSpell.spellName = "\u6d77\u6f6e\u56de\u54cd";
+    HydrateOneDirectionSpell.description = function() {
+      return "\u5bf9\u4e00\u4e2a\u65b9\u5411\u4e0a\u7684\u6240\u6709\u5355\u4f4d\u65bd\u52a0\u6c34\u5370\u8bb0";
+    };
+    HydrateOneDirectionSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        return player.x != axis[0] || player.y != axis[1];
+      });
+    };
+    var PyrateSpell = function(_SpellItem12) {
+      _inheritsLoose(PyrateSpell, _SpellItem12);
+      function PyrateSpell() {
+        return _SpellItem12.apply(this, arguments) || this;
+      }
+      var _proto13 = PyrateSpell.prototype;
+      _proto13.use = function use(x, y) {
+        var player2 = this.game.map[y][x];
+        if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
+        this.game.addLog('{"code":' + player2.code + "}\u88ab\u9644\u52a07\u5c42\u706b\u5370\u8bb0", 2);
+        this.game.addAnime(new InkAnimation(x, y, [ 255, 35, 5 ]));
+        player2.pyroSign += 7;
+      };
+      return PyrateSpell;
+    }(SpellItem);
+    PyrateSpell.id = 11;
+    PyrateSpell.price = new Coin({
+      pyroCoins: 50
+    });
+    PyrateSpell.spellName = "\u4e03\u6627\u771f\u706b";
+    PyrateSpell.description = function() {
+      return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u65bd\u52a0\u4e5d\u5c42\u706b\u5370\u8bb0";
+    };
+    var TempPowerSpell = function(_SpellItem13) {
+      _inheritsLoose(TempPowerSpell, _SpellItem13);
+      function TempPowerSpell() {
+        return _SpellItem13.apply(this, arguments) || this;
+      }
+      var _proto14 = TempPowerSpell.prototype;
+      _proto14.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
+        new EnhanceBuff(target, ENTER_TIME);
+        this.game.addAnime(new ShowIconAnimation(TempPowerSpell.iconUrl));
+      };
+      return TempPowerSpell;
+    }(SpellItem);
+    TempPowerSpell.id = 12;
+    TempPowerSpell.price = new Coin({
+      baseCoins: 10
+    });
+    TempPowerSpell.spellName = "\u7075\u67a2\u8f6c\u8f6e";
+    TempPowerSpell.description = function() {
+      return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u77ed\u6682\u83b7\u5f970.27\u7684\u7075\u529b\uff0c70\u70b9\u653b\u51fb\u529b\uff0c\u653b\u901f\u7cfb\u6570\u964d\u4f4e0.7\uff0c\u6301\u7eed5\u5206\u949f";
+    };
+    var GeoToPyroSpell = function(_SpellItem14) {
+      _inheritsLoose(GeoToPyroSpell, _SpellItem14);
+      function GeoToPyroSpell() {
+        return _SpellItem14.apply(this, arguments) || this;
+      }
+      var _proto15 = GeoToPyroSpell.prototype;
+      _proto15.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u70ec\u706b\u7075\u4f7f\u7528");
+        if (target.transfer_time <= 0) throw new GameLogicError("\u70ec\u706b\u5370\u8bb0\u4e0d\u8db3");
+        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
+        target.transfer_time--;
+        this.owner.geoSign--;
+        this.owner.changeCoins({
+          pyroCoins: 70
+        });
+      };
+      _proto15.validLocations = function validLocations() {
+        var _this8 = this;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          var target = _this8.game.map[y][x];
+          if (!target || "GeoToPyroPet" != target.type || target.owner.code != _this8.owner.code) return false;
+          return true;
+        });
+      };
+      return GeoToPyroSpell;
+    }(SpellItem);
+    GeoToPyroSpell.id = 13;
+    GeoToPyroSpell.size = 0;
+    GeoToPyroSpell.price = new Coin({});
+    GeoToPyroSpell.spellName = "\u7075\u94f8\xb7\u70ec\u706b";
+    GeoToPyroSpell.description = function() {
+      return "\u6d88\u8017\u4e00\u5c42\u70ec\u706b\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u706b\u7075\u77f3";
+    };
+    GeoToPyroSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        var target = _this9.game.map[y][x];
+        if (!target || "GeoToPyroPet" != target.type || target.owner.code != player.code) return false;
+        return true;
+      });
+    };
+    var GeoToHydroSpell = function(_SpellItem15) {
+      _inheritsLoose(GeoToHydroSpell, _SpellItem15);
+      function GeoToHydroSpell() {
+        return _SpellItem15.apply(this, arguments) || this;
+      }
+      var _proto16 = GeoToHydroSpell.prototype;
+      _proto16.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target || "GeoToHydroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u6d41\u6e0a\u517d\u4f7f\u7528");
+        if (target.transfer_time <= 0) throw new GameLogicError("\u6d41\u6e0a\u5370\u8bb0\u4e0d\u8db3");
+        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
+        target.transfer_time--;
+        this.owner.geoSign--;
+        this.owner.changeCoins({
+          hydroCoins: 70
+        });
+      };
+      _proto16.validLocations = function validLocations() {
+        var _this10 = this;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          var target = _this10.game.map[y][x];
+          if (!target || "GeoToHydroPet" != target.type || target.owner.code != _this10.owner.code) return false;
+          return true;
+        });
+      };
+      return GeoToHydroSpell;
+    }(SpellItem);
+    GeoToHydroSpell.id = 14;
+    GeoToHydroSpell.size = 0;
+    GeoToHydroSpell.price = new Coin({});
+    GeoToHydroSpell.spellName = "\u7075\u94f8\xb7\u6d41\u6e0a";
+    GeoToHydroSpell.description = function() {
+      return "\u6d88\u8017\u4e00\u5c42\u6d41\u6e0a\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u6c34\u7075\u77f3";
+    };
+    GeoToHydroSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        var target = _this9.game.map[y][x];
+        if (!target || "GeoToHydroPet" != target.type || target.owner.code != player.code) return false;
+        return true;
+      });
+    };
+    var GeoToAuroSpell = function(_SpellItem16) {
+      _inheritsLoose(GeoToAuroSpell, _SpellItem16);
+      function GeoToAuroSpell() {
+        return _SpellItem16.apply(this, arguments) || this;
+      }
+      var _proto17 = GeoToAuroSpell.prototype;
+      _proto17.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u5764\u91d1\u517d\u4f7f\u7528");
+        if (target.transfer_time <= 0) throw new GameLogicError("\u5764\u91d1\u5370\u8bb0\u4e0d\u8db3");
+        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
+        target.transfer_time--;
+        this.owner.geoSign--;
+        this.owner.changeCoins({
+          auroCoins: 70
+        });
+      };
+      _proto17.validLocations = function validLocations() {
+        var _this11 = this;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          var target = _this11.game.map[y][x];
+          if (!target || "GeoToAuroPet" != target.type || target.owner.code != _this11.owner.code) return false;
+          return true;
+        });
+      };
+      return GeoToAuroSpell;
+    }(SpellItem);
+    GeoToAuroSpell.id = 15;
+    GeoToAuroSpell.size = 0;
+    GeoToAuroSpell.price = new Coin({});
+    GeoToAuroSpell.spellName = "\u7075\u94f8\xb7\u5764\u91d1";
+    GeoToAuroSpell.description = function() {
+      return "\u6d88\u8017\u4e00\u5c42\u5764\u91d1\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u91d1\u7075\u77f3";
+    };
+    GeoToAuroSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        var target = _this9.game.map[y][x];
+        if (!target || "GeoToAuroPet" != target.type || target.owner.code != player.code) return false;
+        return true;
+      });
+    };
+    var DisplaceToPetSpell = function(_SpellItem17) {
+      _inheritsLoose(DisplaceToPetSpell, _SpellItem17);
+      function DisplaceToPetSpell() {
+        return _SpellItem17.apply(this, arguments) || this;
+      }
+      var _proto18 = DisplaceToPetSpell.prototype;
+      _proto18.use = function use(x, y, extra) {
+        if (!this.scope[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u5df1\u65b9\u5f52\u9014\u7075\u9e643*3\u8303\u56f4\u5185");
+        this.owner.move(x, y);
+      };
+      _proto18.validLocations = function validLocations() {
+        var scope = this.scope;
+        return iter_36().filter(function(axis) {
+          return scope[axis[1]][scope[axis[0]]];
+        });
+      };
+      _createClass(DisplaceToPetSpell, [ {
+        key: "scope",
+        get: function get() {
+          var _this12 = this;
+          var res = emptyMap();
+          this.game.allMapElements.forEach(function(item) {
+            if ("DisplacePet" != item.type) return;
+            if (item.owner.code != _this12.owner.code) return;
+            getLocInScope(item, 1.5).forEach(function(loc) {
+              var x = loc[0], y = loc[1];
+              _this12.game.map[y][x] || (res[y][x] = true);
+            });
+          });
+          return res;
+        }
+      } ]);
+      return DisplaceToPetSpell;
+    }(SpellItem);
+    DisplaceToPetSpell.id = 16;
+    DisplaceToPetSpell.size = 0;
+    DisplaceToPetSpell.spellName = "\u7075\u9e64\xb7\u5f52\u9014";
+    DisplaceToPetSpell.description = function() {
+      return "\u79fb\u52a8\u81f3\u4efb\u610f\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
+    };
+    DisplaceToPetSpell.validLocations = function(player) {
+      var spell = new DisplaceToPetSpell();
+      spell.owner = player;
+      spell.game = player.game;
+      var scope = _this9.scope;
+      return iter_36().filter(function(axis) {
+        return scope[axis[1]][scope[axis[0]]];
+      });
+    };
+    AscendSpell.iconUrl = "spell/\u767d\u65e5\u98de\u5347.png";
+    PowerSpell.iconUrl = "spell/\u4ed9\u8109.png";
+    GeoCoreSpell.iconUrl = "spell/\u4e03\u66dc\u571f\u7075.png";
+    HydroCoreSpell.iconUrl = "spell/\u6d41\u6ce2\u78a7\u5f71.png";
+    PyroCoreSpell.iconUrl = "spell/\u70bd\u7130\u711a\u8bd7.png";
+    DisplaceSpell.iconUrl = "spell/\u661f\u79fb\u6597\u8f6c.png";
+    BounceSpell.iconUrl = "spell/\u516b\u65b9\u98ce\u6563.png";
+    AttractSpell.iconUrl = "spell/\u516b\u65b9\u5f52\u5f15.png";
+    HydrateOneDirectionSpell.iconUrl = "spell/\u6d9f\u6f2a\u7eb5\u75d5.png";
+    PyrateSpell.iconUrl = "spell/\u4e03\u6627\u771f\u706b.png";
+    TempPowerSpell.iconUrl = "spell/\u7075\u67a2\u8f6c\u8f6e.png";
+    EnergyToPowerSpell.iconUrl = "spell/\u771f\u6c14\u5316\u5143.png";
+    GeoToAuroSpell.iconUrl = "pets/\u5764\u91d1\u517d.png";
+    GeoToHydroSpell.iconUrl = "pets/\u6d41\u6e0a\u517d.png";
+    GeoToPyroSpell.iconUrl = "pets/\u70ec\u706b\u7075.png";
+    DisplaceToPetSpell.iconUrl = "pets/\u5f52\u9014\u7075\u9e64.png";
+    module.exports = {
+      MoveSpell: MoveSpell,
+      Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
+      AscendSpell: AscendSpell,
+      PowerSpell: PowerSpell,
+      EnergyToPowerSpell: EnergyToPowerSpell,
+      GeoCoreSpell: GeoCoreSpell,
+      HydroCoreSpell: HydroCoreSpell,
+      PyroCoreSpell: PyroCoreSpell,
+      DisplaceSpell: DisplaceSpell,
+      BounceSpell: BounceSpell,
+      AttractSpell: AttractSpell,
+      HydrateOneDirectionSpell: HydrateOneDirectionSpell,
+      PyrateSpell: PyrateSpell,
+      TempPowerSpell: TempPowerSpell,
+      GeoToPyroSpell: GeoToPyroSpell,
+      GeoToHydroSpell: GeoToHydroSpell,
+      GeoToAuroSpell: GeoToAuroSpell,
+      DisplaceToPetSpell: DisplaceToPetSpell
+    };
+    var _require4 = require("./wheels/common-clas0.0.3"), GameLogicError = _require4.GameLogicError;
+    var Damage_1 = require("./objects/Damage-clas0.0.3");
+    var _require5 = require("./utils/numberUtils-clas0.0.3"), getThirdDigit = _require5.getThirdDigit, roundIfInteger = _require5.roundIfInteger, between = _require5.between, getSecondDigit = _require5.getSecondDigit;
+    var _require6 = require("./constants/timeConstants-clas0.0.3"), ONE_MINUTES = _require6.ONE_MINUTES, ENDLESS_TIME = _require6.ENDLESS_TIME, ENTER_TIME = _require6.ENTER_TIME;
+    var _require7 = require("./utils/mapUtils-clas0.0.3"), getLocInScope = _require7.getLocInScope, getItemIn33 = _require7.getItemIn33, eightDirections = _require7.eightDirections, emptyMap = _require7.emptyMap;
+    var _require8 = require("./constants/gameConstants-clas0.0.3"), MAP_SIZE = _require8.MAP_SIZE;
+    var _require9 = require("./Buffs-clas0.0.3"), IncreaseSpeedBuff = _require9.IncreaseSpeedBuff, EnhanceBuff = _require9.EnhanceBuff;
+    var _require10 = require("./utils/iterationUtils-clas0.0.3"), iter_36 = _require10.iter_36;
+    var _require11 = require("./animations/spellAnimation-clas0.0.3"), ShowIconAnimation = _require11.ShowIconAnimation, InkAnimation = _require11.InkAnimation, DisplaceSpellAnimation = _require11.DisplaceSpellAnimation, GeoCoreSpellAnimation = _require11.GeoCoreSpellAnimation;
+    var _require12 = require("./loggers/logUtils-clas0.0.3"), logVertex = _require12.logVertex, logItem = _require12.logItem;
+    cc._RF.pop();
+  }, {
+    "./Buffs-clas0.0.3": "Buffs-clas0.0.3",
+    "./animations/spellAnimation-clas0.0.3": "spellAnimation-clas0.0.3",
+    "./constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "./constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "./loggers/logUtils-clas0.0.3": "logUtils-clas0.0.3",
+    "./objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "./objects/Damage-clas0.0.3": "Damage-clas0.0.3",
+    "./templates/Listeners-clas0.0.3": "Listeners-clas0.0.3",
+    "./templates/SpellItems-clas0.0.3": "SpellItems-clas0.0.3",
+    "./utils/iterationUtils-clas0.0.3": "iterationUtils-clas0.0.3",
+    "./utils/mapUtils-clas0.0.3": "mapUtils-clas0.0.3",
+    "./utils/numberUtils-clas0.0.3": "numberUtils-clas0.0.3",
+    "./wheels/common-clas0.0.3": "common-clas0.0.3"
+  } ],
+  "SpellItems-clas0.0.1": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "390e19J35RHCIigsUWkqT/I", "SpellItems-clas0.0.1");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../objects/Coin-clas0.0.1"), Coin = _require.Coin;
+    var _require2 = require("../wheels/interfaces-clas0.0.1"), Item = _require2.Item;
+    var SpellItem = function(_Item) {
+      _inheritsLoose(SpellItem, _Item);
+      function SpellItem() {
+        return _Item.apply(this, arguments) || this;
+      }
+      var _proto = SpellItem.prototype;
+      _proto.init = function init(owner) {
+        _Item.prototype.init.call(this, owner.game);
+        this.owner = owner;
+      };
+      _proto.upgrade = function upgrade() {
+        this.owner.updateSpeed(1.05);
+        this.level++;
+        this.upgrade_special();
+      };
+      _proto.upgrade_special = function upgrade_special() {};
+      _proto.use = function use(x, y, extra) {};
+      _proto.validLocations = function validLocations() {
+        return this.game.allMapElements.map(function(item) {
+          return [ item.x, item.y ];
+        });
+      };
+      return SpellItem;
+    }(Item);
+    SpellItem.id = 0;
+    SpellItem.category = "spell";
+    SpellItem.valid = true;
+    SpellItem.size = 1;
+    SpellItem.price = new Coin({});
+    SpellItem.energy_cost = 50;
+    SpellItem.uiDisplay = true;
+    SpellItem.overviewDisplay = true;
+    SpellItem.spellName = "";
+    SpellItem.description = function() {
+      return "";
+    };
+    SpellItem.validLocations = function(player) {
+      return player.game.allMapElements.map(function(item) {
+        return [ item.x, item.y ];
+      });
+    };
+    module.exports = {
+      SpellItem: SpellItem
+    };
+    cc._RF.pop();
+  }, {
+    "../objects/Coin-clas0.0.1": "Coin-clas0.0.1",
+    "../wheels/interfaces-clas0.0.1": "interfaces-clas0.0.1"
+  } ],
+  "SpellItems-clas0.0.2": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "a78f1K6RHdALrxuCWUgr2Mb", "SpellItems-clas0.0.2");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../objects/Coin-clas0.0.2"), Coin = _require.Coin;
+    var _require2 = require("../wheels/interfaces-clas0.0.2"), Item = _require2.Item;
+    var SpellItem = function(_Item) {
+      _inheritsLoose(SpellItem, _Item);
+      function SpellItem() {
+        return _Item.apply(this, arguments) || this;
+      }
+      var _proto = SpellItem.prototype;
+      _proto.init = function init(owner) {
+        _Item.prototype.init.call(this, owner.game);
+        this.owner = owner;
+        this.num = 0;
+      };
+      _proto.upgrade = function upgrade() {
+        this.owner.updateSpeed(1.05);
+        this.level++;
+        this.upgrade_special();
+      };
+      _proto.upgrade_special = function upgrade_special() {};
+      _proto.use = function use(x, y, extra) {};
+      _proto.validLocations = function validLocations() {
+        return this.game.allMapElements.map(function(item) {
+          return [ item.x, item.y ];
+        });
+      };
+      return SpellItem;
+    }(Item);
+    SpellItem.id = 0;
+    SpellItem.category = "spell";
+    SpellItem.valid = true;
+    SpellItem.size = 1;
+    SpellItem.price = new Coin({});
+    SpellItem.energy_cost = 50;
+    SpellItem.uiDisplay = true;
+    SpellItem.overviewDisplay = true;
+    SpellItem.spellName = "";
+    SpellItem.description = function() {
+      return "";
+    };
+    SpellItem.validLocations = function(player) {
+      return player.game.allMapElements.map(function(item) {
+        return [ item.x, item.y ];
+      });
+    };
+    module.exports = {
+      SpellItem: SpellItem
+    };
+    cc._RF.pop();
+  }, {
+    "../objects/Coin-clas0.0.2": "Coin-clas0.0.2",
+    "../wheels/interfaces-clas0.0.2": "interfaces-clas0.0.2"
+  } ],
+  "SpellItems-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "e6c89PEcb9HqJv8+l+7gyKz", "SpellItems-clas0.0.3");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../objects/Coin-clas0.0.3"), Coin = _require.Coin;
+    var _require2 = require("../wheels/interfaces-clas0.0.3"), Item = _require2.Item;
+    var SpellItem = function(_Item) {
+      _inheritsLoose(SpellItem, _Item);
+      function SpellItem() {
+        return _Item.apply(this, arguments) || this;
+      }
+      var _proto = SpellItem.prototype;
+      _proto.init = function init(owner) {
+        _Item.prototype.init.call(this, owner.game);
+        this.owner = owner;
+        this.num = 0;
+      };
+      _proto.use = function use(x, y, extra) {};
+      _proto.validLocations = function validLocations() {
+        return this.game.allMapElements.map(function(item) {
+          return [ item.x, item.y ];
+        });
+      };
+      return SpellItem;
+    }(Item);
+    SpellItem.id = 0;
+    SpellItem.category = "spell";
+    SpellItem.valid = true;
+    SpellItem.size = 1;
+    SpellItem.price = new Coin({});
+    SpellItem.energy_cost = 50;
+    SpellItem.uiDisplay = true;
+    SpellItem.overviewDisplay = true;
+    SpellItem.spellName = "";
+    SpellItem.description = function() {
+      return "";
+    };
+    SpellItem.validLocations = function(player) {
+      return player.game.allMapElements.map(function(item) {
+        return [ item.x, item.y ];
+      });
+    };
+    module.exports = {
+      SpellItem: SpellItem
+    };
+    cc._RF.pop();
+  }, {
+    "../objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "../wheels/interfaces-clas0.0.3": "interfaces-clas0.0.3"
+  } ],
+  SpellItems: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "55d72wVWSxGWpN5A40+1/mv", "SpellItems");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("../objects/Coin"), Coin = _require.Coin;
+    var _require2 = require("../wheels/interfaces"), Item = _require2.Item;
+    var SpellItem = function(_Item) {
+      _inheritsLoose(SpellItem, _Item);
+      function SpellItem() {
+        return _Item.apply(this, arguments) || this;
+      }
+      var _proto = SpellItem.prototype;
+      _proto.init = function init(owner) {
+        _Item.prototype.init.call(this, owner.game);
+        this.owner = owner;
+        this.num = 0;
+      };
+      _proto.use = function use(x, y, extra) {};
+      _proto.validLocations = function validLocations() {
+        return this.game.allMapElements.map(function(item) {
+          return [ item.x, item.y ];
+        });
+      };
+      return SpellItem;
+    }(Item);
+    SpellItem.id = 0;
+    SpellItem.category = "spell";
+    SpellItem.valid = true;
+    SpellItem.size = 1;
+    SpellItem.price = new Coin({});
+    SpellItem.energy_cost = 50;
+    SpellItem.uiDisplay = true;
+    SpellItem.overviewDisplay = true;
+    SpellItem.spellName = "";
+    SpellItem.description = function() {
+      return "";
+    };
+    SpellItem.validLocations = function(player) {
+      return player.game.allMapElements.map(function(item) {
+        return [ item.x, item.y ];
+      });
+    };
+    module.exports = {
+      SpellItem: SpellItem
+    };
+    cc._RF.pop();
+  }, {
+    "../objects/Coin": "Coin",
+    "../wheels/interfaces": "interfaces"
+  } ],
+  Spell: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "a7ddcb0FKdOzr+A7N+yrVHM", "Spell");
+    "use strict";
+    var _this9 = void 0;
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        "value" in descriptor && (descriptor.writable = true);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
+    function _createClass(Constructor, protoProps, staticProps) {
+      protoProps && _defineProperties(Constructor.prototype, protoProps);
+      staticProps && _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
+      return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return "symbol" === typeof key ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if ("object" !== typeof input || null === input) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (void 0 !== prim) {
+        var res = prim.call(input, hint || "default");
+        if ("object" !== typeof res) return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === hint ? String : Number)(input);
+    }
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    var _require = require("./templates/SpellItems"), SpellItem = _require.SpellItem;
+    var _require2 = require("./objects/Coin"), Coin = _require2.Coin, COIN_KEYS = _require2.COIN_KEYS;
+    var _require3 = require("./templates/Listeners"), Listener = _require3.Listener;
+    var MoveSpell = function(_SpellItem) {
+      _inheritsLoose(MoveSpell, _SpellItem);
+      function MoveSpell() {
+        return _SpellItem.apply(this, arguments) || this;
+      }
+      var _proto = MoveSpell.prototype;
+      _proto.init = function init(owner) {
+        _SpellItem.prototype.init.call(this, owner);
+        this.num = 999999;
+      };
+      _proto.use = function use(x, y) {
+        var player = this.owner;
+        if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u6ca1\u6709\u5355\u4f4d\u7684\u5730\u65b9");
+        if (!this.validLocations().find(function(loc) {
+          return loc[0] == x && loc[1] == y;
+        })) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u4e00\u683c");
+        player.move(x, y);
+      };
+      _proto.validLocations = function validLocations() {
+        var player = this.owner, map = this.game.map;
+        return getLocInScope(player, 1).filter(function(loc) {
+          return loc[0] != player.x || loc[1] != player.y;
+        }).filter(function(loc) {
+          return !map[loc[1]][loc[0]];
+        });
+      };
+      return MoveSpell;
+    }(SpellItem);
+    MoveSpell.id = 0;
+    MoveSpell.size = 0;
+    MoveSpell.price = new Coin({
+      baseCoins: 10
+    });
+    MoveSpell.spellName = "\u6b65\u884c";
+    MoveSpell.uiDisplay = false;
+    MoveSpell.overviewDisplay = false;
+    MoveSpell.description = function() {
+      return "\u79fb\u52a8\u4e00\u683c";
+    };
+    var Equip14EnhancedMoveSpell = function(_MoveSpell) {
+      _inheritsLoose(Equip14EnhancedMoveSpell, _MoveSpell);
+      function Equip14EnhancedMoveSpell() {
+        return _MoveSpell.apply(this, arguments) || this;
+      }
+      var _proto2 = Equip14EnhancedMoveSpell.prototype;
+      _proto2.init = function init(owner) {
+        _MoveSpell.prototype.init.call(this, owner);
+        this.num = 999999;
+      };
+      _proto2.validLocations = function validLocations() {
+        var _this = this;
+        var scope = this.game.listeners.InscopeCalculators.check(this.owner);
+        return iter_36().filter(function(loc) {
+          var x = loc[0], y = loc[1];
+          return scope[y][x] && !_this.game.map[y][x];
+        });
+      };
+      return Equip14EnhancedMoveSpell;
+    }(MoveSpell);
+    Equip14EnhancedMoveSpell.spellName = "\u3010\u98de\u71d5\u3011\u98de\u884c";
+    var AscendSpell = function(_SpellItem2) {
+      _inheritsLoose(AscendSpell, _SpellItem2);
+      function AscendSpell() {
+        return _SpellItem2.apply(this, arguments) || this;
+      }
+      var _proto3 = AscendSpell.prototype;
+      _proto3.use = function use(x, y) {
+        var player = this.owner;
+        if (player._power < 2) throw new GameLogicError("\u4ec5\u7075\u529b\u5927\u4e8e2\u65f6\u53ef\u4ee5\u4f7f\u7528");
+        player.updateSpeed(4 * player._power);
+        this.game.addAnime(new ShowIconAnimation(AscendSpell.iconUrl));
+      };
+      _proto3.validLocations = function validLocations() {
+        return iter_36();
+      };
+      return AscendSpell;
+    }(SpellItem);
+    AscendSpell.id = 1;
+    AscendSpell.price = new Coin({
+      baseCoins: 50
+    });
+    AscendSpell.spellName = "\u767d\u65e5\u98de\u5347";
+    AscendSpell.description = function() {
+      return "\u7075\u529b\u5927\u4e8e2\u65f6\u53ef\u4ee5\u4f7f\u7528\uff1a\u4f7f\u4f60\u7684\u7075\u529b\u63d0\u5347\u81f3\u73b0\u5728\u76845\u500d";
+    };
+    AscendSpell.validLocations = function() {
+      return null;
+    };
+    AscendSpell.uiDisplay = true;
+    var PowerSpell = function(_SpellItem3) {
+      _inheritsLoose(PowerSpell, _SpellItem3);
+      function PowerSpell() {
+        return _SpellItem3.apply(this, arguments) || this;
+      }
+      var _proto4 = PowerSpell.prototype;
+      _proto4.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
+        target.updateSpeed(.17);
+        this.game.addAnime(new ShowIconAnimation(PowerSpell.iconUrl));
+      };
+      return PowerSpell;
+    }(SpellItem);
+    PowerSpell.id = 2;
+    PowerSpell.price = new Coin({
+      baseCoins: 50
+    });
+    PowerSpell.spellName = "\u4ed9\u8109\u7075\u6e90";
+    PowerSpell.description = function() {
+      return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u7075\u529b\u63d0\u53470.17";
+    };
+    var EnergyToPowerSpell = function(_SpellItem4) {
+      _inheritsLoose(EnergyToPowerSpell, _SpellItem4);
+      function EnergyToPowerSpell() {
+        return _SpellItem4.apply(this, arguments) || this;
+      }
+      var _proto5 = EnergyToPowerSpell.prototype;
+      _proto5.use = function use(x, y, extra) {
+        var energy = this.owner.energy;
+        var energyBlock = Math.floor(energy / 30);
+        this.owner.energy -= 10 * energyBlock;
+        this.owner.updateSpeed(.07 + .01 * energyBlock);
+        this.game.addAnime(new ShowIconAnimation(EnergyToPowerSpell.iconUrl));
+      };
+      _proto5.validLocations = function validLocations() {
+        return null;
+      };
+      return EnergyToPowerSpell;
+    }(SpellItem);
+    EnergyToPowerSpell.id = 3;
+    EnergyToPowerSpell.price = new Coin({
+      baseCoins: 50
+    });
+    EnergyToPowerSpell.spellName = "\u771f\u6c14\u5316\u5143";
+    EnergyToPowerSpell.description = function() {
+      return "\u63d0\u53470.17\u7684\u7075\u529b\uff0c\u6bcf\u62e5\u670930\u70b9\u5185\u529b\u90fd\u4f1a\u6d88\u801710\u70b9\u5185\u529b\u4f7f\u63d0\u5347\u7684\u7075\u529b+0.01";
+    };
+    EnergyToPowerSpell.validLocations = function() {
+      return null;
+    };
+    EnergyToPowerSpell.energy_cost = 20;
+    var GeoCoreSpell = function(_SpellItem5) {
+      _inheritsLoose(GeoCoreSpell, _SpellItem5);
+      function GeoCoreSpell() {
+        return _SpellItem5.apply(this, arguments) || this;
+      }
+      var _proto6 = GeoCoreSpell.prototype;
+      _proto6.init = function init() {
+        _SpellItem5.prototype.init.apply(this, arguments);
+        this.special = [ 7 ];
+      };
+      _proto6.use = function use(x, y) {
+        var player2 = this.game.map[y][x];
+        if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
+        if ("Player" != player2.type && player2.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u4fee\u58eb\u6216\u5df1\u65b9\u4ed9\u517d\u4f7f\u7528");
+        player2.updateSpeed(.07);
+        this.game.addAnime(new GeoCoreSpellAnimation(x, y));
+        if (7 == getThirdDigit(player2.power)) {
+          this.game.addLog('{"code":' + player2.code + '}\u4fee\u4e3a\u7b2c\u4e09\u4f4d\u6570\u4e3a7,{"code":' + this.owner.code + "}\u83b7\u5f97\u571f\u5370\u8bb0\u5e76\u63d0\u5347\u4fee\u4e3a", 2);
+          this.owner.geoSign++;
+          var ratio = .18 + .05 * this.owner.geoSign;
+          this.owner.updateSpeed(ratio);
+          this.game.addAnime(new InkAnimation(x, y, [ 140, 108, 85 ]));
+          this.game.addAnime(new InkAnimation(this.owner.x, this.owner.y, [ 140, 108, 85 ]));
+        }
+      };
+      _proto6.upgrade_special = function upgrade_special() {
+        7 == this.level && this.special.push(3);
+        13 == this.level && this.special.push(5);
+        20 == this.level && this.special.push(0);
+      };
+      return GeoCoreSpell;
+    }(SpellItem);
+    GeoCoreSpell.id = 4;
+    GeoCoreSpell.price = new Coin({
+      geoCoins: 50
+    });
+    GeoCoreSpell.spellName = "\u5f52\u5c18\u97f5";
+    GeoCoreSpell.description = function() {
+      return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u7075\u529b+0.07\uff0c\u82e5\u6b64\u65f6\u5176\u7075\u529b\u7684\u767e\u5206\u4f4d\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u4f7f\u7075\u529b\u7b2c\u4e09\u4f4d\u6570\u52a00.18+0.05X\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09";
+    };
+    var HydroCoreSpell = function(_SpellItem6) {
+      _inheritsLoose(HydroCoreSpell, _SpellItem6);
+      function HydroCoreSpell() {
+        return _SpellItem6.apply(this, arguments) || this;
+      }
+      var _proto7 = HydroCoreSpell.prototype;
+      _proto7.init = function init(player) {
+        _SpellItem6.prototype.init.call(this, player);
+      };
+      _proto7.use = function use(x, y) {
+        var _this2 = this;
+        if (this.game.map[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u7a7a\u4f4d");
+        if (0 != x && x != MAP_SIZE - 1 && 0 != y && y != MAP_SIZE - 1) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u8fb9\u7f18\u4f4d\u7f6e");
+        var dest_x = x, dest_y = y;
+        var owner = this.owner;
+        var PointsInLine = function() {
+          var res = [];
+          var old_x = owner.x + .5, old_y = owner.y + .5;
+          x += .5, y += .5;
+          var x_diff = x - old_x, y_diff = y - old_y;
+          var a = y_diff / x_diff, b = y - a * x;
+          if (old_x > x) {
+            var _ref = [ old_x, x ];
+            x = _ref[0];
+            old_x = _ref[1];
+          }
+          if (old_y > y) {
+            var _ref2 = [ old_y, y ];
+            y = _ref2[0];
+            old_y = _ref2[1];
+          }
+          if (x == old_x) {
+            for (var i = Math.floor(old_y); i <= y; i++) res.push([ Math.floor(x), i ]);
+            return res;
+          }
+          if (y == old_y) {
+            for (var _i = Math.floor(old_x); _i <= x; _i++) res.push([ _i, Math.floor(y) ]);
+            return res;
+          }
+          var intersects = [];
+          for (var _i2 = Math.floor(old_x); _i2 <= x + 1; _i2++) intersects.push([ _i2, roundIfInteger(a * _i2 + b) ]);
+          for (var _i3 = Math.floor(old_y); _i3 <= y + 1; _i3++) intersects.push([ roundIfInteger((_i3 - b) / a), _i3 ]);
+          var _loop = function _loop(_i4) {
+            var _loop2 = function _loop2(j) {
+              var points = intersects.filter(function(point) {
+                return between(point[0], _i4, _i4 + 1) && between(point[1], j, j + 1);
+              });
+              var num = points.length;
+              var duplicates = new Set();
+              points.forEach(function(point) {
+                var val = point[0] * MAP_SIZE + point[1];
+                duplicates.has(val) ? num-- : duplicates.add(val);
+              });
+              2 == num && res.push([ _i4, j ]);
+            };
+            for (var j = Math.floor(old_y); j <= y; j++) _loop2(j);
+          };
+          for (var _i4 = Math.floor(old_x); _i4 <= x; _i4++) _loop(_i4);
+          return res;
+        }();
+        var self = this;
+        var addHydroSpell = false;
+        PointsInLine.forEach(function(location) {
+          var x = location[0], y = location[1];
+          if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return;
+          if (x == self.owner.x && y == self.owner.y) return;
+          var target = self.game.map[y][x];
+          if (!(target && target.hydroSign > 0)) return;
+          target.hydroSign = 0;
+          if (addHydroSpell) {
+            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e", 2);
+            self.owner.updateSpeed(.1);
+          } else {
+            _this2.game.addLog(logItem(target) + "\u6c34\u5370\u8bb0\u88ab\u91cd\u7f6e\uff0c" + logItem(_this2.owner) + "\u83b7\u5f97\u3010\u6d41\u6ce2\u78a7\u5f71\u3011\u5377\u8f74", 2);
+            addHydroSpell = true;
+            _this2.num++;
+            self.owner.energy += 50;
+            self.owner.updateSpeed(.27);
+          }
+        });
+        x = this.owner.x, y = this.owner.y;
+        this.game.addAnime(new InkAnimation(x, y, [ 40, 75, 178 ]), {
+          postpone: 30
+        });
+        this.owner.move(dest_x, dest_y);
+      };
+      _proto7.validLocations = function validLocations() {
+        var map = this.game.map;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          return !map[y][x];
+        });
+      };
+      return HydroCoreSpell;
+    }(SpellItem);
+    HydroCoreSpell.id = 5;
+    HydroCoreSpell.price = new Coin({
+      hydroCoins: 50
+    });
+    HydroCoreSpell.spellName = "\u6f5c\u6e0a\u8dc3\u6d6a";
+    HydroCoreSpell.description = function() {
+      return "\u79fb\u52a8\u81f3\u5730\u56fe\u4e2d\u4efb\u610f\u8fb9\u7f18\u4f4d\u7f6e\uff0c\u82e5\u79fb\u52a8\u7684\u8def\u5f84\u4e0a\u6709\u5355\u4f4d\u5e26\u6709\u6c34\u5370\u8bb0\uff0c\u5219\u4f60\u7075\u529b+0.27\uff0c\u5e76\u518d\u83b7\u5f97\u4e00\u4e2a\u3010\u6f5c\u6e0a\u8dc3\u6d6a\u3011\u7075\u7b26\u4e0e50\u5185\u529b\u3002\u82e5\u5e26\u6709\u6c34\u5370\u8bb0\u7684\u5355\u4f4d\u4e0d\u6b62\u4e00\u4e2a\uff0c\u5219\u6bcf\u4e2a\u989d\u5916\u7684\u5355\u4f4d\u4ee4\u4f60\u63d0\u53470.1\u7075\u529b";
+    };
+    HydroCoreSpell.validLocations = function(player) {
+      var map = player.game.map;
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        return !map[y][x];
+      });
+    };
+    var PyroCoreSpell = function(_SpellItem7) {
+      _inheritsLoose(PyroCoreSpell, _SpellItem7);
+      function PyroCoreSpell() {
+        return _SpellItem7.apply(this, arguments) || this;
+      }
+      var _proto8 = PyroCoreSpell.prototype;
+      _proto8.use = function use(x, y) {
+        var target = this.game.map[y][x];
+        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
+        this.explode(target, 2);
+      };
+      _proto8.explode = function explode(target, log_level) {
+        var _this3 = this;
+        if (!target) return;
+        this.game.addLog('{"code":' + target.code + "}\u88ab\u9644\u52a01\u5c42\u706b\u5370\u8bb0", log_level);
+        target.pyroSign++;
+        this.owner.harm(target, new Damage_1.Damage(Damage_1.Damage.SPELL, 100));
+        if (target.pyroSign < 7) return;
+        this.game.addLog('{"code":' + target.code + "}\u706b\u5370\u8bb0\u6570\u91cf\u8fbe\u5230" + target.pyroSign + "\u5c42\uff0c\u518d\u6b21\u89e6\u53d1\u3010\u4e5d\u7130\u711a\u5929\u3011", 2);
+        this.game.addAnime(new InkAnimation(target.x, target.y, [ 255, 35, 5 ]), {
+          postpone: 10
+        });
+        target.pyroSign -= 7;
+        getItemIn33(target).forEach(function(new_target) {
+          _this3.explode(new_target, 3);
+        });
+      };
+      return PyroCoreSpell;
+    }(SpellItem);
+    PyroCoreSpell.id = 6;
+    PyroCoreSpell.price = new Coin({
+      pyroCoins: 50
+    });
+    PyroCoreSpell.spellName = "\u70bd\u7130\u711a\u8bd7";
+    PyroCoreSpell.description = function() {
+      return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u9020\u6210200\u70b9\u4f24\u5bb3\u5e76\u53e0\u52a01\u5c42\u706b\u5370\u8bb0\uff0c\u82e5\u6b64\u65f6\u8be5\u5355\u4f4d\u6709\u8d85\u8fc77\u5c42\u706b\u5370\u8bb0\u5219\u5f15\u53d1\u7206\u70b8\uff0c\u5bf9\u5176\u6240\u57283*3\u8303\u56f4\u5185\u6240\u6709\u5355\u4f4d\u5168\u90e8\u65bd\u52a0\u4e00\u6b21\u3010\u70bd\u7130\u711a\u8bd7\u3011";
+    };
+    var DisplaceSpell = function(_SpellItem8) {
+      _inheritsLoose(DisplaceSpell, _SpellItem8);
+      function DisplaceSpell() {
+        return _SpellItem8.apply(this, arguments) || this;
+      }
+      var _proto9 = DisplaceSpell.prototype;
+      _proto9.use = function use(x, y, extra) {
+        var map = this.game.map;
+        var oldX = this.owner.x, oldY = this.owner.y;
+        var item1 = this.owner, item2 = map[y][x];
+        map[y][x] = item1;
+        map[oldY][oldX] = item2;
+        item1.x = x;
+        item1.y = y;
+        if (null != item2) {
+          console.log("item2 is not null");
+          if (item2.code == item1.code) throw new GameLogicError("\u4e0d\u80fd\u6307\u5b9a\u81ea\u5df1");
+          item2.x = oldX;
+          item2.y = oldY;
+          this.game.listeners.MoveListeners.check(item2, x, y);
+          this.game.addLog('{"code":' + item2.code + ',"x":' + x + ',"y":' + y + "}\u79fb\u52a8\u81f3" + logVertex(oldX, oldY), 0);
+        }
+        this.game.listeners.MoveListeners.check(item1, oldX, oldY);
+        this.game.addLog('{"code":' + item1.code + ',"x":' + oldX + ',"y":' + oldY + "}\u79fb\u52a8\u81f3" + logVertex(x, y), 0);
+        this.game.addAnime(new DisplaceSpellAnimation(x, y));
+        this.game.addAnime(new DisplaceSpellAnimation(oldX, oldY));
+      };
+      return DisplaceSpell;
+    }(SpellItem);
+    DisplaceSpell.id = 7;
+    DisplaceSpell.price = new Coin({
+      auroCoins: 50
+    });
+    DisplaceSpell.spellName = "\u661f\u79fb\u6597\u8f6c";
+    DisplaceSpell.description = function() {
+      return "\u4ee4\u4efb\u610f\u5355\u4f4d\u79fb\u52a8\u5230\u4efb\u610f\u4f4d\u7f6e";
+    };
+    DisplaceSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        return player.x != axis[0] || player.y != axis[1];
+      });
+    };
+    var BounceSpell = function(_SpellItem9) {
+      _inheritsLoose(BounceSpell, _SpellItem9);
+      function BounceSpell() {
+        return _SpellItem9.apply(this, arguments) || this;
+      }
+      var _proto10 = BounceSpell.prototype;
+      _proto10.use = function use(x, y) {
+        var _this4 = this;
+        eightDirections(this.owner).forEach(function(direction) {
+          direction.reverse();
+          var items = direction.map(function(loc) {
+            return _this4.game.map[loc[1]][loc[0]];
+          }).filter(function(item) {
+            return null != item;
+          });
+          items.forEach(function(item, i) {
+            var x = direction[i][0], y = direction[i][1];
+            item.move(x, y);
+          });
+        });
+      };
+      _proto10.validLocations = function validLocations() {
+        return null;
+      };
+      return BounceSpell;
+    }(SpellItem);
+    BounceSpell.id = 8;
+    BounceSpell.price = new Coin({
+      baseCoins: 50
+    });
+    BounceSpell.spellName = "\u5fa1\u98ce\u9a71\u4e91";
+    BounceSpell.description = function() {
+      return "\u5c06\u81ea\u8eab\u516b\u4e2a\u65b9\u4f4d\u7684\u5355\u4f4d\u5168\u90e8\u5f39\u5f00\u81f3\u6700\u8fdc\u4f4d\u7f6e";
+    };
+    BounceSpell.validLocations = function() {
+      return null;
+    };
+    var AttractSpell = function(_SpellItem10) {
+      _inheritsLoose(AttractSpell, _SpellItem10);
+      function AttractSpell() {
+        return _SpellItem10.apply(this, arguments) || this;
+      }
+      var _proto11 = AttractSpell.prototype;
+      _proto11.use = function use(x, y) {
+        var _this5 = this;
+        eightDirections(this.owner).forEach(function(direction) {
+          var items = direction.map(function(loc) {
+            return _this5.game.map[loc[1]][loc[0]];
+          }).filter(function(item) {
+            return null != item;
+          });
+          items.forEach(function(item, i) {
+            var x = direction[i][0], y = direction[i][1];
+            if (item.x == x && item.y == y) return;
+            item.move(x, y);
+          });
+        });
+      };
+      _proto11.validLocations = function validLocations() {
+        return null;
+      };
+      return AttractSpell;
+    }(SpellItem);
+    AttractSpell.id = 9;
+    AttractSpell.price = new Coin({
+      baseCoins: 50
+    });
+    AttractSpell.spellName = "\u7275\u4e91\u5f15\u96fe";
+    AttractSpell.description = function() {
+      return "\u5c06\u81ea\u8eab\u516b\u4e2a\u65b9\u5411\u79bb\u81ea\u5df1\u6700\u8fd1\u7684\u5355\u4f4d\u62c9\u81f3\u8eab\u8fb9";
+    };
+    AttractSpell.validLocations = function() {
+      return null;
+    };
+    var HydrateOneDirectionSpell = function(_SpellItem11) {
+      _inheritsLoose(HydrateOneDirectionSpell, _SpellItem11);
+      function HydrateOneDirectionSpell() {
+        return _SpellItem11.apply(this, arguments) || this;
+      }
+      var _proto12 = HydrateOneDirectionSpell.prototype;
+      _proto12.use = function use(x, y) {
+        var _this6 = this;
+        var has = false;
+        var self = this;
+        eightDirections(this.owner).forEach(function(direction) {
+          if (!direction.find(function(loc) {
+            return loc[0] == x && loc[1] == y;
+          })) return;
+          has = true;
+          direction.map(function(loc) {
+            return _this6.game.map[loc[1]][loc[0]];
+          }).filter(function(item) {
+            return null != item;
+          }).forEach(function(item) {
+            item.hydroSign++;
+            self.game.addAnime(new InkAnimation(item.x, item.y, [ 40, 75, 178 ]));
+          });
+        });
+        if (!has) throw new GameLogicError("\u53ea\u80fd\u6307\u5b9a\u76f4\u7ebf\u6216\u659c\u5bf9\u89d2\u7684\u65b9\u5411");
+      };
+      _proto12.validLocations = function validLocations() {
+        var _this7 = this;
+        return iter_36().filter(function(axis) {
+          return _this7.owner.x != axis[0] || _this7.owner.y != axis[1];
+        });
+      };
+      return HydrateOneDirectionSpell;
+    }(SpellItem);
+    HydrateOneDirectionSpell.id = 10;
+    HydrateOneDirectionSpell.price = new Coin({
+      hydroCoins: 50
+    });
+    HydrateOneDirectionSpell.spellName = "\u6d77\u6f6e\u56de\u54cd";
+    HydrateOneDirectionSpell.description = function() {
+      return "\u5bf9\u4e00\u4e2a\u65b9\u5411\u4e0a\u7684\u6240\u6709\u5355\u4f4d\u65bd\u52a0\u6c34\u5370\u8bb0";
+    };
+    HydrateOneDirectionSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        return player.x != axis[0] || player.y != axis[1];
+      });
+    };
+    var PyrateSpell = function(_SpellItem12) {
+      _inheritsLoose(PyrateSpell, _SpellItem12);
+      function PyrateSpell() {
+        return _SpellItem12.apply(this, arguments) || this;
+      }
+      var _proto13 = PyrateSpell.prototype;
+      _proto13.use = function use(x, y) {
+        var player2 = this.game.map[y][x];
+        if (!player2) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u7684\u683c\u5b50\u4f7f\u7528");
+        this.game.addLog('{"code":' + player2.code + "}\u88ab\u9644\u52a07\u5c42\u706b\u5370\u8bb0", 2);
+        this.game.addAnime(new InkAnimation(x, y, [ 255, 35, 5 ]));
+        player2.pyroSign += 7;
+      };
+      return PyrateSpell;
+    }(SpellItem);
+    PyrateSpell.id = 11;
+    PyrateSpell.price = new Coin({
+      pyroCoins: 50
+    });
+    PyrateSpell.spellName = "\u4e03\u6627\u771f\u706b";
+    PyrateSpell.description = function() {
+      return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u65bd\u52a0\u4e5d\u5c42\u706b\u5370\u8bb0";
+    };
+    var TempPowerSpell = function(_SpellItem13) {
+      _inheritsLoose(TempPowerSpell, _SpellItem13);
+      function TempPowerSpell() {
+        return _SpellItem13.apply(this, arguments) || this;
+      }
+      var _proto14 = TempPowerSpell.prototype;
+      _proto14.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5b58\u6d3b\u5355\u4f4d\u4f7f\u7528");
+        new EnhanceBuff(target, ENTER_TIME);
+        this.game.addAnime(new ShowIconAnimation(TempPowerSpell.iconUrl));
+      };
+      return TempPowerSpell;
+    }(SpellItem);
+    TempPowerSpell.id = 12;
+    TempPowerSpell.price = new Coin({
+      baseCoins: 10
+    });
+    TempPowerSpell.spellName = "\u7075\u67a2\u8f6c\u8f6e";
+    TempPowerSpell.description = function() {
+      return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u77ed\u6682\u83b7\u5f970.27\u7684\u7075\u529b\uff0c70\u70b9\u653b\u51fb\u529b\uff0c\u653b\u901f\u7cfb\u6570\u964d\u4f4e0.7\uff0c\u6301\u7eed5\u5206\u949f";
+    };
+    var GeoToPyroSpell = function(_SpellItem14) {
+      _inheritsLoose(GeoToPyroSpell, _SpellItem14);
+      function GeoToPyroSpell() {
+        return _SpellItem14.apply(this, arguments) || this;
+      }
+      var _proto15 = GeoToPyroSpell.prototype;
+      _proto15.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u70ec\u706b\u7075\u4f7f\u7528");
+        if (target.transfer_time <= 0) throw new GameLogicError("\u70ec\u706b\u5370\u8bb0\u4e0d\u8db3");
+        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
+        target.transfer_time--;
+        this.owner.geoSign--;
+        this.owner.changeCoins({
+          pyroCoins: 70
+        });
+      };
+      _proto15.validLocations = function validLocations() {
+        var _this8 = this;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          var target = _this8.game.map[y][x];
+          if (!target || "GeoToPyroPet" != target.type || target.owner.code != _this8.owner.code) return false;
+          return true;
+        });
+      };
+      return GeoToPyroSpell;
+    }(SpellItem);
+    GeoToPyroSpell.id = 13;
+    GeoToPyroSpell.size = 0;
+    GeoToPyroSpell.price = new Coin({});
+    GeoToPyroSpell.spellName = "\u7075\u94f8\xb7\u70ec\u706b";
+    GeoToPyroSpell.description = function() {
+      return "\u6d88\u8017\u4e00\u5c42\u70ec\u706b\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u706b\u7075\u77f3";
+    };
+    GeoToPyroSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        var target = _this9.game.map[y][x];
+        if (!target || "GeoToPyroPet" != target.type || target.owner.code != player.code) return false;
+        return true;
+      });
+    };
+    var GeoToHydroSpell = function(_SpellItem15) {
+      _inheritsLoose(GeoToHydroSpell, _SpellItem15);
+      function GeoToHydroSpell() {
+        return _SpellItem15.apply(this, arguments) || this;
+      }
+      var _proto16 = GeoToHydroSpell.prototype;
+      _proto16.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target || "GeoToHydroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u6d41\u6e0a\u517d\u4f7f\u7528");
+        if (target.transfer_time <= 0) throw new GameLogicError("\u6d41\u6e0a\u5370\u8bb0\u4e0d\u8db3");
+        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
+        target.transfer_time--;
+        this.owner.geoSign--;
+        this.owner.changeCoins({
+          hydroCoins: 70
+        });
+      };
+      _proto16.validLocations = function validLocations() {
+        var _this10 = this;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          var target = _this10.game.map[y][x];
+          if (!target || "GeoToHydroPet" != target.type || target.owner.code != _this10.owner.code) return false;
+          return true;
+        });
+      };
+      return GeoToHydroSpell;
+    }(SpellItem);
+    GeoToHydroSpell.id = 14;
+    GeoToHydroSpell.size = 0;
+    GeoToHydroSpell.price = new Coin({});
+    GeoToHydroSpell.spellName = "\u7075\u94f8\xb7\u6d41\u6e0a";
+    GeoToHydroSpell.description = function() {
+      return "\u6d88\u8017\u4e00\u5c42\u6d41\u6e0a\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u6c34\u7075\u77f3";
+    };
+    GeoToHydroSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        var target = _this9.game.map[y][x];
+        if (!target || "GeoToHydroPet" != target.type || target.owner.code != player.code) return false;
+        return true;
+      });
+    };
+    var GeoToAuroSpell = function(_SpellItem16) {
+      _inheritsLoose(GeoToAuroSpell, _SpellItem16);
+      function GeoToAuroSpell() {
+        return _SpellItem16.apply(this, arguments) || this;
+      }
+      var _proto17 = GeoToAuroSpell.prototype;
+      _proto17.use = function use(x, y, extra) {
+        var target = this.game.map[y][x];
+        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u5764\u91d1\u517d\u4f7f\u7528");
+        if (target.transfer_time <= 0) throw new GameLogicError("\u5764\u91d1\u5370\u8bb0\u4e0d\u8db3");
+        if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
+        target.transfer_time--;
+        this.owner.geoSign--;
+        this.owner.changeCoins({
+          auroCoins: 70
+        });
+      };
+      _proto17.validLocations = function validLocations() {
+        var _this11 = this;
+        return iter_36().filter(function(axis) {
+          var x = axis[0], y = axis[1];
+          var target = _this11.game.map[y][x];
+          if (!target || "GeoToAuroPet" != target.type || target.owner.code != _this11.owner.code) return false;
+          return true;
+        });
+      };
+      return GeoToAuroSpell;
+    }(SpellItem);
+    GeoToAuroSpell.id = 15;
+    GeoToAuroSpell.size = 0;
+    GeoToAuroSpell.price = new Coin({});
+    GeoToAuroSpell.spellName = "\u7075\u94f8\xb7\u5764\u91d1";
+    GeoToAuroSpell.description = function() {
+      return "\u6d88\u8017\u4e00\u5c42\u5764\u91d1\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u91d1\u7075\u77f3";
+    };
+    GeoToAuroSpell.validLocations = function(player) {
+      return iter_36().filter(function(axis) {
+        var x = axis[0], y = axis[1];
+        var target = _this9.game.map[y][x];
+        if (!target || "GeoToAuroPet" != target.type || target.owner.code != player.code) return false;
+        return true;
+      });
+    };
+    var DisplaceToPetSpell = function(_SpellItem17) {
+      _inheritsLoose(DisplaceToPetSpell, _SpellItem17);
+      function DisplaceToPetSpell() {
+        return _SpellItem17.apply(this, arguments) || this;
+      }
+      var _proto18 = DisplaceToPetSpell.prototype;
+      _proto18.use = function use(x, y, extra) {
+        if (!this.scope[y][x]) throw new GameLogicError("\u53ea\u80fd\u79fb\u52a8\u81f3\u5df1\u65b9\u5f52\u9014\u7075\u9e643*3\u8303\u56f4\u5185");
+        this.owner.move(x, y);
+      };
+      _proto18.validLocations = function validLocations() {
+        var scope = this.scope;
+        return iter_36().filter(function(axis) {
+          return scope[axis[1]][scope[axis[0]]];
+        });
+      };
+      _createClass(DisplaceToPetSpell, [ {
+        key: "scope",
+        get: function get() {
+          var _this12 = this;
+          var res = emptyMap();
+          this.game.allMapElements.forEach(function(item) {
+            if ("DisplacePet" != item.type) return;
+            if (item.owner.code != _this12.owner.code) return;
+            getLocInScope(item, 1.5).forEach(function(loc) {
+              var x = loc[0], y = loc[1];
+              _this12.game.map[y][x] || (res[y][x] = true);
+            });
+          });
+          return res;
+        }
+      } ]);
+      return DisplaceToPetSpell;
+    }(SpellItem);
+    DisplaceToPetSpell.id = 16;
+    DisplaceToPetSpell.size = 0;
+    DisplaceToPetSpell.spellName = "\u7075\u9e64\xb7\u5f52\u9014";
+    DisplaceToPetSpell.description = function() {
+      return "\u79fb\u52a8\u81f3\u4efb\u610f\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
+    };
+    DisplaceToPetSpell.validLocations = function(player) {
+      var spell = new DisplaceToPetSpell();
+      spell.owner = player;
+      spell.game = player.game;
+      var scope = _this9.scope;
+      return iter_36().filter(function(axis) {
+        return scope[axis[1]][scope[axis[0]]];
+      });
+    };
+    AscendSpell.iconUrl = "spell/\u767d\u65e5\u98de\u5347.png";
+    PowerSpell.iconUrl = "spell/\u4ed9\u8109.png";
+    GeoCoreSpell.iconUrl = "spell/\u4e03\u66dc\u571f\u7075.png";
+    HydroCoreSpell.iconUrl = "spell/\u6d41\u6ce2\u78a7\u5f71.png";
+    PyroCoreSpell.iconUrl = "spell/\u70bd\u7130\u711a\u8bd7.png";
+    DisplaceSpell.iconUrl = "spell/\u661f\u79fb\u6597\u8f6c.png";
+    BounceSpell.iconUrl = "spell/\u516b\u65b9\u98ce\u6563.png";
+    AttractSpell.iconUrl = "spell/\u516b\u65b9\u5f52\u5f15.png";
+    HydrateOneDirectionSpell.iconUrl = "spell/\u6d9f\u6f2a\u7eb5\u75d5.png";
+    PyrateSpell.iconUrl = "spell/\u4e03\u6627\u771f\u706b.png";
+    TempPowerSpell.iconUrl = "spell/\u7075\u67a2\u8f6c\u8f6e.png";
+    EnergyToPowerSpell.iconUrl = "spell/\u771f\u6c14\u5316\u5143.png";
+    GeoToAuroSpell.iconUrl = "pets/\u5764\u91d1\u517d.png";
+    GeoToHydroSpell.iconUrl = "pets/\u6d41\u6e0a\u517d.png";
+    GeoToPyroSpell.iconUrl = "pets/\u70ec\u706b\u7075.png";
+    DisplaceToPetSpell.iconUrl = "pets/\u5f52\u9014\u7075\u9e64.png";
+    module.exports = {
+      MoveSpell: MoveSpell,
+      Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
+      AscendSpell: AscendSpell,
+      PowerSpell: PowerSpell,
+      EnergyToPowerSpell: EnergyToPowerSpell,
+      GeoCoreSpell: GeoCoreSpell,
+      HydroCoreSpell: HydroCoreSpell,
+      PyroCoreSpell: PyroCoreSpell,
+      DisplaceSpell: DisplaceSpell,
+      BounceSpell: BounceSpell,
+      AttractSpell: AttractSpell,
+      HydrateOneDirectionSpell: HydrateOneDirectionSpell,
+      PyrateSpell: PyrateSpell,
+      TempPowerSpell: TempPowerSpell,
+      GeoToPyroSpell: GeoToPyroSpell,
+      GeoToHydroSpell: GeoToHydroSpell,
+      GeoToAuroSpell: GeoToAuroSpell,
+      DisplaceToPetSpell: DisplaceToPetSpell
+    };
     var _require4 = require("./wheels/common"), GameLogicError = _require4.GameLogicError;
     var Damage_1 = require("./objects/Damage");
     var _require5 = require("./utils/numberUtils"), getThirdDigit = _require5.getThirdDigit, roundIfInteger = _require5.roundIfInteger, between = _require5.between, getSecondDigit = _require5.getSecondDigit;
     var _require6 = require("./constants/timeConstants"), ONE_MINUTES = _require6.ONE_MINUTES, ENDLESS_TIME = _require6.ENDLESS_TIME, ENTER_TIME = _require6.ENTER_TIME;
     var _require7 = require("./utils/mapUtils"), getLocInScope = _require7.getLocInScope, getItemIn33 = _require7.getItemIn33, eightDirections = _require7.eightDirections, emptyMap = _require7.emptyMap;
     var _require8 = require("./constants/gameConstants"), MAP_SIZE = _require8.MAP_SIZE;
-    var _require9 = require("./Buffs"), IncreaseSpeedBuff = _require9.IncreaseSpeedBuff;
+    var _require9 = require("./Buffs"), IncreaseSpeedBuff = _require9.IncreaseSpeedBuff, EnhanceBuff = _require9.EnhanceBuff;
     var _require10 = require("./utils/iterationUtils"), iter_36 = _require10.iter_36;
     var _require11 = require("./animations/spellAnimation"), ShowIconAnimation = _require11.ShowIconAnimation, InkAnimation = _require11.InkAnimation, DisplaceSpellAnimation = _require11.DisplaceSpellAnimation, GeoCoreSpellAnimation = _require11.GeoCoreSpellAnimation;
     var _require12 = require("./loggers/logUtils"), logVertex = _require12.logVertex, logItem = _require12.logItem;
@@ -19209,6 +23298,153 @@ window.__require = function e(t, n, r) {
     "../listeners/DamageListeners-clas0.0.2": "DamageListeners-clas0.0.2",
     "../listeners/ForgeListeners-clas0.0.2": "ForgeListeners-clas0.0.2"
   } ],
+  "TypeDict-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "af2ccbJJhVCNKXglS+x3e2g", "TypeDict-clas0.0.3");
+    "use strict";
+    var Equips = [], Spell = [], Pets = [], Buffs = [], typeDict = {};
+    module.exports = {
+      typeDict: typeDict,
+      Equips: Equips,
+      Spell: Spell,
+      Pets: Pets,
+      Buffs: Buffs
+    };
+    var _require = require("../Equips-clas0.0.3"), Equip0 = _require.Equip0, Equip1 = _require.Equip1, Equip1AttackSpeedUpListener = _require.Equip1AttackSpeedUpListener, Equip2 = _require.Equip2, Equip3 = _require.Equip3, Equip4 = _require.Equip4, Equip5 = _require.Equip5, Equip6 = _require.Equip6, Equip6AttackWeakenListener = _require.Equip6AttackWeakenListener, Equip7 = _require.Equip7, Equip8 = _require.Equip8, Equip9 = _require.Equip9, Equip9AttackAllListener = _require.Equip9AttackAllListener, Equip10 = _require.Equip10, Equip10AddPyroSignListener = _require.Equip10AddPyroSignListener, Equip11 = _require.Equip11, Equip11AddHydroSignListener = _require.Equip11AddHydroSignListener, Equip12 = _require.Equip12, Equip12EnergyRecoveringListener = _require.Equip12EnergyRecoveringListener, Equip13 = _require.Equip13, Equip13CoinsListener = _require.Equip13CoinsListener, Equip14 = _require.Equip14, Equip14DistanceListener = _require.Equip14DistanceListener, Equip14ChallengeEnhanceMoveListener = _require.Equip14ChallengeEnhanceMoveListener, Equip14OperateResetMoveListener = _require.Equip14OperateResetMoveListener;
+    var _require2 = require("../Pets-clas0.0.3"), BasePet = _require2.BasePet, GeoSignTransferPetsItems = _require2.GeoSignTransferPetsItems, GeoToAuroPet = _require2.GeoToAuroPet, GeoToHydroPet = _require2.GeoToHydroPet, GeoToPyroPet = _require2.GeoToPyroPet, GeoSignTransferListener = _require2.GeoSignTransferListener, AddGeoPet = _require2.AddGeoPet, AddGeoPetListener = _require2.AddGeoPetListener, AddHydroPet = _require2.AddHydroPet, AddHydroPetListener = _require2.AddHydroPetListener, AddPyroPet = _require2.AddPyroPet, AddPyroPetListener = _require2.AddPyroPetListener, DisplacePet = _require2.DisplacePet, AddScopePet = _require2.AddScopePet, AddScopePetListener = _require2.AddScopePetListener, AddDistanceDamagePet = _require2.AddDistanceDamagePet, AddDistanceDamagePetListener = _require2.AddDistanceDamagePetListener, ChasePet = _require2.ChasePet, ChasePetListener = _require2.ChasePetListener;
+    var _require3 = require("../Spell-clas0.0.3"), MoveSpell = _require3.MoveSpell, Equip14EnhancedMoveSpell = _require3.Equip14EnhancedMoveSpell, AscendSpell = _require3.AscendSpell, PowerSpell = _require3.PowerSpell, EnergyToPowerSpell = _require3.EnergyToPowerSpell, GeoCoreSpell = _require3.GeoCoreSpell, HydroCoreSpell = _require3.HydroCoreSpell, PyroCoreSpell = _require3.PyroCoreSpell, DisplaceSpell = _require3.DisplaceSpell, BounceSpell = _require3.BounceSpell, AttractSpell = _require3.AttractSpell, HydrateOneDirectionSpell = _require3.HydrateOneDirectionSpell, PyrateSpell = _require3.PyrateSpell, TempPowerSpell = _require3.TempPowerSpell, GeoToPyroSpell = _require3.GeoToPyroSpell, GeoToHydroSpell = _require3.GeoToHydroSpell, GeoToAuroSpell = _require3.GeoToAuroSpell, DisplaceToPetSpell = _require3.DisplaceToPetSpell;
+    var _require4 = require("../Buffs-clas0.0.3"), ChangeSpeedBuff = _require4.ChangeSpeedBuff, IncreaseSpeedBuff = _require4.IncreaseSpeedBuff, DecreaseSpeedBuff = _require4.DecreaseSpeedBuff, EnhanceBuff = _require4.EnhanceBuff, StrongBuff = _require4.StrongBuff, VulnerBuff = _require4.VulnerBuff, ChangeAspdBuff = _require4.ChangeAspdBuff;
+    var _require5 = require("../Player-clas0.0.3"), Player = _require5.Player;
+    var _require6 = require("../Creature-clas0.0.3"), Creature = _require6.Creature;
+    var _require7 = require("../OriginMonitors-clas0.0.3"), MiningMonitors = _require7.MiningMonitors, PetConvertingMonitors = _require7.PetConvertingMonitors, SpellRecoveringMonitors = _require7.SpellRecoveringMonitors, RefreshChallengeTimeMonitors = _require7.RefreshChallengeTimeMonitors, BaseInScopeCalculators = _require7.BaseInScopeCalculators, GoldCostFloorMonitors = _require7.GoldCostFloorMonitors, SpellCostFloorMonitors = _require7.SpellCostFloorMonitors;
+    var _require8 = require("../listeners/AttackListeners-clas0.0.3"), AttackCriticalMonitors = _require8.AttackCriticalMonitors, AttackDamageInitializer = _require8.AttackDamageInitializer, AttackDamageExecuter = _require8.AttackDamageExecuter;
+    var _require9 = require("../listeners/ForgeListeners-clas0.0.3"), ForgeListener = _require9.ForgeListener, UpgradeEquipListener = _require9.UpgradeEquipListener, ForgeSpellListener = _require9.ForgeSpellListener, ForgeEquipListener = _require9.ForgeEquipListener;
+    var _require10 = require("../listeners/DamageListeners-clas0.0.3"), RealDamageLogger = _require10.RealDamageLogger, HarmImprovingMonitors = _require10.HarmImprovingMonitors;
+    Object.assign(typeDict, {
+      Equip0: Equip0,
+      Equip1: Equip1,
+      Equip1AttackSpeedUpListener: Equip1AttackSpeedUpListener,
+      Equip2: Equip2,
+      Equip3: Equip3,
+      Equip4: Equip4,
+      Equip5: Equip5,
+      Equip6: Equip6,
+      Equip6AttackWeakenListener: Equip6AttackWeakenListener,
+      Equip7: Equip7,
+      Equip8: Equip8,
+      Equip9: Equip9,
+      Equip9AttackAllListener: Equip9AttackAllListener,
+      Equip10: Equip10,
+      Equip10AddPyroSignListener: Equip10AddPyroSignListener,
+      Equip11: Equip11,
+      Equip11AddHydroSignListener: Equip11AddHydroSignListener,
+      Equip12: Equip12,
+      Equip12EnergyRecoveringListener: Equip12EnergyRecoveringListener,
+      Equip13: Equip13,
+      Equip13CoinsListener: Equip13CoinsListener,
+      Equip14: Equip14,
+      Equip14DistanceListener: Equip14DistanceListener,
+      Equip14ChallengeEnhanceMoveListener: Equip14ChallengeEnhanceMoveListener,
+      Equip14OperateResetMoveListener: Equip14OperateResetMoveListener,
+      BasePet: BasePet,
+      GeoSignTransferPetsItems: GeoSignTransferPetsItems,
+      GeoToAuroPet: GeoToAuroPet,
+      GeoToHydroPet: GeoToHydroPet,
+      GeoToPyroPet: GeoToPyroPet,
+      GeoSignTransferListener: GeoSignTransferListener,
+      AddGeoPet: AddGeoPet,
+      AddGeoPetListener: AddGeoPetListener,
+      AddHydroPet: AddHydroPet,
+      AddHydroPetListener: AddHydroPetListener,
+      AddPyroPet: AddPyroPet,
+      AddPyroPetListener: AddPyroPetListener,
+      DisplacePet: DisplacePet,
+      AddScopePet: AddScopePet,
+      AddScopePetListener: AddScopePetListener,
+      AddDistanceDamagePet: AddDistanceDamagePet,
+      AddDistanceDamagePetListener: AddDistanceDamagePetListener,
+      ChasePet: ChasePet,
+      ChasePetListener: ChasePetListener,
+      MoveSpell: MoveSpell,
+      Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
+      AscendSpell: AscendSpell,
+      PowerSpell: PowerSpell,
+      EnergyToPowerSpell: EnergyToPowerSpell,
+      GeoCoreSpell: GeoCoreSpell,
+      HydroCoreSpell: HydroCoreSpell,
+      PyroCoreSpell: PyroCoreSpell,
+      DisplaceSpell: DisplaceSpell,
+      BounceSpell: BounceSpell,
+      AttractSpell: AttractSpell,
+      HydrateOneDirectionSpell: HydrateOneDirectionSpell,
+      PyrateSpell: PyrateSpell,
+      TempPowerSpell: TempPowerSpell,
+      GeoToPyroSpell: GeoToPyroSpell,
+      GeoToHydroSpell: GeoToHydroSpell,
+      GeoToAuroSpell: GeoToAuroSpell,
+      DisplaceToPetSpell: DisplaceToPetSpell,
+      ChangeSpeedBuff: ChangeSpeedBuff,
+      IncreaseSpeedBuff: IncreaseSpeedBuff,
+      DecreaseSpeedBuff: DecreaseSpeedBuff,
+      EnhanceBuff: EnhanceBuff,
+      StrongBuff: StrongBuff,
+      VulnerBuff: VulnerBuff,
+      ChangeAspdBuff: ChangeAspdBuff,
+      Player: Player,
+      Creature: Creature,
+      MiningMonitors: MiningMonitors,
+      PetConvertingMonitors: PetConvertingMonitors,
+      SpellRecoveringMonitors: SpellRecoveringMonitors,
+      RefreshChallengeTimeMonitors: RefreshChallengeTimeMonitors,
+      BaseInScopeCalculators: BaseInScopeCalculators,
+      GoldCostFloorMonitors: GoldCostFloorMonitors,
+      SpellCostFloorMonitors: SpellCostFloorMonitors,
+      AttackCriticalMonitors: AttackCriticalMonitors,
+      AttackDamageInitializer: AttackDamageInitializer,
+      AttackDamageExecuter: AttackDamageExecuter,
+      ForgeListener: ForgeListener,
+      UpgradeEquipListener: UpgradeEquipListener,
+      ForgeSpellListener: ForgeSpellListener,
+      ForgeEquipListener: ForgeEquipListener,
+      RealDamageLogger: RealDamageLogger,
+      HarmImprovingMonitors: HarmImprovingMonitors
+    });
+    for (var key in typeDict) {
+      var clazz = typeDict[key];
+      var arr = void 0;
+      switch (clazz.category) {
+       case "equip":
+        arr = Equips;
+        break;
+
+       case "spell":
+        arr = Spell;
+        break;
+
+       case "pet":
+        arr = Pets;
+      }
+      if (arr) {
+        if (arr[clazz.id]) {
+          console.error("Class id conflict:", clazz.name, " , ", arr[clazz.id].name);
+          continue;
+        }
+        arr[clazz.id] = clazz;
+      }
+    }
+    cc._RF.pop();
+  }, {
+    "../Buffs-clas0.0.3": "Buffs-clas0.0.3",
+    "../Creature-clas0.0.3": "Creature-clas0.0.3",
+    "../Equips-clas0.0.3": "Equips-clas0.0.3",
+    "../OriginMonitors-clas0.0.3": "OriginMonitors-clas0.0.3",
+    "../Pets-clas0.0.3": "Pets-clas0.0.3",
+    "../Player-clas0.0.3": "Player-clas0.0.3",
+    "../Spell-clas0.0.3": "Spell-clas0.0.3",
+    "../listeners/AttackListeners-clas0.0.3": "AttackListeners-clas0.0.3",
+    "../listeners/DamageListeners-clas0.0.3": "DamageListeners-clas0.0.3",
+    "../listeners/ForgeListeners-clas0.0.3": "ForgeListeners-clas0.0.3"
+  } ],
   TypeDict: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "6ad7a1yOUNESr4MWStXOGD5", "TypeDict");
@@ -19223,13 +23459,13 @@ window.__require = function e(t, n, r) {
     };
     var _require = require("../Equips"), Equip0 = _require.Equip0, Equip1 = _require.Equip1, Equip1AttackSpeedUpListener = _require.Equip1AttackSpeedUpListener, Equip2 = _require.Equip2, Equip3 = _require.Equip3, Equip4 = _require.Equip4, Equip5 = _require.Equip5, Equip6 = _require.Equip6, Equip6AttackWeakenListener = _require.Equip6AttackWeakenListener, Equip7 = _require.Equip7, Equip8 = _require.Equip8, Equip9 = _require.Equip9, Equip9AttackAllListener = _require.Equip9AttackAllListener, Equip10 = _require.Equip10, Equip10AddPyroSignListener = _require.Equip10AddPyroSignListener, Equip11 = _require.Equip11, Equip11AddHydroSignListener = _require.Equip11AddHydroSignListener, Equip12 = _require.Equip12, Equip12EnergyRecoveringListener = _require.Equip12EnergyRecoveringListener, Equip13 = _require.Equip13, Equip13CoinsListener = _require.Equip13CoinsListener, Equip14 = _require.Equip14, Equip14DistanceListener = _require.Equip14DistanceListener, Equip14ChallengeEnhanceMoveListener = _require.Equip14ChallengeEnhanceMoveListener, Equip14OperateResetMoveListener = _require.Equip14OperateResetMoveListener;
     var _require2 = require("../Pets"), BasePet = _require2.BasePet, GeoSignTransferPetsItems = _require2.GeoSignTransferPetsItems, GeoToAuroPet = _require2.GeoToAuroPet, GeoToHydroPet = _require2.GeoToHydroPet, GeoToPyroPet = _require2.GeoToPyroPet, GeoSignTransferListener = _require2.GeoSignTransferListener, AddGeoPet = _require2.AddGeoPet, AddGeoPetListener = _require2.AddGeoPetListener, AddHydroPet = _require2.AddHydroPet, AddHydroPetListener = _require2.AddHydroPetListener, AddPyroPet = _require2.AddPyroPet, AddPyroPetListener = _require2.AddPyroPetListener, DisplacePet = _require2.DisplacePet, AddScopePet = _require2.AddScopePet, AddScopePetListener = _require2.AddScopePetListener, AddDistanceDamagePet = _require2.AddDistanceDamagePet, AddDistanceDamagePetListener = _require2.AddDistanceDamagePetListener, ChasePet = _require2.ChasePet, ChasePetListener = _require2.ChasePetListener;
-    var _require3 = require("../Spell"), MoveSpell = _require3.MoveSpell, Equip14EnhancedMoveSpell = _require3.Equip14EnhancedMoveSpell, PowerSpell = _require3.PowerSpell, TempPowerSpell = _require3.TempPowerSpell, EnergyToPowerSpell = _require3.EnergyToPowerSpell, GeoCoreSpell = _require3.GeoCoreSpell, HydroCoreSpell = _require3.HydroCoreSpell, PyroCoreSpell = _require3.PyroCoreSpell, DisplaceSpell = _require3.DisplaceSpell, BounceSpell = _require3.BounceSpell, AttractSpell = _require3.AttractSpell, HydrateOneDirectionSpell = _require3.HydrateOneDirectionSpell, PyrateSpell = _require3.PyrateSpell, Geo33Spell = _require3.Geo33Spell, GeoToPyroSpell = _require3.GeoToPyroSpell, GeoToHydroSpell = _require3.GeoToHydroSpell, GeoToAuroSpell = _require3.GeoToAuroSpell, DisplaceToPetSpell = _require3.DisplaceToPetSpell;
-    var _require4 = require("../Buffs"), ChangeSpeedBuff = _require4.ChangeSpeedBuff, IncreaseSpeedBuff = _require4.IncreaseSpeedBuff, DecreaseSpeedBuff = _require4.DecreaseSpeedBuff, StrongBuff = _require4.StrongBuff, VulnerBuff = _require4.VulnerBuff, ChangeAspdBuff = _require4.ChangeAspdBuff;
+    var _require3 = require("../Spell"), MoveSpell = _require3.MoveSpell, Equip14EnhancedMoveSpell = _require3.Equip14EnhancedMoveSpell, AscendSpell = _require3.AscendSpell, PowerSpell = _require3.PowerSpell, EnergyToPowerSpell = _require3.EnergyToPowerSpell, GeoCoreSpell = _require3.GeoCoreSpell, HydroCoreSpell = _require3.HydroCoreSpell, PyroCoreSpell = _require3.PyroCoreSpell, DisplaceSpell = _require3.DisplaceSpell, BounceSpell = _require3.BounceSpell, AttractSpell = _require3.AttractSpell, HydrateOneDirectionSpell = _require3.HydrateOneDirectionSpell, PyrateSpell = _require3.PyrateSpell, TempPowerSpell = _require3.TempPowerSpell, GeoToPyroSpell = _require3.GeoToPyroSpell, GeoToHydroSpell = _require3.GeoToHydroSpell, GeoToAuroSpell = _require3.GeoToAuroSpell, DisplaceToPetSpell = _require3.DisplaceToPetSpell;
+    var _require4 = require("../Buffs"), ChangeSpeedBuff = _require4.ChangeSpeedBuff, IncreaseSpeedBuff = _require4.IncreaseSpeedBuff, DecreaseSpeedBuff = _require4.DecreaseSpeedBuff, EnhanceBuff = _require4.EnhanceBuff, StrongBuff = _require4.StrongBuff, VulnerBuff = _require4.VulnerBuff, ChangeAspdBuff = _require4.ChangeAspdBuff;
     var _require5 = require("../Player"), Player = _require5.Player;
     var _require6 = require("../Creature"), Creature = _require6.Creature;
     var _require7 = require("../OriginMonitors"), MiningMonitors = _require7.MiningMonitors, PetConvertingMonitors = _require7.PetConvertingMonitors, SpellRecoveringMonitors = _require7.SpellRecoveringMonitors, RefreshChallengeTimeMonitors = _require7.RefreshChallengeTimeMonitors, BaseInScopeCalculators = _require7.BaseInScopeCalculators, GoldCostFloorMonitors = _require7.GoldCostFloorMonitors, SpellCostFloorMonitors = _require7.SpellCostFloorMonitors;
     var _require8 = require("../listeners/AttackListeners"), AttackCriticalMonitors = _require8.AttackCriticalMonitors, AttackDamageInitializer = _require8.AttackDamageInitializer, AttackDamageExecuter = _require8.AttackDamageExecuter;
-    var _require9 = require("../listeners/ForgeListeners"), UpgradeEquipListener = _require9.UpgradeEquipListener, ForgeSpellListener = _require9.ForgeSpellListener, ForgeEquipListener = _require9.ForgeEquipListener;
+    var _require9 = require("../listeners/ForgeListeners"), ForgeListener = _require9.ForgeListener, UpgradeEquipListener = _require9.UpgradeEquipListener, ForgeSpellListener = _require9.ForgeSpellListener, ForgeEquipListener = _require9.ForgeEquipListener;
     var _require10 = require("../listeners/DamageListeners"), RealDamageLogger = _require10.RealDamageLogger, HarmImprovingMonitors = _require10.HarmImprovingMonitors;
     Object.assign(typeDict, {
       Equip0: Equip0,
@@ -19278,8 +23514,8 @@ window.__require = function e(t, n, r) {
       ChasePetListener: ChasePetListener,
       MoveSpell: MoveSpell,
       Equip14EnhancedMoveSpell: Equip14EnhancedMoveSpell,
+      AscendSpell: AscendSpell,
       PowerSpell: PowerSpell,
-      TempPowerSpell: TempPowerSpell,
       EnergyToPowerSpell: EnergyToPowerSpell,
       GeoCoreSpell: GeoCoreSpell,
       HydroCoreSpell: HydroCoreSpell,
@@ -19289,7 +23525,7 @@ window.__require = function e(t, n, r) {
       AttractSpell: AttractSpell,
       HydrateOneDirectionSpell: HydrateOneDirectionSpell,
       PyrateSpell: PyrateSpell,
-      Geo33Spell: Geo33Spell,
+      TempPowerSpell: TempPowerSpell,
       GeoToPyroSpell: GeoToPyroSpell,
       GeoToHydroSpell: GeoToHydroSpell,
       GeoToAuroSpell: GeoToAuroSpell,
@@ -19297,6 +23533,7 @@ window.__require = function e(t, n, r) {
       ChangeSpeedBuff: ChangeSpeedBuff,
       IncreaseSpeedBuff: IncreaseSpeedBuff,
       DecreaseSpeedBuff: DecreaseSpeedBuff,
+      EnhanceBuff: EnhanceBuff,
       StrongBuff: StrongBuff,
       VulnerBuff: VulnerBuff,
       ChangeAspdBuff: ChangeAspdBuff,
@@ -19312,6 +23549,7 @@ window.__require = function e(t, n, r) {
       AttackCriticalMonitors: AttackCriticalMonitors,
       AttackDamageInitializer: AttackDamageInitializer,
       AttackDamageExecuter: AttackDamageExecuter,
+      ForgeListener: ForgeListener,
       UpgradeEquipListener: UpgradeEquipListener,
       ForgeSpellListener: ForgeSpellListener,
       ForgeEquipListener: ForgeEquipListener,
@@ -19427,6 +23665,43 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "./TypeDict-clas0.0.2": "TypeDict-clas0.0.2"
+  } ],
+  "TypeList-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "faf22cK14hJ4KyxkXsMaeH1", "TypeList-clas0.0.3");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Spell = exports.Pets = exports.Equips = void 0;
+    var TypeDict_1 = require("./TypeDict-clas0.0.3");
+    var Equips = [], Spell = [], Pets = [];
+    exports.Equips = Equips;
+    exports.Spell = Spell;
+    exports.Pets = Pets;
+    for (var key in TypeDict_1.typeDict) {
+      var clazz = TypeDict_1.typeDict[key];
+      var arr = void 0;
+      switch (clazz.category) {
+       case "equip":
+        arr = Equips;
+        break;
+
+       case "spell":
+        arr = Spell;
+        break;
+
+       case "pet":
+        arr = Pets;
+      }
+      if (arr) {
+        arr[clazz.id] && console.error("Class id conflict:", clazz.name, " , ", arr[clazz.id].name);
+        arr[clazz.id] = clazz;
+      }
+    }
+    cc._RF.pop();
+  }, {
+    "./TypeDict-clas0.0.3": "TypeDict-clas0.0.3"
   } ],
   TypeList: [ function(require, module, exports) {
     "use strict";
@@ -19670,6 +23945,96 @@ window.__require = function e(t, n, r) {
   }, {
     "./animeConstant-clas0.0.2": "animeConstant-clas0.0.2"
   } ],
+  "animationPlayer-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "e2c21YUNKhDiIrYHa73PKo3", "animationPlayer-clas0.0.3");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.AnimationPlayingParams = exports.BaseAnimation = exports.AnimationPlayer = void 0;
+    var animeConstant_clas0_0_3_1 = require("./animeConstant-clas0.0.3");
+    var BaseAnimation = function() {
+      function BaseAnimation(x, y) {
+        this.functions = [];
+        this.playingFrame = 0;
+        this.lastPlayTime = 0;
+        this.x = x;
+        this.y = y;
+      }
+      Object.defineProperty(BaseAnimation.prototype, "isPlaying", {
+        get: function() {
+          return this.playingFrame < this.functions.length;
+        },
+        enumerable: false,
+        configurable: true
+      });
+      BaseAnimation.prototype.play = function(args) {
+        if (this.x != args.x || this.y != args.y) return;
+        if (this.playingFrame >= this.functions.length) return;
+        var currTime = Date.now();
+        if (currTime < this.lastPlayTime + animeConstant_clas0_0_3_1.ONE_FRAME_TIME) return;
+        0 == this.lastPlayTime ? this.lastPlayTime = currTime : this.lastPlayTime += animeConstant_clas0_0_3_1.ONE_FRAME_TIME;
+        var fns = this.functions[this.playingFrame];
+        this.playingFrame++;
+        if (!fns) return;
+        fns.forEach(function(fn) {
+          return fn(args);
+        });
+      };
+      BaseAnimation.prototype.push = function(functions) {
+        var self = this;
+        functions.forEach(function(fn, index) {
+          self.functions[index] || (self.functions[index] = []);
+          self.functions[index].push(fn);
+        });
+      };
+      return BaseAnimation;
+    }();
+    exports.BaseAnimation = BaseAnimation;
+    var AnimationPlayer = function() {
+      function AnimationPlayer() {
+        this.animations = [];
+        this.postponeFrames = 0;
+      }
+      Object.defineProperty(AnimationPlayer.prototype, "isPlaying", {
+        get: function() {
+          if (0 == this.animations.length) return false;
+          return this.animations.map(function(anim) {
+            return anim.isPlaying;
+          }).reduce(function(prev, curr) {
+            return prev || curr;
+          });
+        },
+        enumerable: false,
+        configurable: true
+      });
+      AnimationPlayer.prototype.play = function(args) {
+        this.animations.forEach(function(animation) {
+          return animation.play(args);
+        });
+      };
+      AnimationPlayer.prototype.push = function(animation) {
+        var emptyFrames = [];
+        for (var i = 0; i < this.postponeFrames; i++) emptyFrames.push([]);
+        animation.functions = emptyFrames.concat(animation.functions);
+        this.animations.push(animation);
+      };
+      AnimationPlayer.prototype.skip = function() {
+        this.animations.length = 0;
+      };
+      return AnimationPlayer;
+    }();
+    exports.AnimationPlayer = AnimationPlayer;
+    var AnimationPlayingParams = function() {
+      function AnimationPlayingParams() {}
+      return AnimationPlayingParams;
+    }();
+    exports.AnimationPlayingParams = AnimationPlayingParams;
+    cc._RF.pop();
+  }, {
+    "./animeConstant-clas0.0.3": "animeConstant-clas0.0.3"
+  } ],
   animationPlayer: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "ae74eUGZaFFV5ZekmGsGZm6", "animationPlayer");
@@ -19850,6 +24215,51 @@ window.__require = function e(t, n, r) {
     exports.levelUpCreatureIcon = levelUpCreatureIcon;
     cc._RF.pop();
   }, {} ],
+  "animationUtils-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "f1a91fw9PxH9KSJrhXKGzzC", "animationUtils-clas0.0.3");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.levelUpCreatureIcon = exports.getCreatureIconNode = exports.addCreatureIconNodeIfAbsent = void 0;
+    function addCreatureIconNodeIfAbsent(args) {
+      var creatureIconName = "CreatureIcon";
+      var anime = args.animation2Icon.parent;
+      var iconNode = anime.children.find(function(node) {
+        return node.name == creatureIconName;
+      });
+      if (!iconNode) {
+        iconNode = new cc.Node();
+        iconNode.width = anime.width;
+        iconNode.height = anime.height;
+        iconNode.name = creatureIconName;
+        var sprite_1 = iconNode.addComponent(cc.Sprite);
+        sprite_1.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        args.iconUrl && cc.loader.loadRes(args.iconUrl, cc.SpriteFrame, function(err, spriteFrame2) {
+          err && console.log(err);
+          sprite_1.spriteFrame = spriteFrame2;
+        });
+        anime.children.forEach(function(child) {
+          return child.zIndex = 10;
+        });
+        anime.addChild(iconNode);
+        iconNode.zIndex = 1;
+      }
+      return iconNode;
+    }
+    exports.addCreatureIconNodeIfAbsent = addCreatureIconNodeIfAbsent;
+    function getCreatureIconNode(args) {
+      return addCreatureIconNodeIfAbsent(args);
+    }
+    exports.getCreatureIconNode = getCreatureIconNode;
+    function levelUpCreatureIcon(args) {
+      args.gridIcon.active = false;
+      addCreatureIconNodeIfAbsent(args);
+    }
+    exports.levelUpCreatureIcon = levelUpCreatureIcon;
+    cc._RF.pop();
+  }, {} ],
   animationUtils: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "6cb13LyUcRAvKbtqjMumAu1", "animationUtils");
@@ -19913,6 +24323,21 @@ window.__require = function e(t, n, r) {
   "animeConstant-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "8c93ezf+LhPcLiQFo44denw", "animeConstant-clas0.0.2");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.ONE_FRAME_TIME = exports.GRID_SIZE_Y = exports.GRID_SIZE_X = void 0;
+    var GRID_SIZE_X = 90.2, GRID_SIZE_Y = 91.4;
+    exports.GRID_SIZE_X = GRID_SIZE_X;
+    exports.GRID_SIZE_Y = GRID_SIZE_Y;
+    var ONE_FRAME_TIME = 16;
+    exports.ONE_FRAME_TIME = ONE_FRAME_TIME;
+    cc._RF.pop();
+  }, {} ],
+  "animeConstant-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "c31271auuNAXLExJUsLV4rt", "animeConstant-clas0.0.3");
     "use strict";
     Object.defineProperty(exports, "__esModule", {
       value: true
@@ -20344,6 +24769,128 @@ window.__require = function e(t, n, r) {
   }, {
     "../objects/Coin-clas0.0.2": "Coin-clas0.0.2",
     "./logUtils-clas0.0.2": "logUtils-clas0.0.2"
+  } ],
+  "baseLoggers-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "a9803Ze2yJNX7vBTeVFuNRj", "baseLoggers-clas0.0.3");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Log = exports.BaseLoggers = void 0;
+    var Log = function() {
+      function Log() {
+        this.children = [];
+      }
+      return Log;
+    }();
+    exports.Log = Log;
+    var BaseLoggers = function() {
+      function BaseLoggers(data) {
+        void 0 === data && (data = []);
+        this.data = [];
+        this.data = data;
+      }
+      BaseLoggers.prototype.addLog = function(time, level, content, extra) {
+        void 0 === extra && (extra = null);
+        this.pushLog({
+          time: time,
+          level: level,
+          content: content,
+          extra: extra
+        });
+      };
+      BaseLoggers.prototype.pushLog = function() {
+        var logs = [];
+        for (var _i = 0; _i < arguments.length; _i++) logs[_i] = arguments[_i];
+        var data = this.data;
+        logs.forEach(function(log) {
+          if (log.level <= 0) {
+            var lastLog = data[data.length - 1];
+            log.level = lastLog ? Math.max(lastLog.level - log.level, 2) : 2;
+          }
+          data.push(log);
+        });
+      };
+      BaseLoggers.prototype.aggregate = function() {
+        var temp = aggregateMiningLogs(this);
+        temp = aggregateParentRelationship(temp);
+        this.data = temp.data;
+      };
+      BaseLoggers.prototype.JSONStringify = function() {
+        this.aggregate();
+        return this.data;
+      };
+      BaseLoggers.prototype.JSONParse = function(data) {
+        this.data = data;
+      };
+      BaseLoggers.prototype.console = function() {
+        var fn = function(log) {
+          var _a;
+          console.log(log.time, "\t\t\t\t\t\t\t\t\t\t".substring(0, log.level) + log.content);
+          null === (_a = log.children) || void 0 === _a ? void 0 : _a.forEach(function(child) {
+            return fn(child);
+          });
+        };
+        this.data.forEach(function(log) {
+          return fn(log);
+        });
+      };
+      return BaseLoggers;
+    }();
+    exports.BaseLoggers = BaseLoggers;
+    function aggregateMiningLogs(logger) {
+      var logs = logger.data;
+      var res = new BaseLoggers();
+      var miningValue = [ new Coin_clas0_0_3_1.Coin({}), new Coin_clas0_0_3_1.Coin({}), new Coin_clas0_0_3_1.Coin({}) ];
+      var lastime = 0;
+      logs.forEach(function(log) {
+        if (0 == log.content.length) return;
+        if (log.extra && log.extra.coin) {
+          miningValue[log.extra.player.code - 1].add(log.extra.coin);
+          lastime = log.time;
+        } else {
+          miningValue.forEach(function(coin, index) {
+            res.pushLog.apply(res, logUtils_clas0_0_3_1.coinLog(coin, lastime, {
+              code: index + 1
+            }));
+          });
+          miningValue = [ new Coin_clas0_0_3_1.Coin({}), new Coin_clas0_0_3_1.Coin({}), new Coin_clas0_0_3_1.Coin({}) ];
+          res.pushLog(log);
+        }
+      });
+      miningValue.forEach(function(coin, index) {
+        res.pushLog.apply(res, logUtils_clas0_0_3_1.coinLog(coin, lastime, {
+          code: index + 1
+        }));
+      });
+      return res;
+    }
+    function aggregateParentRelationship(logger) {
+      var logs = logger.data;
+      var lastNodeInLevel = [];
+      var res = [];
+      logs.forEach(function(log, index) {
+        var _a;
+        lastNodeInLevel[log.level] = log;
+        log.children || (log.children = []);
+        1 == log.level && res.push(log);
+        for (var i = lastNodeInLevel.length - 1; i >= 0; i--) {
+          if (i >= log.level) continue;
+          if (!lastNodeInLevel[i]) continue;
+          null === (_a = lastNodeInLevel[i].children) || void 0 === _a ? void 0 : _a.push(log);
+          break;
+        }
+      });
+      logger.data = res;
+      return logger;
+    }
+    var Coin_clas0_0_3_1 = require("../objects/Coin-clas0.0.3");
+    var logUtils_clas0_0_3_1 = require("./logUtils-clas0.0.3");
+    cc._RF.pop();
+  }, {
+    "../objects/Coin-clas0.0.3": "Coin-clas0.0.3",
+    "./logUtils-clas0.0.3": "logUtils-clas0.0.3"
   } ],
   baseLoggers: [ function(require, module, exports) {
     "use strict";
@@ -20836,6 +25383,74 @@ window.__require = function e(t, n, r) {
     "./animationPlayer-clas0.0.2": "animationPlayer-clas0.0.2",
     "./spellAnimation-clas0.0.2": "spellAnimation-clas0.0.2"
   } ],
+  "challengeAnimation-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "ec8eeBpRR9JNrQAFKq6xpDO", "challengeAnimation-clas0.0.3");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.ChallengeAnimation = exports.AttackAnimation = void 0;
+    var animationPlayer_clas0_0_3_1 = require("./animationPlayer-clas0.0.3");
+    var spellAnimation_clas0_0_3_1 = require("./spellAnimation-clas0.0.3");
+    var AttackAnimation = function(_super) {
+      __extends(AttackAnimation, _super);
+      function AttackAnimation() {
+        var _this = _super.call(this, 77, 77) || this;
+        _this.push([ function(args) {
+          cc.loader.loadRes("audio/sword", cc.AudioClip, function(err, clip) {
+            cc.audioEngine.play(clip, false, args.config.audio);
+          });
+        } ]);
+        _this.push([ function(args) {
+          args.gridIcon.getComponent("fightUI").addLog();
+        } ]);
+        return _this;
+      }
+      return AttackAnimation;
+    }(animationPlayer_clas0_0_3_1.BaseAnimation);
+    exports.AttackAnimation = AttackAnimation;
+    var ChallengeAnimation = function(_super) {
+      __extends(ChallengeAnimation, _super);
+      function ChallengeAnimation() {
+        var _this = _super.call(this, 77, 77, [ 174, 3, 3 ], false) || this;
+        _this.functions.push([ function(args) {
+          args.animationIcon.getComponent(cc.Sprite).spriteFrame = null;
+        } ]);
+        _this.push([ function(args) {
+          cc.loader.loadRes("audio/sword", cc.AudioClip, function(err, clip) {
+            cc.audioEngine.play(clip, false, args.config.audio);
+          });
+        } ]);
+        return _this;
+      }
+      return ChallengeAnimation;
+    }(spellAnimation_clas0_0_3_1.InkAnimation);
+    exports.ChallengeAnimation = ChallengeAnimation;
+    cc._RF.pop();
+  }, {
+    "./animationPlayer-clas0.0.3": "animationPlayer-clas0.0.3",
+    "./spellAnimation-clas0.0.3": "spellAnimation-clas0.0.3"
+  } ],
   challengeAnimation: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "f2b60nAFDVKnZ9V3WUni9Uo", "challengeAnimation");
@@ -21038,6 +25653,137 @@ window.__require = function e(t, n, r) {
   "common-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "b1a2b4PMDpE1o4sDKfpezyZ", "common-clas0.0.2");
+    "use strict";
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      _setPrototypeOf(subClass, superClass);
+    }
+    function _wrapNativeSuper(Class) {
+      var _cache = "function" === typeof Map ? new Map() : void 0;
+      _wrapNativeSuper = function _wrapNativeSuper(Class) {
+        if (null === Class || !_isNativeFunction(Class)) return Class;
+        if ("function" !== typeof Class) throw new TypeError("Super expression must either be null or a function");
+        if ("undefined" !== typeof _cache) {
+          if (_cache.has(Class)) return _cache.get(Class);
+          _cache.set(Class, Wrapper);
+        }
+        function Wrapper() {
+          return _construct(Class, arguments, _getPrototypeOf(this).constructor);
+        }
+        Wrapper.prototype = Object.create(Class.prototype, {
+          constructor: {
+            value: Wrapper,
+            enumerable: false,
+            writable: true,
+            configurable: true
+          }
+        });
+        return _setPrototypeOf(Wrapper, Class);
+      };
+      return _wrapNativeSuper(Class);
+    }
+    function _construct(Parent, args, Class) {
+      _construct = _isNativeReflectConstruct() ? Reflect.construct.bind() : function _construct(Parent, args, Class) {
+        var a = [ null ];
+        a.push.apply(a, args);
+        var Constructor = Function.bind.apply(Parent, a);
+        var instance = new Constructor();
+        Class && _setPrototypeOf(instance, Class.prototype);
+        return instance;
+      };
+      return _construct.apply(null, arguments);
+    }
+    function _isNativeReflectConstruct() {
+      if ("undefined" === typeof Reflect || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if ("function" === typeof Proxy) return true;
+      try {
+        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+    function _isNativeFunction(fn) {
+      return -1 !== Function.toString.call(fn).indexOf("[native code]");
+    }
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+      return _setPrototypeOf(o, p);
+    }
+    function _getPrototypeOf(o) {
+      _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+      };
+      return _getPrototypeOf(o);
+    }
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.CopyingSign = exports.INSTRU = exports.FindCertainType = exports.CountCertainType = exports.SameLocation = exports.getDistance = exports.GameLogicError = void 0;
+    var GameLogicError = function(_Error) {
+      _inheritsLoose(GameLogicError, _Error);
+      function GameLogicError() {
+        return _Error.apply(this, arguments) || this;
+      }
+      return GameLogicError;
+    }(_wrapNativeSuper(Error));
+    exports.GameLogicError = GameLogicError;
+    function getDistance(x1, x2, y1, y2) {
+      return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+    exports.getDistance = getDistance;
+    function SameLocation(loc1, loc2) {
+      return loc1[0] == loc2[0] && loc1[1] == loc2[1];
+    }
+    exports.SameLocation = SameLocation;
+    function CountCertainType(Game, type, filter) {
+      return FindCertainType(Game, type, filter).length;
+    }
+    exports.CountCertainType = CountCertainType;
+    function FindCertainType(Game, type, filter) {
+      var res = [];
+      var remove = [];
+      Game.unitDict.forEach(function(v, k) {
+        if (v["disabled"]) {
+          remove.push(k);
+          return;
+        }
+        v instanceof type && res.push(v);
+      });
+      filter && (res = res.filter(filter));
+      remove.forEach(function(key) {
+        Game.unitDict["delete"](key);
+      });
+      return res;
+    }
+    exports.FindCertainType = FindCertainType;
+    var CopyingSign = function CopyingSign() {};
+    exports.CopyingSign = CopyingSign;
+    var INSTRU = {
+      getActionType: function getActionType(instru) {
+        return instru.substring(0, 2);
+      },
+      getId: function getId(instru) {
+        return parseInt(instru.substring(2, 2));
+      },
+      getX: function getX(instru) {
+        return parseInt(instru.substring(4, 1));
+      },
+      getY: function getY(instru) {
+        return parseInt(instru.substring(5, 1));
+      }
+    };
+    exports.INSTRU = INSTRU;
+    cc._RF.pop();
+  }, {} ],
+  "common-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "6ad2b7u8IZLfaEbpRKO5oyG", "common-clas0.0.3");
     "use strict";
     function _inheritsLoose(subClass, superClass) {
       subClass.prototype = Object.create(superClass.prototype);
@@ -21467,7 +26213,6 @@ window.__require = function e(t, n, r) {
         this.data = data;
         var self = this;
         var clazz = typeDict()[data.type];
-        console.log(clazz);
         this.nickname.string = clazz.pet_name;
         cc.loader.loadRes(clazz.iconUrl, cc.SpriteFrame, function(err, spriteFrame2) {
           err && console.log(err);
@@ -21476,7 +26221,7 @@ window.__require = function e(t, n, r) {
         data.owner.code != gameGlobals.currPLayerIndex && (this.changeMiningTypeBtn.active = false);
         this.initMiningType(data.mining_type);
         this.miningNumLabel.string = "\u5df2\u70bc\u5316\uff1a" + data.mining_num.totalValue();
-        this.powerLabel.string = convertPowerString(data.power);
+        this.powerLabel.string = data.power;
         this.damageLabel.string = data.damage;
         this.scopeLabel.string = data.scope;
         this.aspdLabel.string = data.aspd;
@@ -22164,6 +26909,7 @@ window.__require = function e(t, n, r) {
       extends: cc.Component,
       properties: {
         list: cc.Layout,
+        forgeList: cc.Node,
         item: cc.Prefab
       },
       start: function start() {
@@ -22172,19 +26918,27 @@ window.__require = function e(t, n, r) {
           if (!equipList[i] || !equipList[i].valid) continue;
           this.list.node.addChild(initNode(this.item, "equipItem", i));
         }
+        this.refreshForgeList();
       },
       refresh: function refresh() {
         console.log("equip refreshing");
         this.list.node.children.forEach(function(item) {
           item.getComponent("equipItem").refresh();
         });
+        this.refreshForgeList();
+      },
+      refreshForgeList: function refreshForgeList() {
+        var forging = getCurrPlayer().forgingList.filter(function(forge) {
+          return [ "UpgradeEquipListener", "ForgeEquipListener" ].includes(forge.type);
+        });
+        this.forgeList.getComponent("forge").init(forging);
       },
       backBtn: function backBtn() {
         this.node.removeFromParent();
       }
     });
     var _require = require("../otherComponents/uiUtils"), initNode = _require.initNode;
-    var _require2 = require("../battleMiddleWare/gameUtils"), equips = _require2.equips;
+    var _require2 = require("../battleMiddleWare/gameUtils"), equips = _require2.equips, getCurrPlayer = _require2.getCurrPlayer;
     cc._RF.pop();
   }, {
     "../battleMiddleWare/gameUtils": "gameUtils",
@@ -22719,9 +27473,9 @@ window.__require = function e(t, n, r) {
         _this.item = null;
         return _this;
       }
-      NewClass.prototype.start = function() {
+      NewClass.prototype.init = function(forgeList) {
+        this.list.node.removeAllChildren();
         var self = this;
-        var forgeList = gameUtils_1.getCurrPlayer().forgingList;
         var currTime = gameGlobals.currTime;
         forgeList.forEach(function(forge) {
           console.log(forge);
@@ -22743,7 +27497,8 @@ window.__require = function e(t, n, r) {
           label.string = hours + ":" + minutes + ":" + seconds;
           self.list.node.addChild(node);
           self.list.updateLayout();
-          self.list.node.y = 430 - self.list.node.height / 2;
+          self.list.node.x = self.list.node.width / 2 - 315;
+          console.log(self.list.node);
         });
       };
       NewClass.prototype.close = function() {
@@ -22783,6 +27538,24 @@ window.__require = function e(t, n, r) {
   "gameConstants-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "d3b8fRrhZ5HUZt/jjo9ORVK", "gameConstants-clas0.0.2");
+    "use strict";
+    var MAP_SIZE = 7;
+    var EQUIP_ENERGY_COST = 10;
+    var EQUIP_MAX_LEVEL = 20;
+    var UPGRADE_GROW_RATIO = 1.05;
+    var MAX_ENERGY = 2e3;
+    module.exports = {
+      MAP_SIZE: MAP_SIZE,
+      EQUIP_ENERGY_COST: EQUIP_ENERGY_COST,
+      EQUIP_MAX_LEVEL: EQUIP_MAX_LEVEL,
+      UPGRADE_GROW_RATIO: UPGRADE_GROW_RATIO,
+      MAX_ENERGY: MAX_ENERGY
+    };
+    cc._RF.pop();
+  }, {} ],
+  "gameConstants-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "d075cfU0StMPZclhbiQ3IjC", "gameConstants-clas0.0.3");
     "use strict";
     var MAP_SIZE = 7;
     var EQUIP_ENERGY_COST = 10;
@@ -23535,6 +28308,193 @@ window.__require = function e(t, n, r) {
     "./main/Game-clas0.0.2": "Game-clas0.0.2",
     "./main/constants/timeConstants-clas0.0.2": "timeConstants-clas0.0.2",
     "./main/wheels/common-clas0.0.2": "common-clas0.0.2"
+  } ],
+  "gameLogicRoutes-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "5a967fss/hB56nKslUGE0T9", "gameLogicRoutes-clas0.0.3");
+    "use strict";
+    var _require = require("./main/wheels/common-clas0.0.3"), GameLogicError = _require.GameLogicError;
+    var _require2 = require("./main/Game-clas0.0.3"), Game = _require2.Game;
+    var _require3 = require("./main/constants/timeConstants-clas0.0.3"), ONE_HOUR = _require3.ONE_HOUR, ONE_JOURNEY_DAY = _require3.ONE_JOURNEY_DAY;
+    var obj = {
+      updateGame: function updateGame(game, instrutions) {
+        try {
+          instrutions.forEach(function(instru) {
+            console.log(instru);
+            game.currUser = game.getPlayer(parseInt(instru.substring(6, 7)));
+            game.recordNum++;
+            var player1 = game.currUser;
+            switch (instru.substring(7, 9)) {
+             case "at":
+              player1.challenge(game.map[getY(instru)][getX(instru)]);
+              break;
+
+             case "be":
+              player1.buyEquip(getId(instru));
+              break;
+
+             case "ue":
+              player1.upgradeEquip(getId(instru));
+              break;
+
+             case "bs":
+              player1.buySpell(getId(instru));
+              break;
+
+             case "ls":
+              player1.learnSpell(getId(instru));
+              break;
+
+             case "us":
+              player1.useSpell(getId(instru), getX(instru), getY(instru), getExtra(instru));
+              break;
+
+             case "bp":
+              player1.buyPet(getId(instru), getX(instru), getY(instru));
+              break;
+
+             case "cm":
+              player1.changeMiningType(getX(instru), getY(instru), getId(instru));
+              break;
+
+             case "hv":
+              player1.harvest(getX(instru), getY(instru));
+              break;
+
+             case "st":
+              player1.bidding(getId(instru));
+              break;
+
+             case "ct":
+              game.changeTime(parseInt(instru.substring(0, 6)), parseInt(instru.substring(6, 7)));
+              break;
+
+             case "et":
+              game.playerEnter(parseInt(instru.substring(0, 6)), parseInt(instru.substring(6, 7)));
+              break;
+
+             case "lv":
+              game.setLevel(getId(instru));
+            }
+            game.listeners.OperateListeners.check(player1);
+          });
+          return "success";
+        } catch (err) {
+          console.log(err);
+          return err instanceof GameLogicError ? err.message : isFrontEnd.cocos ? "\u975e\u6cd5\u64cd\u4f5c" : "\u670d\u52a1\u5668\u6545\u969c";
+        }
+      },
+      enterGame: function enterGame(game, time, player_index) {
+        try {
+          game.currUser = game.getPlayer(player_index);
+          game.addLog("\u5728\u65e0\u4eba\u4fee\u884c\u7684\u8fd9\u6bb5\u65f6\u95f4\uff1a", 1);
+          game.refreshAll(time);
+          game.addLog('{"code":' + player_index + "}\u5f00\u59cb\u4fee\u884c", 1);
+          game.listeners.EnterListeners.check(game.currUser);
+          return "success";
+        } catch (err) {
+          console.log(err);
+          return err instanceof GameLogicError ? err.message : "\u670d\u52a1\u5668\u6545\u969c";
+        }
+      },
+      endGame: function endGame(game) {
+        var res = {};
+        game.refreshAll(7 * ONE_JOURNEY_DAY);
+        game.clearBuff();
+        var players = [ 1, 2, 3 ].map(function(index) {
+          return game.getPlayer(index);
+        });
+        res.powers = players.map(function(player) {
+          return player._level + player._power / 10;
+        });
+        players.sort(function(a, b) {
+          if (a._level != b._level) return b._level - a._level;
+          return b._power - a._power;
+        });
+        var ranking = [];
+        players.map(function(player, index) {
+          return ranking[player.code - 1] = index + 1;
+        });
+        var rankStr = ranking.join("");
+        players[2].power == players[1].power && (rankStr = rankStr.replaceAll("3", "2"));
+        players[1].power == players[0].power && (rankStr = rankStr.replaceAll("2", "1"));
+        res.ranking = parseInt(rankStr);
+        return res;
+      },
+      newGame: function newGame(data) {
+        var game = new Game(data);
+        if (isFrontEnd.cocos) {
+          console.log("new game init for cocos");
+          game.initForCocos();
+        }
+        return game;
+      },
+      startCommands: function startCommands(data) {
+        var auctions = data.auctions, level = data.level;
+        var auctionCommands = auctions.map(function(val, index) {
+          return "000000" + (index + 1) + "st00" + Math.floor(val);
+        });
+        var levelCommands = [ "0000000lv00" + Math.floor(level) ];
+        return [].concat(levelCommands, auctionCommands);
+      },
+      copyGame: function copyGame(oldgame) {
+        var obj = JSON.parse(JSON.stringify(oldgame.JSONStringify()));
+        var game = new Game(obj);
+        isFrontEnd.cocos && game.initForCocos();
+        return game;
+      },
+      getSimpleInfo: function getSimpleInfo(game, code) {
+        var player = game.getPlayer(code);
+        var equipList = player.equipList.map(function(equip) {
+          return {
+            type: equip.type,
+            level: equip.level
+          };
+        });
+        var spellList = player.spellList.map(function(spell) {
+          return {
+            type: spell.type
+          };
+        });
+        var petList = game.allMapElements.filter(function(pet) {
+          return pet.owner == player;
+        }).map(function(pet) {
+          return {
+            type: pet.type
+          };
+        });
+        var iconList = equipList.concat(spellList).concat(petList);
+        return {
+          power: player.power,
+          wealth: player.coins,
+          iconList: iconList
+        };
+      },
+      initForCocos: function initForCocos() {
+        isFrontEnd.cocos = true;
+      }
+    };
+    var isFrontEnd = {
+      cocos: false
+    };
+    module.exports = obj;
+    var getX = function getX(instru) {
+      return parseInt(instru.substr(9, 1));
+    };
+    var getY = function getY(instru) {
+      return parseInt(instru.substr(10, 1));
+    };
+    var getId = function getId(instru) {
+      return parseInt(instru.substr(11, 2));
+    };
+    var getExtra = function getExtra(instru) {
+      return instru.substr(13);
+    };
+    cc._RF.pop();
+  }, {
+    "./main/Game-clas0.0.3": "Game-clas0.0.3",
+    "./main/constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "./main/wheels/common-clas0.0.3": "common-clas0.0.3"
   } ],
   gameLogicRoutes: [ function(require, module, exports) {
     "use strict";
@@ -24907,10 +29867,9 @@ window.__require = function e(t, n, r) {
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
-    exports.sendPostForms = exports.sendGetForms = void 0;
+    exports.downloadImg = exports.sendPostForms = exports.sendGetForms = void 0;
     var uiUtils_1 = require("./otherComponents/uiUtils");
     var Globals_1 = require("./Globals");
-    var fetch_1 = require("./netComponenents/fetch");
     var uri = "https://www.idlewar.online";
     var sendPostForms = function(urlApi, paramJson, callback, config) {
       void 0 === config && (config = {});
@@ -24942,7 +29901,7 @@ window.__require = function e(t, n, r) {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
       };
-      fetch_1.fetch(url, body).then(function(response) {
+      fetch(url, body).then(function(response) {
         return __awaiter(this, void 0, void 0, function() {
           var _a, _b, _c;
           var _d;
@@ -25011,20 +29970,25 @@ window.__require = function e(t, n, r) {
         }));
       }, 5e3);
     }
-    function sendPostForms2(urlApi, paramJson, callback) {
-      var xhr = new XMLHttpRequest();
-      responseCallback(xhr, callback);
-      xhr.timeout = 5e3;
-      xhr.open("POST", "http://106.52.82.57:8000/" + urlApi);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      cc.sys.isNative && console.log("isNative");
-      var args = "";
-      for (var i = 0; i < paramJson.length; i++) {
-        cc.log(paramJson[i]);
-        args += paramJson[i].key + "=" + paramJson[i].value + "&";
+    function downloadImg(url, callback) {
+      if (Globals_1.imageBase64Url[url]) {
+        callback(Globals_1.imageBase64Url[url]);
+        return;
       }
-      xhr.send(JSON.stringify(paramJson));
+      var xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+          Globals_1.imageBase64Url[url] = reader.result;
+          callback(reader.result);
+        };
+        reader.readAsDataURL(xhr.response);
+      };
+      xhr.open("GET", url);
+      xhr.responseType = "blob";
+      xhr.send();
     }
+    exports.downloadImg = downloadImg;
     function urlEncode(str) {
       var strSpecial = '%!"#$&\u2019()*+,/:;<=>?[]^`{|}~';
       for (var i = 0; i < str.length; i++) {
@@ -25070,7 +30034,6 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "./Globals": "Globals",
-    "./netComponenents/fetch": "fetch",
     "./otherComponents/uiUtils": "uiUtils",
     "crypto-js": 12
   } ],
@@ -25105,6 +30068,7 @@ window.__require = function e(t, n, r) {
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
+    var Globals_1 = require("../Globals");
     var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
     var NewClass = function(_super) {
       __extends(NewClass, _super);
@@ -25117,9 +30081,17 @@ window.__require = function e(t, n, r) {
         var params = iconUrl.split(":");
         var type = params[0], url = params.slice(1).join(":");
         var self = this;
-        "taptap" == type ? cc.assetManager.loadRemote(url, cc.SpriteFrame, function(err, spriteFrame) {
-          self.iconSF.spriteFrame = new cc.SpriteFrame(spriteFrame);
-        }) : cc.loader.loadRes(url, cc.SpriteFrame, function(err, spriteFrame) {
+        if ("taptap" == type) {
+          if (Globals_1.imageBase64Url[url]) {
+            var spriteFrame = Globals_1.imageBase64Url[url];
+            self.iconSF.spriteFrame = new cc.SpriteFrame(spriteFrame);
+            return;
+          }
+          cc.assetManager.loadRemote(url, cc.SpriteFrame, function(err, spriteFrame) {
+            Globals_1.imageBase64Url[url] = spriteFrame;
+            self.iconSF.spriteFrame = new cc.SpriteFrame(spriteFrame);
+          });
+        } else cc.loader.loadRes(url, cc.SpriteFrame, function(err, spriteFrame) {
           self.iconSF.spriteFrame = spriteFrame;
         });
       };
@@ -25129,7 +30101,9 @@ window.__require = function e(t, n, r) {
     }(cc.Component);
     exports.default = NewClass;
     cc._RF.pop();
-  }, {} ],
+  }, {
+    "../Globals": "Globals"
+  } ],
   index: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "34c9bwVQjtLT4F3SOCvJ1T0", "index");
@@ -25171,14 +30145,19 @@ window.__require = function e(t, n, r) {
         routers: require("./classic-v0.0.2/gameLogicRoutes-clas0.0.2"),
         constants: Object.assign(require("./classic-v0.0.2/main/constants/gameConstants-clas0.0.2"), require("./classic-v0.0.2/main/constants/timeConstants-clas0.0.2"))
       },
-      VALID_VERSION_LIST: [ "classic-v0.0.1", "classic-v0.0.2" ]
+      "classic-v0.0.3": {
+        game: require("./classic-v0.0.3/main/Game-clas0.0.3").Game,
+        typeDict: require("./classic-v0.0.3/main/wheels/TypeDict-clas0.0.3"),
+        routers: require("./classic-v0.0.3/gameLogicRoutes-clas0.0.3"),
+        constants: Object.assign(require("./classic-v0.0.3/main/constants/gameConstants-clas0.0.3"), require("./classic-v0.0.3/main/constants/timeConstants-clas0.0.3"))
+      },
+      VALID_VERSION_LIST: [ "classic-v0.0.1", "classic-v0.0.2", "classic-v0.0.3" ]
     };
     module.exports = self;
     var _require = require("./classic-latest/main/templates/EquipItems"), EquipItems = _require.EquipItems;
     var _require2 = require("./classic-latest/main/templates/Listeners"), Listener = _require2.Listener;
     var _require3 = require("./classic-latest/main/templates/PetsItems"), PetsItems = _require3.PetsItems;
     var _require4 = require("./classic-latest/main/templates/SpellItems"), SpellItem = _require4.SpellItem;
-    var _require5 = require("./classic-latest/main/Game"), Game = _require5.Game;
     cc._RF.pop();
   }, {
     "./classic-latest/gameLogicRoutes": "gameLogicRoutes",
@@ -25199,7 +30178,12 @@ window.__require = function e(t, n, r) {
     "./classic-v0.0.2/main/Game-clas0.0.2": "Game-clas0.0.2",
     "./classic-v0.0.2/main/constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
     "./classic-v0.0.2/main/constants/timeConstants-clas0.0.2": "timeConstants-clas0.0.2",
-    "./classic-v0.0.2/main/wheels/TypeDict-clas0.0.2": "TypeDict-clas0.0.2"
+    "./classic-v0.0.2/main/wheels/TypeDict-clas0.0.2": "TypeDict-clas0.0.2",
+    "./classic-v0.0.3/gameLogicRoutes-clas0.0.3": "gameLogicRoutes-clas0.0.3",
+    "./classic-v0.0.3/main/Game-clas0.0.3": "Game-clas0.0.3",
+    "./classic-v0.0.3/main/constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "./classic-v0.0.3/main/constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
+    "./classic-v0.0.3/main/wheels/TypeDict-clas0.0.3": "TypeDict-clas0.0.3"
   } ],
   inkRenderManager: [ function(require, module, exports) {
     "use strict";
@@ -25734,6 +30718,94 @@ window.__require = function e(t, n, r) {
     exports.Item = Item;
     cc._RF.pop();
   }, {} ],
+  "interfaces-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "eaa1aU0zrFO2JcVn5bn+g8g", "interfaces-clas0.0.3");
+    "use strict";
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        "value" in descriptor && (descriptor.writable = true);
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
+    function _createClass(Constructor, protoProps, staticProps) {
+      protoProps && _defineProperties(Constructor.prototype, protoProps);
+      staticProps && _defineProperties(Constructor, staticProps);
+      Object.defineProperty(Constructor, "prototype", {
+        writable: false
+      });
+      return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return "symbol" === typeof key ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if ("object" !== typeof input || null === input) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (void 0 !== prim) {
+        var res = prim.call(input, hint || "default");
+        if ("object" !== typeof res) return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === hint ? String : Number)(input);
+    }
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.Item = void 0;
+    var Item = function() {
+      function Item() {
+        arguments.length > 0 && this.init.apply(this, arguments);
+      }
+      var _proto = Item.prototype;
+      _proto.init = function init(game, new_item) {
+        void 0 === new_item && (new_item = true);
+        this.type = this.constructor.name;
+        this.disabled = false;
+        if (!new_item) return;
+        this.game = game;
+        this.code = 0;
+        game.GenUniqueCode(this);
+      };
+      _proto.JSONStringify = function JSONStringify() {
+        var res = {};
+        for (var key in this) {
+          var value = this[key];
+          if (value instanceof Function || this.__lookupGetter__(key)) continue;
+          value instanceof Item || value && "Game" == value.type ? res[key] = {
+            isItem: true,
+            code: value.code
+          } : res[key] = value;
+        }
+        return res;
+      };
+      _proto.JSONParse = function JSONParse(info) {
+        for (var property in info) {
+          var value = info[property];
+          if (value && value["isItem"]) {
+            var child = this.game.unitDict.get(value.code);
+            this[property] = child;
+          } else this[property] = value;
+        }
+      };
+      _createClass(Item, [ {
+        key: "isPlayer",
+        get: function get() {
+          return this.code >= 1 && this.code <= 3;
+        }
+      } ]);
+      return Item;
+    }();
+    Item.category = "item";
+    Item.uiDisplay = false;
+    Item.iconUrl = "";
+    exports.Item = Item;
+    cc._RF.pop();
+  }, {} ],
   interfaces: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "a6325W7NF9LSL/6rLeR8Hib", "interfaces");
@@ -25914,6 +30986,25 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "../constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2"
+  } ],
+  "iterationUtils-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "4de8cylRQJLIKO42vVEGh4k", "iterationUtils-clas0.0.3");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.iter_36 = void 0;
+    var gameConstants_1 = require("../constants/gameConstants-clas0.0.3");
+    function iter_36() {
+      var res = [];
+      for (var y = 0; y < gameConstants_1.MAP_SIZE; y++) for (var x = 0; x < gameConstants_1.MAP_SIZE; x++) res.push([ x, y ]);
+      return res;
+    }
+    exports.iter_36 = iter_36;
+    cc._RF.pop();
+  }, {
+    "../constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3"
   } ],
   iterationUtils: [ function(require, module, exports) {
     "use strict";
@@ -26172,6 +31263,93 @@ window.__require = function e(t, n, r) {
   }, {
     "../constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
     "../objects/Coin-clas0.0.2": "Coin-clas0.0.2"
+  } ],
+  "logUtils-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "8f097rW7AlHjb3La6Tr+iPQ", "logUtils-clas0.0.3");
+    "use strict";
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.logVertex = exports.logItem = exports.logDamageInfo = exports.logCoinInfo = exports.coinLog = void 0;
+    function coinLog(coin, currTime, player) {
+      var increased = [], decreased = [], res = [];
+      Coin_clas0_0_3_1.COIN_KEYS.forEach(function(key) {
+        coin[key] > 0 && increased.push(key);
+        coin[key] < 0 && decreased.push(key);
+      });
+      if (increased.length > 0) {
+        increased = increased.map(function(key) {
+          return coin[key] + "\u679a" + Coin_clas0_0_3_1.COIN_KEYS_NAME_MAP[key];
+        });
+        res.push({
+          time: currTime,
+          level: 2,
+          content: logItem(player) + "\u83b7\u5f97\u4e86" + increased.join("\uff0c") + "\u3002",
+          extra: {
+            player: player,
+            coin: new Coin_clas0_0_3_1.Coin(coin)
+          }
+        });
+      }
+      if (decreased.length > 0) {
+        decreased = decreased.map(function(key) {
+          return -coin[key] + "\u679a" + Coin_clas0_0_3_1.COIN_KEYS_NAME_MAP[key];
+        });
+        res.push({
+          time: currTime,
+          level: 2,
+          content: logItem(player) + "\u5931\u53bb\u4e86" + decreased.join("\uff0c") + "\u3002",
+          extra: {
+            player: player,
+            coin: new Coin_clas0_0_3_1.Coin(coin)
+          }
+        });
+      }
+      return res;
+    }
+    exports.coinLog = coinLog;
+    function logCoinInfo(player, coin) {
+      var game = player.game;
+      var logger = game.logger;
+      if (!logger) return;
+      var logList = logger.data[logger.data.length - 1];
+      coinLog(coin, game.currTime, player).forEach(function(log) {
+        return null === logger || void 0 === logger ? void 0 : logger.addLog(log.time, log.level, log.content, log.extra);
+      });
+    }
+    exports.logCoinInfo = logCoinInfo;
+    function logDamageInfo(player1, player2, damage) {
+      var game = player1.game;
+      var logger = game.logger;
+      if (!logger) return;
+      var type = (damage.type, "\u7269\u7406");
+      logger.addLog(game.currTime, 0, '{"code":' + player1.code + '}\u5bf9{"code":' + player2.code + "}\u9020\u6210\u4e86" + damage.value + "\u70b9" + type + "\u4f24\u5bb3");
+      logger.addLog(game.currTime, -1, "");
+    }
+    exports.logDamageInfo = logDamageInfo;
+    function logActualDamageInfo(player1, player2, damage) {
+      var game = player1.game;
+      var logger = game.logger;
+      if (!logger) return;
+      var type = (damage.type, "\u7269\u7406");
+      logger.addLog(game.currTime, 3, "\u5b9e\u9645\u9020\u6210\u4e86" + damage.value + "\u70b9" + type + "\u4f24\u5bb3");
+    }
+    function logItem(item) {
+      if (void 0 == item.x) return '{"code":' + item.code + "}";
+      return '{"code":' + item.code + ',"x":' + item.x + ',"y":' + item.y + "}";
+    }
+    exports.logItem = logItem;
+    function logVertex(x, y) {
+      return "(" + (x + 1) + "," + (gameConstants_clas0_0_3_1.MAP_SIZE - y) + ")";
+    }
+    exports.logVertex = logVertex;
+    var Coin_clas0_0_3_1 = require("../objects/Coin-clas0.0.3");
+    var gameConstants_clas0_0_3_1 = require("../constants/gameConstants-clas0.0.3");
+    cc._RF.pop();
+  }, {
+    "../constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "../objects/Coin-clas0.0.3": "Coin-clas0.0.3"
   } ],
   logUtils: [ function(require, module, exports) {
     "use strict";
@@ -26443,6 +31621,98 @@ window.__require = function e(t, n, r) {
   }, {
     "../constants/gameConstants-clas0.0.2": "gameConstants-clas0.0.2",
     "./iterationUtils-clas0.0.2": "iterationUtils-clas0.0.2"
+  } ],
+  "mapUtils-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "f3ef2wbUW1DzKiGFDk/7lO/", "mapUtils-clas0.0.3");
+    "use strict";
+    function getItemIn33(center) {
+      var locs = getLocInScope(center, 1.5);
+      var game = center.game;
+      return locs.map(function(loc) {
+        return game.map[loc[1]][loc[0]];
+      }).filter(function(item) {
+        return item;
+      });
+      var map;
+      var x, y;
+      var xs, ys;
+      var checkBoundary;
+      var res;
+    }
+    function getLocInScope(center, scope) {
+      var res = [];
+      return iter_36().filter(function(loc) {
+        var x = loc[0];
+        var y = loc[1];
+        return (x - center.x) * (x - center.x) + (y - center.y) * (y - center.y) <= scope * scope;
+      });
+    }
+    function oneDirection(filter) {
+      return iter_36().filter(function(loc) {
+        return filter(loc[0], loc[1]);
+      });
+    }
+    function eightDirections(center) {
+      var res = [ oneDirection(function(x, y) {
+        return x < center.x && center.x - x == y - center.y;
+      }), oneDirection(function(x, y) {
+        return x == center.x && y > center.y;
+      }), oneDirection(function(x, y) {
+        return x > center.x && center.x - x == center.y - y;
+      }), oneDirection(function(x, y) {
+        return x < center.x && y == center.y;
+      }), oneDirection(function(x, y) {
+        return x > center.x && y == center.y;
+      }).reverse(), oneDirection(function(x, y) {
+        return x < center.x && center.x - x == center.y - y;
+      }).reverse(), oneDirection(function(x, y) {
+        return x == center.x && y < center.y;
+      }).reverse(), oneDirection(function(x, y) {
+        return x > center.x && center.x - x == y - center.y;
+      }).reverse() ];
+      res.forEach(function(direction) {
+        direction.sort(function(a, b) {
+          a = {
+            x: a[0],
+            y: a[1]
+          };
+          b = {
+            x: b[0],
+            y: b[1]
+          };
+          return center.distance(a) - center.distance(b);
+        });
+      });
+      return res;
+    }
+    function emptyMap() {
+      var res = [];
+      for (var i = 0; i < MAP_SIZE; i++) res.push([]);
+      return res;
+    }
+    function edgeIndexs() {
+      var res = [];
+      for (var i = 0; i < MAP_SIZE - 1; i++) res.push([ 0, i ]);
+      for (var _i = 0; _i < MAP_SIZE - 1; _i++) res.push([ _i, MAP_SIZE - 1 ]);
+      for (var _i2 = 0; _i2 < MAP_SIZE - 1; _i2++) res.push([ MAP_SIZE - 1, MAP_SIZE - 1 - _i2 ]);
+      for (var _i3 = 0; _i3 < MAP_SIZE - 1; _i3++) res.push([ MAP_SIZE - 1 - _i3, 0 ]);
+      return res;
+    }
+    module.exports = {
+      getItemIn33: getItemIn33,
+      getLocInScope: getLocInScope,
+      oneDirection: oneDirection,
+      eightDirections: eightDirections,
+      emptyMap: emptyMap,
+      edgeIndexs: edgeIndexs
+    };
+    var _require = require("../constants/gameConstants-clas0.0.3"), MAP_SIZE = _require.MAP_SIZE;
+    var _require2 = require("./iterationUtils-clas0.0.3"), iter_36 = _require2.iter_36;
+    cc._RF.pop();
+  }, {
+    "../constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
+    "./iterationUtils-clas0.0.3": "iterationUtils-clas0.0.3"
   } ],
   mapUtils: [ function(require, module, exports) {
     "use strict";
@@ -27213,6 +32483,68 @@ window.__require = function e(t, n, r) {
     "./animationUtils-clas0.0.2": "animationUtils-clas0.0.2",
     "./animeConstant-clas0.0.2": "animeConstant-clas0.0.2"
   } ],
+  "moveAnimation-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "9a183zgkRVIU6Vfg0EDERzb", "moveAnimation-clas0.0.3");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.MoveAnimation = void 0;
+    var animationPlayer_clas0_0_3_1 = require("./animationPlayer-clas0.0.3");
+    var animationUtils_clas0_0_3_1 = require("./animationUtils-clas0.0.3");
+    var animeConstant_clas0_0_3_1 = require("./animeConstant-clas0.0.3");
+    var MoveAnimation = function(_super) {
+      __extends(MoveAnimation, _super);
+      function MoveAnimation(oldX, oldY, newX, newY) {
+        var _this = this;
+        try {
+          _this = _super.call(this, oldX, oldY) || this;
+          _this.push([ animationUtils_clas0_0_3_1.levelUpCreatureIcon ]);
+          var locationGradient = [ 0 ];
+          for (var i = 1; i <= 5; i++) locationGradient.push(locationGradient.at(-1) + 20);
+          for (var i = 1; i <= 7; i++) locationGradient.push(locationGradient.at(-1) + 21 - 2 * i);
+          var maxGradient_1 = locationGradient.at(-1);
+          var x_diff_1 = (newX - oldX) * animeConstant_clas0_0_3_1.GRID_SIZE_X, y_diff_1 = (newY - oldY) * animeConstant_clas0_0_3_1.GRID_SIZE_Y;
+          var functions = locationGradient.map(function(gradient) {
+            return function(args) {
+              var creatureNode = animationUtils_clas0_0_3_1.getCreatureIconNode(args);
+              creatureNode.x = x_diff_1 * gradient / maxGradient_1;
+              creatureNode.y = -y_diff_1 * gradient / maxGradient_1;
+            };
+          });
+          _this.push(functions);
+        } catch (err) {}
+        return _this;
+      }
+      return MoveAnimation;
+    }(animationPlayer_clas0_0_3_1.BaseAnimation);
+    exports.MoveAnimation = MoveAnimation;
+    cc._RF.pop();
+  }, {
+    "./animationPlayer-clas0.0.3": "animationPlayer-clas0.0.3",
+    "./animationUtils-clas0.0.3": "animationUtils-clas0.0.3",
+    "./animeConstant-clas0.0.3": "animeConstant-clas0.0.3"
+  } ],
   moveAnimation: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "e6402tGiCNLp4pPTrbJLuVU", "moveAnimation");
@@ -27337,6 +32669,45 @@ window.__require = function e(t, n, r) {
     }
     module.exports = {
       getThirdDigit: getThirdDigit,
+      getPercentage: getPercentage,
+      roundIfInteger: roundIfInteger,
+      between: between
+    };
+    cc._RF.pop();
+  }, {} ],
+  "numberUtils-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "3cbbbMTLlJD461guljS37l6", "numberUtils-clas0.0.3");
+    "use strict";
+    function getThirdDigit(numberStr) {
+      if (numberStr.indexOf("e") < 4) return 0;
+      return parseInt(numberStr[3], 10);
+    }
+    function getSecondDigit(numberStr) {
+      if (numberStr.indexOf("e") < 3) return 0;
+      return parseInt(numberStr[2], 10);
+    }
+    function getPercentage(num) {
+      num *= 1e4;
+      var numStr = Math.round(num).toString();
+      var floatDigit = 2;
+      numStr.endsWith("0") && (floatDigit = 1);
+      numStr.endsWith("00") && (floatDigit = 0);
+      var index = numStr.length - 2;
+      var res = numStr.substring(0, index);
+      floatDigit > 0 && (res += "." + numStr.substring(index, index + floatDigit));
+      return res + "%";
+    }
+    function roundIfInteger(num) {
+      var isInteger = Math.round(1e5 * num) % 1e5 == 0;
+      return isInteger ? Math.round(num) : num;
+    }
+    function between(num, a, b) {
+      return num >= a && num <= b;
+    }
+    module.exports = {
+      getThirdDigit: getThirdDigit,
+      getSecondDigit: getSecondDigit,
       getPercentage: getPercentage,
       roundIfInteger: roundIfInteger,
       between: between
@@ -27708,7 +33079,7 @@ window.__require = function e(t, n, r) {
           var child = initNode(this.item, "petItem", item.id, "detail");
           this.list.node.addChild(child);
           this.list.updateLayout();
-          this.list.node.y = 380 - this.list.node.height / 2;
+          this.list.node.y = 445 - this.list.node.height / 2;
         }
         getCurrPlayer().Pets.forEach(function(pet) {
           var clazz = typeDict()[pet.type];
@@ -27776,8 +33147,8 @@ window.__require = function e(t, n, r) {
           resizeIfExceed: true
         });
         this.icon.getComponent("icon").init(userInfo.iconUrl);
-        this.powerLabel.string = convertPowerString(data.power);
-        this.growingLabel.string = getPercentage(data.grow - 1);
+        this.powerLabel.string = data.power;
+        this.growingLabel.string = getPercentage(data.grow);
         this.damageLabel.string = data.damage;
         this.scopeLabel.string = data.scope;
         this.aspdLabel.string = data.aspd;
@@ -27897,7 +33268,7 @@ window.__require = function e(t, n, r) {
       },
       refresh: function refresh() {
         var player = getPlayer(this.code);
-        this.powerLbl.string = convertPowerString(player.power);
+        this.powerLbl.string = player.power;
         var playerInfo = gameGlobals.gameInfo.playerInfo[this.code - 1];
         this.icon.getComponent("icon").init(playerInfo.iconUrl);
         this.nameLbl.getComponent("twoFontLabel").init(playerInfo.nickname);
@@ -28690,6 +34061,176 @@ window.__require = function e(t, n, r) {
     "./animationPlayer-clas0.0.2": "animationPlayer-clas0.0.2",
     "./animationUtils-clas0.0.2": "animationUtils-clas0.0.2"
   } ],
+  "spellAnimation-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "d44fdK+enFE6ZlZIvkL49Ci", "spellAnimation-clas0.0.3");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    var __spreadArrays = this && this.__spreadArrays || function() {
+      for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+      for (var r = Array(s), k = 0, i = 0; i < il; i++) for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, 
+      k++) r[k] = a[j];
+      return r;
+    };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.DisplaceSpellAnimation = exports.GeoCoreSpellAnimation = exports.InkAnimation = exports.ShowIconAnimation = void 0;
+    var animationPlayer_clas0_0_3_1 = require("./animationPlayer-clas0.0.3");
+    var animationUtils_clas0_0_3_1 = require("./animationUtils-clas0.0.3");
+    var ShowIconAnimation = function(_super) {
+      __extends(ShowIconAnimation, _super);
+      function ShowIconAnimation(iconUrl) {
+        var _this = _super.call(this, 99, 99) || this;
+        var node = cc.find("Canvas/Map/animationIcon");
+        if (!node) return _this;
+        var sprite = node.getComponent(cc.Sprite);
+        setSpriteFrame(sprite, iconUrl);
+        var functions = [];
+        functions.push(function() {
+          node.scale = 1;
+          node.opacity = 150;
+          node.active = true;
+        });
+        for (var i = 0; i < 21; i++) functions.push(function() {
+          node.scale += .02;
+          node.opacity += 5;
+        });
+        for (var i = 0; i < 30; i++) functions.push(function() {});
+        for (var i = 0; i < 31; i++) functions.push(function() {
+          node.opacity -= 8;
+        });
+        functions.push(function() {
+          node.active = false;
+        });
+        _this.push(functions);
+        return _this;
+      }
+      return ShowIconAnimation;
+    }(animationPlayer_clas0_0_3_1.BaseAnimation);
+    exports.ShowIconAnimation = ShowIconAnimation;
+    var InkAnimation = function(_super) {
+      __extends(InkAnimation, _super);
+      function InkAnimation(x, y, inkColor, showCreatureIcon) {
+        void 0 === showCreatureIcon && (showCreatureIcon = true);
+        var _this = _super.call(this, x, y) || this;
+        showCreatureIcon && _this.push([ animationUtils_clas0_0_3_1.levelUpCreatureIcon ]);
+        var functions = [];
+        _this.color = inkColor;
+        functions.push(function(args) {
+          var _a;
+          var anime = args.animationIcon;
+          anime.active = true;
+          anime.scale = 3;
+          anime.color = new ((_a = cc.Color).bind.apply(_a, __spreadArrays([ void 0 ], _this.color)))();
+          anime.opacity = 255;
+        });
+        var _loop_1 = function(i) {
+          functions.push(function(args) {
+            var anime = args.animationIcon;
+            cc.loader.loadRes("animation2/Image" + i + ".png", cc.SpriteFrame, function(err, spriteFrame2) {
+              err && console.log(err);
+              anime.getComponent(cc.Sprite).spriteFrame = spriteFrame2;
+            });
+          });
+          functions.push(function() {});
+        };
+        for (var i = 4; i < 59; i += 2) _loop_1(i);
+        _this.push(functions);
+        return _this;
+      }
+      return InkAnimation;
+    }(animationPlayer_clas0_0_3_1.BaseAnimation);
+    exports.InkAnimation = InkAnimation;
+    var DisplaceSpellAnimation = function(_super) {
+      __extends(DisplaceSpellAnimation, _super);
+      function DisplaceSpellAnimation(oldX, oldY) {
+        var _this = _super.call(this, oldX, oldY) || this;
+        var animeUrl = "spell/\u661f\u79fb\u6597\u8f6c.png";
+        _this.push([ animationUtils_clas0_0_3_1.levelUpCreatureIcon ]);
+        var functions = [];
+        functions.push(function(args) {
+          var animationNode = args.animationIcon;
+          var sprite = animationNode.getComponent(cc.Sprite);
+          setSpriteFrame(sprite, animeUrl);
+          animationNode.opacity = 255;
+          animationNode.active = true;
+          animationNode.scale = 3;
+        });
+        for (var i = 1; i < 45; i++) functions.push(function() {});
+        for (var i = 45; i < 65; i++) functions.push(function(args) {
+          args.animationIcon.scale -= .15;
+        });
+        _this.push(functions);
+        functions = [];
+        for (var i = 0; i < 65; i++) functions.push(function(args) {
+          args.animationIcon.angle -= 3;
+        });
+        _this.push(functions);
+        functions = [];
+        for (var i = 0; i < 51; i++) functions.push(function(args) {
+          animationUtils_clas0_0_3_1.getCreatureIconNode(args).opacity -= 5;
+        });
+        _this.push(functions);
+        return _this;
+      }
+      return DisplaceSpellAnimation;
+    }(animationPlayer_clas0_0_3_1.BaseAnimation);
+    exports.DisplaceSpellAnimation = DisplaceSpellAnimation;
+    var GeoCoreSpellAnimation = function(_super) {
+      __extends(GeoCoreSpellAnimation, _super);
+      function GeoCoreSpellAnimation(x, y) {
+        var _this = _super.call(this, x, y) || this;
+        _this.push([ animationUtils_clas0_0_3_1.levelUpCreatureIcon ]);
+        var functions = [];
+        functions.push(function(args) {
+          var anime = args.animation2Icon;
+          anime.active = true;
+          anime.scale = 1.3;
+          anime.zIndex = 10;
+          anime.opacity = 255;
+          cc.loader.loadRes("icons/\u4e03\u66dc.png", cc.SpriteFrame, function(err, spriteFrame2) {
+            err && console.log(err);
+            anime.getComponent(cc.Sprite).spriteFrame = spriteFrame2;
+          });
+        });
+        for (var i = 0; i < 60; i++) functions.push(function(args) {
+          args.animation2Icon.angle -= 2;
+        });
+        _this.push(functions);
+        return _this;
+      }
+      return GeoCoreSpellAnimation;
+    }(animationPlayer_clas0_0_3_1.BaseAnimation);
+    exports.GeoCoreSpellAnimation = GeoCoreSpellAnimation;
+    function setSpriteFrame(sprite, iconUrl) {
+      cc.loader.loadRes(iconUrl, cc.SpriteFrame, function(err, res) {
+        sprite.spriteFrame = res;
+      });
+    }
+    cc._RF.pop();
+  }, {
+    "./animationPlayer-clas0.0.3": "animationPlayer-clas0.0.3",
+    "./animationUtils-clas0.0.3": "animationUtils-clas0.0.3"
+  } ],
   spellAnimation: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "afb3bqz8ptIf7okr1MWHq5j", "spellAnimation");
@@ -28935,6 +34476,7 @@ window.__require = function e(t, n, r) {
         var spellDeck = this._spellDeck.getComponent("spells");
         spellDeck.refreshLearnSpell();
         spellDeck.refreshUnLearnSpell();
+        spellDeck.refreshForgeList();
       }
     });
     var _require = require("../battleMiddleWare/gameService"), makeOperation = _require.makeOperation;
@@ -29002,7 +34544,8 @@ window.__require = function e(t, n, r) {
       extends: cc.Component,
       properties: {
         list: cc.Layout,
-        item: cc.Prefab
+        item: cc.Prefab,
+        forgeList: cc.Node
       },
       start: function start() {
         this.refreshLearnSpell();
@@ -29019,6 +34562,12 @@ window.__require = function e(t, n, r) {
           self.list.node.addChild(initNode(self.item, "spellItem", item.id, self.node));
         });
       },
+      refreshForgeList: function refreshForgeList() {
+        var forging = getCurrPlayer().forgingList.filter(function(forge) {
+          return [ "ForgeSpellListener" ].includes(forge.type);
+        });
+        this.forgeList.getComponent("forge").init(forging);
+      },
       refreshLearnSpell: function refreshLearnSpell() {
         this.list.node.removeAllChildren();
         var self = this, list = this.list;
@@ -29029,7 +34578,7 @@ window.__require = function e(t, n, r) {
         spellList.forEach(function(item) {
           list.node.addChild(initNode(self.item, "spellItem", item.id, self.node, true));
           list.updateLayout();
-          list.node.y = 380 - list.node.height / 2;
+          list.node.y = 445 - list.node.height / 2;
         });
       },
       refreshUnLearnSpell: function refreshUnLearnSpell() {
@@ -29046,7 +34595,7 @@ window.__require = function e(t, n, r) {
           if (!item.uiDisplay) return;
           list.node.addChild(initNode(self.item, "spellItem", item.id, self.node));
           list.updateLayout();
-          list.node.y = 380 - list.node.height / 2;
+          list.node.y = 445 - list.node.height / 2;
         });
       },
       backBtn: function backBtn() {
@@ -29318,6 +34867,28 @@ window.__require = function e(t, n, r) {
   "timeConstants-clas0.0.2": [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "32b10CHfWVJCLpckbPQ2GCU", "timeConstants-clas0.0.2");
+    "use strict";
+    var ONE_MINUTES = 60;
+    var ONE_HOUR = 60 * ONE_MINUTES;
+    var ONE_JOURNEY_DAY = 1e3 * ONE_MINUTES;
+    var ONE_NATURAL_DAY = 24 * ONE_HOUR;
+    var ENDLESS_TIME = 999999;
+    var ENTER_TIME = 5 * ONE_MINUTES;
+    var DAILY_START_TIME = new Date(0, 0, 0, 6, 40);
+    module.exports = {
+      ONE_MINUTES: ONE_MINUTES,
+      ONE_HOUR: ONE_HOUR,
+      ONE_JOURNEY_DAY: ONE_JOURNEY_DAY,
+      ONE_NATURAL_DAY: ONE_NATURAL_DAY,
+      ENTER_TIME: ENTER_TIME,
+      ENDLESS_TIME: ENDLESS_TIME,
+      DAILY_START_TIME: DAILY_START_TIME
+    };
+    cc._RF.pop();
+  }, {} ],
+  "timeConstants-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "6c9165bJLtOk53do3NZ6iGB", "timeConstants-clas0.0.3");
     "use strict";
     var ONE_MINUTES = 60;
     var ONE_HOUR = 60 * ONE_MINUTES;
@@ -29693,6 +35264,70 @@ window.__require = function e(t, n, r) {
     exports.findOneItemByType = findOneItemByType;
     cc._RF.pop();
   }, {} ],
+  "typeUtils-clas0.0.3": [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "72567+1xfJDAqcph1qjp2zo", "typeUtils-clas0.0.3");
+    "use strict";
+    function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+      var it = "undefined" !== typeof Symbol && o[Symbol.iterator] || o["@@iterator"];
+      if (it) return (it = it.call(o)).next.bind(it);
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && "number" === typeof o.length) {
+        it && (o = it);
+        var i = 0;
+        return function() {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        };
+      }
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if ("string" === typeof o) return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      "Object" === n && o.constructor && (n = o.constructor.name);
+      if ("Map" === n || "Set" === n) return Array.from(o);
+      if ("Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+    function _arrayLikeToArray(arr, len) {
+      (null == len || len > arr.length) && (len = arr.length);
+      for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+      return arr2;
+    }
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.findOneItemByType = exports.findAllItemByType = void 0;
+    function findAllItemByType(Game, type) {
+      var res = [];
+      var remove = [];
+      Game.unitDict.forEach(function(v, k) {
+        if (v["disabled"]) {
+          remove.push(k);
+          return;
+        }
+        v instanceof type && res.push(v);
+      });
+      remove.forEach(function(key) {
+        Game.unitDict["delete"](key);
+      });
+      return res;
+    }
+    exports.findAllItemByType = findAllItemByType;
+    function findOneItemByType(game, type) {
+      for (var _iterator = _createForOfIteratorHelperLoose(game.unitDict.values()), _step; !(_step = _iterator()).done; ) {
+        var item = _step.value;
+        if ("type" == item.type) return item;
+      }
+    }
+    exports.findOneItemByType = findOneItemByType;
+    cc._RF.pop();
+  }, {} ],
   typeUtils: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "7c86fSoUYJCYrfGXa2NBYr9", "typeUtils");
@@ -29986,4 +35621,4 @@ window.__require = function e(t, n, r) {
   }, {
     "../http": "http"
   } ]
-}, {}, [ "ATJSSDK", "ATRewardedAutoVideoTSSDK", "AdsManager", "AndroidAds", "ATAndroidBannerTS", "ATAndroidIntersitialAutoTS", "ATAndroidIntersitialTS", "ATAndroidJS", "ATAndroidNativeTS", "ATAndroidRewardedVideoAutoTS", "ATAndroidRewardedVideoTS", "ATiOSBannerTS", "ATiOSIntersitiaAutolTS", "ATiOSIntersitialTS", "ATiOSJS", "ATiOSNativeTS", "ATiOSRewardedAutoVideoTS", "ATiOSRewardedVideoTS", "Constants", "Globals", "LoadingLogic", "Login", "gameGlobals", "gameService", "gameUtils", "deck", "decoration", "calculatorManager", "mathCalculator", "sevenCalSelectItem", "sevenCalculator", "temp", "auction", "entryTemplate", "gameEntry", "gameHistory", "gameTV", "itemOverview", "overviewTemplate", "startJourney", "console", "creatureDetails", "fightUI", "forge", "getCoins", "gridIcon", "history", "history2", "historyLog", "map", "observeAndEntry", "playerDetails", "playerPanel", "submit", "buffDetails", "buffItem", "equipDetails", "equipItem", "equips", "petDetails", "petItem", "pets", "price", "spellDetails", "spellItem", "spells", "gameMain", "labelToggle", "mockConsole", "hall", "background", "board", "email", "inkRenderManager", "inkRendering", "setting", "top", "topTemplate", "userDetail", "http", "instruction", "mocking", "fetch", "alert", "commonUtils", "decorationItem", "icon", "twoFontLabel", "uiUtils", "viewTemplate", "stoarge", "gameLogicRoutes", "Buffs", "Creature", "Equips", "Game", "OriginMonitors", "Pets", "Player", "Spell", "animationPlayer", "animationUtils", "animeConstant", "challengeAnimation", "moveAnimation", "spellAnimation", "gameConstants", "timeConstants", "AttackListeners", "DamageListeners", "ForgeListeners", "ListenerDict", "ListenerList", "ListenerPriorities", "baseLoggers", "logUtils", "AttackStatus", "Coin", "Damage", "BuffItems", "EquipItems", "Listeners", "PetsItems", "SpellItems", "iterationUtils", "mapUtils", "numberUtils", "typeUtils", "TypeDict", "TypeList", "common", "interfaces", "gameLogger-clas0.0.1", "gameLogicRoutes-clas0.0.1", "Buffs-clas0.0.1", "Creature-clas0.0.1", "Equips-clas0.0.1", "Game-clas0.0.1", "OriginMonitors-clas0.0.1", "Pets-clas0.0.1", "Player-clas0.0.1", "Spell-clas0.0.1", "animationPlayer-clas0.0.1", "animationUtils-clas0.0.1", "animeConstant-clas0.0.1", "challengeAnimation-clas0.0.1", "moveAnimation-clas0.0.1", "spellAnimation-clas0.0.1", "gameConstants-clas0.0.1", "timeConstants-clas0.0.1", "AttackListeners-clas0.0.1", "DamageListeners-clas0.0.1", "ListenerDict-clas0.0.1", "ListenerList-clas0.0.1", "ListenerPriorities-clas0.0.1", "baseLoggers-clas0.0.1", "logUtils-clas0.0.1", "AttackStatus-clas0.0.1", "Coin-clas0.0.1", "Damage-clas0.0.1", "BuffItems-clas0.0.1", "EquipItems-clas0.0.1", "Listeners-clas0.0.1", "PetsItems-clas0.0.1", "SpellItems-clas0.0.1", "iterationUtils-clas0.0.1", "mapUtils-clas0.0.1", "numberUtils-clas0.0.1", "typeUtils-clas0.0.1", "TypeDict-clas0.0.1", "TypeList-clas0.0.1", "common-clas0.0.1", "interfaces-clas0.0.1", "gameLogicRoutes-clas0.0.2", "Buffs-clas0.0.2", "Creature-clas0.0.2", "Equips-clas0.0.2", "Game-clas0.0.2", "OriginMonitors-clas0.0.2", "Pets-clas0.0.2", "Player-clas0.0.2", "Spell-clas0.0.2", "animationPlayer-clas0.0.2", "animationUtils-clas0.0.2", "animeConstant-clas0.0.2", "challengeAnimation-clas0.0.2", "moveAnimation-clas0.0.2", "spellAnimation-clas0.0.2", "gameConstants-clas0.0.2", "timeConstants-clas0.0.2", "AttackListeners-clas0.0.2", "DamageListeners-clas0.0.2", "ForgeListeners-clas0.0.2", "ListenerDict-clas0.0.2", "ListenerList-clas0.0.2", "ListenerPriorities-clas0.0.2", "baseLoggers-clas0.0.2", "logUtils-clas0.0.2", "AttackStatus-clas0.0.2", "Coin-clas0.0.2", "Damage-clas0.0.2", "BuffItems-clas0.0.2", "EquipItems-clas0.0.2", "Listeners-clas0.0.2", "PetsItems-clas0.0.2", "SpellItems-clas0.0.2", "iterationUtils-clas0.0.2", "mapUtils-clas0.0.2", "numberUtils-clas0.0.2", "typeUtils-clas0.0.2", "TypeDict-clas0.0.2", "TypeList-clas0.0.2", "common-clas0.0.2", "interfaces-clas0.0.2", "index" ]);
+}, {}, [ "ATJSSDK", "ATRewardedAutoVideoTSSDK", "AdsManager", "AndroidAds", "ATAndroidBannerTS", "ATAndroidIntersitialAutoTS", "ATAndroidIntersitialTS", "ATAndroidJS", "ATAndroidNativeTS", "ATAndroidRewardedVideoAutoTS", "ATAndroidRewardedVideoTS", "ATiOSBannerTS", "ATiOSIntersitiaAutolTS", "ATiOSIntersitialTS", "ATiOSJS", "ATiOSNativeTS", "ATiOSRewardedAutoVideoTS", "ATiOSRewardedVideoTS", "Constants", "Globals", "LoadingLogic", "Login", "gameGlobals", "gameService", "gameUtils", "deck", "decoration", "calculatorManager", "mathCalculator", "sevenCalSelectItem", "sevenCalculator", "temp", "auction", "entryTemplate", "gameEntry", "gameHistory", "gameTV", "itemOverview", "overviewTemplate", "startJourney", "console", "creatureDetails", "fightUI", "forge", "getCoins", "gridIcon", "history", "history2", "historyLog", "map", "observeAndEntry", "playerDetails", "playerPanel", "submit", "buffDetails", "buffItem", "equipDetails", "equipItem", "equips", "petDetails", "petItem", "pets", "price", "spellDetails", "spellItem", "spells", "gameMain", "labelToggle", "mockConsole", "hall", "background", "board", "email", "inkRenderManager", "inkRendering", "setting", "top", "topTemplate", "userDetail", "http", "instruction", "mocking", "fetch", "alert", "commonUtils", "decorationItem", "icon", "twoFontLabel", "uiUtils", "viewTemplate", "stoarge", "gameLogicRoutes", "Buffs", "Creature", "Equips", "Game", "OriginMonitors", "Pets", "Player", "Spell", "animationPlayer", "animationUtils", "animeConstant", "challengeAnimation", "moveAnimation", "spellAnimation", "gameConstants", "timeConstants", "AttackListeners", "DamageListeners", "ForgeListeners", "ListenerDict", "ListenerList", "ListenerPriorities", "baseLoggers", "logUtils", "AttackStatus", "Coin", "Damage", "BuffItems", "EquipItems", "Listeners", "PetsItems", "SpellItems", "iterationUtils", "mapUtils", "numberUtils", "typeUtils", "TypeDict", "TypeList", "common", "interfaces", "gameLogger-clas0.0.1", "gameLogicRoutes-clas0.0.1", "Buffs-clas0.0.1", "Creature-clas0.0.1", "Equips-clas0.0.1", "Game-clas0.0.1", "OriginMonitors-clas0.0.1", "Pets-clas0.0.1", "Player-clas0.0.1", "Spell-clas0.0.1", "animationPlayer-clas0.0.1", "animationUtils-clas0.0.1", "animeConstant-clas0.0.1", "challengeAnimation-clas0.0.1", "moveAnimation-clas0.0.1", "spellAnimation-clas0.0.1", "gameConstants-clas0.0.1", "timeConstants-clas0.0.1", "AttackListeners-clas0.0.1", "DamageListeners-clas0.0.1", "ListenerDict-clas0.0.1", "ListenerList-clas0.0.1", "ListenerPriorities-clas0.0.1", "baseLoggers-clas0.0.1", "logUtils-clas0.0.1", "AttackStatus-clas0.0.1", "Coin-clas0.0.1", "Damage-clas0.0.1", "BuffItems-clas0.0.1", "EquipItems-clas0.0.1", "Listeners-clas0.0.1", "PetsItems-clas0.0.1", "SpellItems-clas0.0.1", "iterationUtils-clas0.0.1", "mapUtils-clas0.0.1", "numberUtils-clas0.0.1", "typeUtils-clas0.0.1", "TypeDict-clas0.0.1", "TypeList-clas0.0.1", "common-clas0.0.1", "interfaces-clas0.0.1", "gameLogicRoutes-clas0.0.2", "Buffs-clas0.0.2", "Creature-clas0.0.2", "Equips-clas0.0.2", "Game-clas0.0.2", "OriginMonitors-clas0.0.2", "Pets-clas0.0.2", "Player-clas0.0.2", "Spell-clas0.0.2", "animationPlayer-clas0.0.2", "animationUtils-clas0.0.2", "animeConstant-clas0.0.2", "challengeAnimation-clas0.0.2", "moveAnimation-clas0.0.2", "spellAnimation-clas0.0.2", "gameConstants-clas0.0.2", "timeConstants-clas0.0.2", "AttackListeners-clas0.0.2", "DamageListeners-clas0.0.2", "ForgeListeners-clas0.0.2", "ListenerDict-clas0.0.2", "ListenerList-clas0.0.2", "ListenerPriorities-clas0.0.2", "baseLoggers-clas0.0.2", "logUtils-clas0.0.2", "AttackStatus-clas0.0.2", "Coin-clas0.0.2", "Damage-clas0.0.2", "BuffItems-clas0.0.2", "EquipItems-clas0.0.2", "Listeners-clas0.0.2", "PetsItems-clas0.0.2", "SpellItems-clas0.0.2", "iterationUtils-clas0.0.2", "mapUtils-clas0.0.2", "numberUtils-clas0.0.2", "typeUtils-clas0.0.2", "TypeDict-clas0.0.2", "TypeList-clas0.0.2", "common-clas0.0.2", "interfaces-clas0.0.2", "gameLogicRoutes-clas0.0.3", "Buffs-clas0.0.3", "Creature-clas0.0.3", "Equips-clas0.0.3", "Game-clas0.0.3", "OriginMonitors-clas0.0.3", "Pets-clas0.0.3", "Player-clas0.0.3", "Spell-clas0.0.3", "animationPlayer-clas0.0.3", "animationUtils-clas0.0.3", "animeConstant-clas0.0.3", "challengeAnimation-clas0.0.3", "moveAnimation-clas0.0.3", "spellAnimation-clas0.0.3", "gameConstants-clas0.0.3", "timeConstants-clas0.0.3", "AttackListeners-clas0.0.3", "DamageListeners-clas0.0.3", "ForgeListeners-clas0.0.3", "ListenerDict-clas0.0.3", "ListenerList-clas0.0.3", "ListenerPriorities-clas0.0.3", "baseLoggers-clas0.0.3", "logUtils-clas0.0.3", "AttackStatus-clas0.0.3", "Coin-clas0.0.3", "Damage-clas0.0.3", "BuffItems-clas0.0.3", "EquipItems-clas0.0.3", "Listeners-clas0.0.3", "PetsItems-clas0.0.3", "SpellItems-clas0.0.3", "iterationUtils-clas0.0.3", "mapUtils-clas0.0.3", "numberUtils-clas0.0.3", "typeUtils-clas0.0.3", "TypeDict-clas0.0.3", "TypeList-clas0.0.3", "common-clas0.0.3", "interfaces-clas0.0.3", "index" ]);

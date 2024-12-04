@@ -1,0 +1,51 @@
+[
+  1,
+  [
+    "870YUesZ9Ej4OlNbiqrIvu"
+  ],
+  [
+    "_textureSetter"
+  ],
+  [
+    "cc.SpriteFrame"
+  ],
+  0,
+  [
+    {
+      "name": "白日飞升",
+      "rect": [
+        0,
+        0,
+        600,
+        600
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "originalSize": [
+        600,
+        600
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  [
+    0
+  ],
+  0,
+  [
+    0
+  ],
+  [
+    0
+  ],
+  [
+    0
+  ]
+]
