@@ -5429,7 +5429,9 @@ window.__require = function e(t, n, r) {
         var _this = this;
         if (player1.code != this.owner.code) return;
         this.game.addLog("\u201c\u6d45\u6d77\u201d\u7684\u524a\u5f31\u6548\u679c\u89e6\u53d1", 3);
+        var self = this;
         getItemIn33(player2).forEach(function(item) {
+          if (item.code == self.owner.code) return;
           new DecreaseSpeedBuff(item, ENTER_TIME, _this.weaken);
         });
       };
@@ -5662,7 +5664,7 @@ window.__require = function e(t, n, r) {
       _proto19.evolve = function evolve() {
         if (1 == this.level) {
           this.listener.improve = .01;
-          this.listener.deprove = .99;
+          this.listener.deprove = -.01;
         } else {
           this.listener.improve += .001;
           this.listener.deprove += .001;
@@ -5686,8 +5688,8 @@ window.__require = function e(t, n, r) {
       var _proto20 = Equip13CoinsListener.prototype;
       _proto20.init = function init() {
         _Listener7.prototype.init.apply(this, arguments);
-        this.improve = 1.001;
-        this.deprove = .999;
+        this.improve = .01;
+        this.deprove = -.01;
       };
       _proto20.check = function check(player1, coins) {
         if (this.owner.code != player1.code) return;
@@ -6047,7 +6049,9 @@ window.__require = function e(t, n, r) {
         var _this = this;
         if (player1.code != this.owner.code) return;
         this.game.addLog("\u201c\u6d45\u6d77\u201d\u7684\u524a\u5f31\u6548\u679c\u89e6\u53d1", 3);
+        var self = this;
         getItemIn33(player2).forEach(function(item) {
+          if (item.code == self.owner.code) return;
           new DecreaseSpeedBuff(item, ENTER_TIME, _this.weaken);
         });
       };
@@ -6280,7 +6284,7 @@ window.__require = function e(t, n, r) {
       _proto19.evolve = function evolve() {
         if (1 == this.level) {
           this.listener.improve = .01;
-          this.listener.deprove = .99;
+          this.listener.deprove = -.01;
         } else {
           this.listener.improve += .001;
           this.listener.deprove += .001;
@@ -6304,8 +6308,8 @@ window.__require = function e(t, n, r) {
       var _proto20 = Equip13CoinsListener.prototype;
       _proto20.init = function init() {
         _Listener7.prototype.init.apply(this, arguments);
-        this.improve = 1.001;
-        this.deprove = .999;
+        this.improve = .01;
+        this.deprove = -.01;
       };
       _proto20.check = function check(player1, coins) {
         if (this.owner.code != player1.code) return;
@@ -13870,7 +13874,7 @@ window.__require = function e(t, n, r) {
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
-    exports.imageBase64Url = exports.foreigners = exports.music = exports.decoration = exports.journey = exports.auth = exports.top = exports.user = exports.config = void 0;
+    exports.temp = exports.imageBase64Url = exports.foreigners = exports.music = exports.decoration = exports.journey = exports.auth = exports.top = exports.user = exports.config = void 0;
     var config = {
       bgm: .7,
       sound: 1,
@@ -13914,6 +13918,10 @@ window.__require = function e(t, n, r) {
     exports.foreigners = foreigners;
     var imageBase64Url = {};
     exports.imageBase64Url = imageBase64Url;
+    var temp = {
+      gameMainRefreshing: 0
+    };
+    exports.temp = temp;
     cc._RF.pop();
   }, {} ],
   "ListenerDict-clas0.0.1": [ function(require, module, exports) {
@@ -26712,6 +26720,7 @@ window.__require = function e(t, n, r) {
           var date = Math.floor((new Date().valueOf() / 1e3 - obj.startTime) / 86400) + 1;
           var NUM_CN = [ "\u65e0", "\u58f9", "\u8d30", "\u53c1", "\u8086", "\u4f0d", "\u9646", "\u67d2" ];
           this.date.string = NUM_CN[date];
+          this.isEnd = false;
         }
         var self = this;
         obj.overview.iconList.filter(function(itemInfo) {
@@ -26740,7 +26749,7 @@ window.__require = function e(t, n, r) {
           delete response["overview"];
           Object.assign(info, response);
           info.refreshTime = null;
-          console.log(journey);
+          resetGameGlobals();
           gameGlobals.isTrying = self.isEnd;
           journey.getRouter(info.version).initForCocos();
           initGame(response.records, info.version);
@@ -26751,7 +26760,7 @@ window.__require = function e(t, n, r) {
         }
       }
     });
-    var _require = require("../battleMiddleWare/gameService"), initGame = _require.initGame;
+    var _require = require("../battleMiddleWare/gameService"), initGame = _require.initGame, resetGameGlobals = _require.resetGameGlobals;
     var http = require("../http");
     var gameGlobals = require("../battleMiddleWare/gameGlobals");
     var journey = require("../xjfz-journey/index");
@@ -28761,6 +28770,7 @@ window.__require = function e(t, n, r) {
         this.entry.getComponent("observeAndEntry").refresh();
         this.map.getComponent("map").refresh();
         this.control.getComponent("console").refresh();
+        this.send.getComponent("submit").refresh();
         this.players.children.forEach(function(player) {
           return player.getComponent("playerPanel").refresh();
         });
@@ -28768,6 +28778,7 @@ window.__require = function e(t, n, r) {
         this.node.children.forEach(function(child, index) {
           child.zIndex = self._zIndexMap[child.uuid];
         });
+        temp.gameMainRefreshing = false;
       },
       attackBtn: function attackBtn() {
         var coordinates = getCurrPlayer().challengeAbleItems;
@@ -28820,7 +28831,7 @@ window.__require = function e(t, n, r) {
         this.calculator.active = true;
       }
     });
-    var _require = require("./Globals"), config = _require.config, music = _require.music, user = _require.user;
+    var _require = require("./Globals"), config = _require.config, music = _require.music, user = _require.user, temp = _require.temp;
     var gameGlobals = require("./battleMiddleWare/gameGlobals");
     var _require2 = require("./battleMiddleWare/gameService"), makeOperation = _require2.makeOperation;
     var _require3 = require("./battleMiddleWare/gameUtils"), getCurrPlayer = _require3.getCurrPlayer;
@@ -28902,6 +28913,17 @@ window.__require = function e(t, n, r) {
         global.gameObj.logger.data.forEach(formatLogger);
         global.logs.push(global.gameObj.logger.data);
         global.historyPosition++;
+      },
+      resetGameGlobals: function resetGameGlobals() {
+        global.isEntering = false;
+        global.isMocking = false;
+        global.isTrying = false;
+        global.operations = [];
+        global.initPosition = -1;
+        global.historyPosition = 1;
+        global.gameRecords = [];
+        global.logs = [];
+        global.gameInfo = JSON.parse(JSON.stringify(global.gameInfo));
       }
     };
     module.exports = obj;
@@ -28913,7 +28935,10 @@ window.__require = function e(t, n, r) {
         global.gameObj = global.gameRecords[global.historyPosition];
         return false;
       }
-      global.historyPosition < global.initPosition && (global.isTrying = true);
+      if (global.historyPosition < global.initPosition) {
+        console.log("isTrying has set to true");
+        global.isTrying = true;
+      }
       global.gameRecords.splice(global.historyPosition + 1);
       global.operations.splice(global.historyPosition);
       global.logs.splice(global.historyPosition);
@@ -29057,6 +29082,7 @@ window.__require = function e(t, n, r) {
     var _require = require("../xjfz-journey/index"), getEquip = _require.getEquip, getSpell = _require.getSpell, getPets = _require.getPets, getBuffs = _require.getBuffs;
     var _require2 = require("../Constants"), DECORATION_MENU = _require2.DECORATION_MENU;
     var _require3 = require("../xjfz-journey/classic-latest/main/Player"), Player = _require3.Player;
+    var _require4 = require("../Globals"), temp = _require4.temp;
     var obj = {
       constant: function constant() {
         return global.gameModule.constants;
@@ -29108,6 +29134,13 @@ window.__require = function e(t, n, r) {
         return power;
       },
       refreshPage: function refreshPage() {
+        var fn = function fn() {
+          if (temp.gameMainRefreshing) setTimeout(fn, 50); else {
+            temp.gameMainRefreshing = true;
+            cc.find("Canvas").getComponent("gameMain").refresh();
+          }
+        };
+        setTimeout(fn, 50);
         cc.find("Canvas").getComponent("gameMain").refresh();
       },
       mapNode: function mapNode() {
@@ -29139,6 +29172,7 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "../Constants": "Constants",
+    "../Globals": "Globals",
     "../xjfz-journey/classic-latest/main/Player": "Player",
     "../xjfz-journey/index": "index",
     "./gameGlobals": "gameGlobals"
@@ -32770,103 +32804,105 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {} ],
   observeAndEntry: [ function(require, module, exports) {
-    "use strict";
-    cc._RF.push(module, "2191fgUrohGf6FjnL7Jv1Ho", "observeAndEntry");
-    "use strict";
-    cc.Class({
-      extends: cc.Component,
-      properties: {
-        observedTimesLbl: cc.Label,
-        remainTimesLbl: cc.Label,
-        page: cc.Node,
-        actionType: "",
-        commonBtns: cc.Node,
-        specialCase: cc.Node
-      },
-      start: function start() {
-        this.node.zIndex = 201;
-        gameGlobals.isTrying && (this.node.active = false);
-      },
-      refresh: function refresh() {
-        this.page.active = false;
-        var info = gameGlobals.gameInfo[this.actionType];
-        var logs = info.logs;
-        var observed = logs.filter(function(log) {
-          return 0 != log.active;
-        }).length;
-        var total = "observing" == this.actionType ? 7 : 4;
-        var remain = total - observed;
-        var actionName = "observing" == this.actionType ? "\u89c2\u6d4b" : "\u4fee\u884c";
-        this.observedTimesLbl.string = "\u4eca\u65e5\u5df2" + actionName + "\uff1a" + observed + "\u6b21";
-        this.remainTimesLbl.string = "\u5269\u4f59" + actionName + "\u6b21\u6570\uff1a" + remain + "\u6b21";
-        this.node.active = 3 != info.status && 4 != info.status;
-        this.commonBtns.active = 2 != info.status;
-        this.specialCase.active = 2 == info.status;
-      },
-      adsObserving: function adsObserving() {
-        var self = this;
-        var roomid = gameGlobals.gameInfo.roomid;
-        runAds("enterJourney", roomid.toString(), function(success) {
-          success && sendGetForms("journey/records/" + roomid, {}, function(response) {
-            self.refreshGame(response + "\n");
-            self.close();
+    (function(global) {
+      "use strict";
+      cc._RF.push(module, "2191fgUrohGf6FjnL7Jv1Ho", "observeAndEntry");
+      "use strict";
+      cc.Class({
+        extends: cc.Component,
+        properties: {
+          observedTimesLbl: cc.Label,
+          remainTimesLbl: cc.Label,
+          page: cc.Node,
+          actionType: "",
+          commonBtns: cc.Node,
+          specialCase: cc.Node
+        },
+        start: function start() {
+          this.node.zIndex = 201;
+          gameGlobals.isTrying && (this.node.active = false);
+        },
+        refresh: function refresh() {
+          this.page.active = false;
+          var info = gameGlobals.gameInfo[this.actionType];
+          var logs = info.logs;
+          var observed = logs.filter(function(log) {
+            return 0 != log.active;
+          }).length;
+          var total = "observing" == this.actionType ? 7 : 4;
+          var remain = total - observed;
+          var actionName = "observing" == this.actionType ? "\u89c2\u6d4b" : "\u4fee\u884c";
+          this.observedTimesLbl.string = "\u4eca\u65e5\u5df2" + actionName + "\uff1a" + observed + "\u6b21";
+          this.remainTimesLbl.string = "\u5269\u4f59" + actionName + "\u6b21\u6570\uff1a" + remain + "\u6b21";
+          this.node.active = 3 != info.status && 4 != info.status && !gameGlobals.isTrying;
+          this.commonBtns.active = 2 != info.status;
+          this.specialCase.active = 2 == info.status;
+        },
+        adsObserving: function adsObserving() {
+          var self = this;
+          var roomid = gameGlobals.gameInfo.roomid;
+          runAds("enterJourney", roomid.toString(), function(success) {
+            success && sendGetForms("journey/records/" + roomid, {}, function(response) {
+              self.refreshGame(response + "\n");
+              self.close();
+            });
           });
-        });
-      },
-      gemObserving: function gemObserving() {
-        this.close();
-        var self = this;
-        var roomid = gameGlobals.gameInfo.roomid;
-        sendPostForms("journey/observe", {
-          roomid: roomid
-        }, function(response) {
-          self.refreshGame(response);
-        });
-      },
-      entry: function entry() {
-        this.close();
-        var self = this;
-        var roomid = gameGlobals.gameInfo.roomid;
-        sendPostForms("journey/entry", {
-          roomid: roomid
-        }, function(response) {
-          self.refreshGame(response);
-          gameGlobals.currTime = gameGlobals.gameObj.currTime;
-          gameGlobals.isTrying = false;
-          gameGlobals.isEntering = true;
-        });
-      },
-      refreshGame: function refreshGame(response) {
-        initGame(response.split("\n"));
-        if ("observing" == this.actionType) {
-          var startTime = new Date(gameGlobals.gameInfo.startTime).valueOf(), now = Date.now();
-          var secondDiff = Math.floor((now - startTime) / 1e3);
-          var days = Math.floor(secondDiff / 86400);
-          var seconds = secondDiff % 86400;
-          var currTime = days * constant().ONE_JOURNEY_DAY + seconds;
-          makeOperation("" + fillWithZero(currTime, 6) + gameGlobals.currPLayerIndex + "ct");
+        },
+        gemObserving: function gemObserving() {
+          this.close();
+          var self = this;
+          var roomid = gameGlobals.gameInfo.roomid;
+          sendPostForms("journey/observe", {
+            roomid: roomid
+          }, function(response) {
+            self.refreshGame(response);
+          });
+        },
+        entry: function entry() {
+          this.close();
+          var self = this;
+          var roomid = gameGlobals.gameInfo.roomid;
+          sendPostForms("journey/entry", {
+            roomid: roomid
+          }, function(response) {
+            self.refreshGame(response);
+            gameGlobals.currTime = gameGlobals.gameObj.currTime;
+            gameGlobals.isTrying = false;
+            gameGlobals.isEntering = true;
+          });
+        },
+        refreshGame: function refreshGame(response) {
+          initGame(response.split("\n"));
+          if ("observing" == this.actionType) {
+            var startTime = new Date(gameGlobals.gameInfo.startTime).valueOf(), now = Date.now();
+            var secondDiff = Math.floor((now - startTime) / 1e3);
+            var days = Math.floor(secondDiff / 86400);
+            var seconds = secondDiff % 86400;
+            global.currTime = days * constant().ONE_JOURNEY_DAY + seconds;
+            makeOperation("ct");
+          }
+          var minutes = "observing" == this.actionType ? 30 : 5;
+          gameGlobals.gameInfo.refreshTime = Date.now() + 60 * minutes * 1e3;
+          gameGlobals.gameInfo[this.actionType].status = 3;
+          refreshPage();
+          this.page.active = false;
+        },
+        open: function open() {
+          this.page.active = true;
+        },
+        close: function close() {
+          this.page.active = false;
         }
-        var minutes = "observing" == this.actionType ? 30 : 5;
-        gameGlobals.gameInfo.refreshTime = Date.now() + 60 * minutes * 1e3;
-        gameGlobals.gameInfo[this.actionType].status = 3;
-        refreshPage();
-        this.page.active = false;
-      },
-      open: function open() {
-        this.page.active = true;
-      },
-      close: function close() {
-        this.page.active = false;
-      }
-    });
-    var gameGlobals = require("../battleMiddleWare/gameGlobals");
-    var _require = require("../AnyThinkAds/AdsManager"), runAds = _require.runAds;
-    var _require2 = require("../http"), sendGetForms = _require2.sendGetForms, sendPostForms = _require2.sendPostForms;
-    var _require3 = require("../battleMiddleWare/gameService"), initGame = _require3.initGame, makeOperation = _require3.makeOperation;
-    var _require4 = require("../battleMiddleWare/gameUtils"), refreshPage = _require4.refreshPage, constant = _require4.constant;
-    var _require5 = require("../xjfz-journey/classic-latest/gameLogicRoutes"), updateGame = _require5.updateGame;
-    var _require6 = require("../otherComponents/commonUtils"), fillWithZero = _require6.fillWithZero;
-    cc._RF.pop();
+      });
+      var gameGlobals = require("../battleMiddleWare/gameGlobals");
+      var _require = require("../AnyThinkAds/AdsManager"), runAds = _require.runAds;
+      var _require2 = require("../http"), sendGetForms = _require2.sendGetForms, sendPostForms = _require2.sendPostForms;
+      var _require3 = require("../battleMiddleWare/gameService"), initGame = _require3.initGame, makeOperation = _require3.makeOperation;
+      var _require4 = require("../battleMiddleWare/gameUtils"), refreshPage = _require4.refreshPage, constant = _require4.constant;
+      var _require5 = require("../xjfz-journey/classic-latest/gameLogicRoutes"), updateGame = _require5.updateGame;
+      var _require6 = require("../otherComponents/commonUtils"), fillWithZero = _require6.fillWithZero;
+      cc._RF.pop();
+    }).call(this, "undefined" !== typeof global ? global : "undefined" !== typeof self ? self : "undefined" !== typeof window ? window : {});
   }, {
     "../AnyThinkAds/AdsManager": "AdsManager",
     "../battleMiddleWare/gameGlobals": "gameGlobals",
@@ -34807,7 +34843,7 @@ window.__require = function e(t, n, r) {
         page: cc.Node
       },
       refresh: function refresh() {
-        this.node.active = gameGlobals.isEntering;
+        this.node.active = gameGlobals.isEntering && !gameGlobals.isTrying;
       },
       submit: function submit() {
         this.page.active = true;
