@@ -32807,7 +32807,7 @@ window.__require = function e(t, n, r) {
         var self = this;
         var roomid = gameGlobals.gameInfo.roomid;
         runAds("enterJourney", roomid.toString(), function(success) {
-          success && sendGetForms("journey/room/" + roomid, {}, function(response) {
+          success && sendGetForms("journey/records/" + roomid, {}, function(response) {
             self.refreshGame(response + "\n");
             self.close();
           });
