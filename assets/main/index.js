@@ -1855,7 +1855,7 @@ window.__require = function e(t, n, r) {
       return ChangeSpeedBuff;
     }(Listener);
     ChangeSpeedBuff.description = function(item) {
-      var ratio = getPercentage(Math.abs(item.ratio - 1));
+      var ratio = Math.abs(item.ratio);
       var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
       var remainTime = item.end_time - item.game.currTime;
       return "\u77ed\u6682" + verb + ratio + "\u7684\u4fee\u4e3a\uff0c\u5269\u4f59" + remainTime + "\u79d2";
@@ -1916,8 +1916,8 @@ window.__require = function e(t, n, r) {
       return StrongBuff;
     }(BuffItem);
     StrongBuff.description = function(item) {
-      var ratio = getPercentage(Math.abs(item.ratio - 1));
-      var verb = item.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var ratio = Math.abs(item.ratio);
+      var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
       var remainTime = item.end_time - item.game.currTime;
       return "\u9020\u6210\u7684\u4f24\u5bb3" + verb + ratio + "\uff0c\u5269\u4f59" + remainTime + "\u79d2";
     };
@@ -1939,8 +1939,8 @@ window.__require = function e(t, n, r) {
       return VulnerBuff;
     }(Listener);
     VulnerBuff.description = function(item) {
-      var ratio = getPercentage(Math.abs(item.ratio - 1));
-      var verb = item.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var ratio = Math.abs(item.ratio);
+      var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
       var remainTime = item.end_time - item.game.currTime;
       return "\u53d7\u5230\u7684\u4f24\u5bb3" + verb + ratio + "\uff0c\u5269\u4f59" + remainTime + "\u79d2";
     };
@@ -2021,7 +2021,7 @@ window.__require = function e(t, n, r) {
       return ChangeSpeedBuff;
     }(Listener);
     ChangeSpeedBuff.description = function(item) {
-      var ratio = getPercentage(Math.abs(item.ratio - 1));
+      var ratio = Math.abs(item.ratio);
       var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
       var remainTime = item.end_time - item.game.currTime;
       return "\u77ed\u6682" + verb + ratio + "\u7684\u4fee\u4e3a\uff0c\u5269\u4f59" + remainTime + "\u79d2";
@@ -2082,8 +2082,8 @@ window.__require = function e(t, n, r) {
       return StrongBuff;
     }(BuffItem);
     StrongBuff.description = function(item) {
-      var ratio = getPercentage(Math.abs(item.ratio - 1));
-      var verb = item.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var ratio = Math.abs(item.ratio);
+      var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
       var remainTime = item.end_time - item.game.currTime;
       return "\u9020\u6210\u7684\u4f24\u5bb3" + verb + ratio + "\uff0c\u5269\u4f59" + remainTime + "\u79d2";
     };
@@ -2105,8 +2105,8 @@ window.__require = function e(t, n, r) {
       return VulnerBuff;
     }(Listener);
     VulnerBuff.description = function(item) {
-      var ratio = getPercentage(Math.abs(item.ratio - 1));
-      var verb = item.ratio < 1 ? "\u964d\u4f4e" : "\u63d0\u5347";
+      var ratio = Math.abs(item.ratio);
+      var verb = item.ratio < 0 ? "\u964d\u4f4e" : "\u63d0\u5347";
       var remainTime = item.end_time - item.game.currTime;
       return "\u53d7\u5230\u7684\u4f24\u5bb3" + verb + ratio + "\uff0c\u5269\u4f59" + remainTime + "\u79d2";
     };
@@ -5409,7 +5409,7 @@ window.__require = function e(t, n, r) {
     }(EquipItemsWithListener);
     Equip6.id = 6;
     Equip6.equip_name = "\u6d45\u6d77";
-    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u654c\u65b93*3\u8303\u56f4\u51850.1\u7684\u52bf\u529b";
+    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u5bf9\u624b3*3\u8303\u56f4\u51850.27\u7684\u52bf\u529b";
     Equip6.valid = true;
     Equip6.upgrade_price = new Coin({
       geoCoins: 50
@@ -5423,7 +5423,7 @@ window.__require = function e(t, n, r) {
       var _proto8 = Equip6AttackWeakenListener.prototype;
       _proto8.init = function init() {
         _Listener2.prototype.init.apply(this, arguments);
-        this.weaken = -.1;
+        this.weaken = -.17;
       };
       _proto8.check = function check(player1, player2) {
         var _this = this;
@@ -6027,7 +6027,7 @@ window.__require = function e(t, n, r) {
     }(EquipItemsWithListener);
     Equip6.id = 6;
     Equip6.equip_name = "\u6d45\u6d77";
-    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u654c\u65b93*3\u8303\u56f4\u51850.1\u7684\u52bf\u529b";
+    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u5bf9\u624b3*3\u8303\u56f4\u51850.27\u7684\u52bf\u529b";
     Equip6.valid = true;
     Equip6.upgrade_price = new Coin({
       geoCoins: 50
@@ -6041,7 +6041,7 @@ window.__require = function e(t, n, r) {
       var _proto8 = Equip6AttackWeakenListener.prototype;
       _proto8.init = function init() {
         _Listener2.prototype.init.apply(this, arguments);
-        this.weaken = -.1;
+        this.weaken = -.17;
       };
       _proto8.check = function check(player1, player2) {
         var _this = this;
@@ -15542,8 +15542,20 @@ window.__require = function e(t, n, r) {
         var failed = false;
         switch (event.getEventCode()) {
          case jsb.EventAssetsManager.UPDATE_PROGRESSION:
-          this.byteProgress.progress = event.getPercentByFile();
-          this.label.string = "\u66f4\u65b0\u4e2d\uff1a " + event.getDownloadedFiles() + "/" + event.getTotalFiles();
+          this.byteProgress.progress = event.getPercent();
+          var downloadedBytes = event.getDownloadedBytes(), totalBytes = event.getTotalBytes();
+          var divisions, unit;
+          if (totalBytes > 1048576) {
+            divisions = 1048576;
+            unit = "MB";
+          } else if (totalBytes > 1024) {
+            divisions = 1024;
+            unit = "KB";
+          } else {
+            divisions = 1;
+            unit = "Byte";
+          }
+          this.label.string = "\u66f4\u65b0\u4e2d\uff1a " + (downloadedBytes / divisions).toFixed(2) + "/" + (totalBytes / divisions).toFixed(2) + unit;
           console.log("VillV: ", this.label.string);
           break;
 
@@ -18759,6 +18771,7 @@ window.__require = function e(t, n, r) {
         });
         this.energy = 700;
         this.grow = .03;
+        this.challenge_times = 3;
       };
       _proto.initialize = function initialize() {
         this.spellList.push(new MoveSpell(this));
@@ -18787,6 +18800,7 @@ window.__require = function e(t, n, r) {
             attacks1++;
           }
         }
+        this.challenge_times--;
         return "at00";
       };
       _proto.changeCoins = function changeCoins(coin) {
@@ -19118,6 +19132,7 @@ window.__require = function e(t, n, r) {
         });
         this.energy = 700;
         this.grow = .03;
+        this.challenge_times = 3;
       };
       _proto.initialize = function initialize() {
         this.spellList.push(new MoveSpell(this));
@@ -19146,6 +19161,7 @@ window.__require = function e(t, n, r) {
             attacks1++;
           }
         }
+        this.challenge_times--;
         return "at00";
       };
       _proto.changeCoins = function changeCoins(coin) {
@@ -32790,9 +32806,9 @@ window.__require = function e(t, n, r) {
       adsObserving: function adsObserving() {
         var self = this;
         var roomid = gameGlobals.gameInfo.roomid;
-        runAds("", roomid, function(success) {
+        runAds("enterJourney", roomid.toString(), function(success) {
           success && sendGetForms("journey/room/" + roomid, {}, function(response) {
-            self.refreshGame(response);
+            self.refreshGame(response + "\n");
             self.close();
           });
         });
@@ -32822,6 +32838,14 @@ window.__require = function e(t, n, r) {
       },
       refreshGame: function refreshGame(response) {
         initGame(response.split("\n"));
+        if ("observing" == this.actionType) {
+          var startTime = new Date(gameGlobals.gameInfo.startTime).valueOf(), now = Date.now();
+          var secondDiff = Math.floor((now - startTime) / 1e3);
+          var days = Math.floor(secondDiff / 86400);
+          var seconds = secondDiff % 86400;
+          var currTime = days * constant().ONE_JOURNEY_DAY + seconds;
+          makeOperation("" + fillWithZero(currTime, 6) + gameGlobals.currPLayerIndex + "ct");
+        }
         var minutes = "observing" == this.actionType ? 30 : 5;
         gameGlobals.gameInfo.refreshTime = Date.now() + 60 * minutes * 1e3;
         gameGlobals.gameInfo[this.actionType].status = 3;
@@ -32838,15 +32862,19 @@ window.__require = function e(t, n, r) {
     var gameGlobals = require("../battleMiddleWare/gameGlobals");
     var _require = require("../AnyThinkAds/AdsManager"), runAds = _require.runAds;
     var _require2 = require("../http"), sendGetForms = _require2.sendGetForms, sendPostForms = _require2.sendPostForms;
-    var _require3 = require("../battleMiddleWare/gameService"), initGame = _require3.initGame;
-    var _require4 = require("../battleMiddleWare/gameUtils"), refreshPage = _require4.refreshPage;
+    var _require3 = require("../battleMiddleWare/gameService"), initGame = _require3.initGame, makeOperation = _require3.makeOperation;
+    var _require4 = require("../battleMiddleWare/gameUtils"), refreshPage = _require4.refreshPage, constant = _require4.constant;
+    var _require5 = require("../xjfz-journey/classic-latest/gameLogicRoutes"), updateGame = _require5.updateGame;
+    var _require6 = require("../otherComponents/commonUtils"), fillWithZero = _require6.fillWithZero;
     cc._RF.pop();
   }, {
     "../AnyThinkAds/AdsManager": "AdsManager",
     "../battleMiddleWare/gameGlobals": "gameGlobals",
     "../battleMiddleWare/gameService": "gameService",
     "../battleMiddleWare/gameUtils": "gameUtils",
-    "../http": "http"
+    "../http": "http",
+    "../otherComponents/commonUtils": "commonUtils",
+    "../xjfz-journey/classic-latest/gameLogicRoutes": "gameLogicRoutes"
   } ],
   overviewTemplate: [ function(require, module, exports) {
     "use strict";
@@ -32999,11 +33027,14 @@ window.__require = function e(t, n, r) {
         id: 0,
         type: "detail",
         iconSF: cc.Sprite,
-        detail: cc.Prefab
+        deckDetail: cc.Prefab,
+        petDetail: cc.Prefab,
+        _data: null
       },
-      init: function init(id, type) {
+      init: function init(id, type, data) {
         this.id = id;
         this.type = type;
+        this._data = data;
         var address = pet()[id].iconUrl.replace("pets", "petIcon");
         var self = this;
         cc.loader.loadRes(address, cc.SpriteFrame, function(err, spriteFrame) {
@@ -33015,10 +33046,14 @@ window.__require = function e(t, n, r) {
       },
       seeDetailBtn: function seeDetailBtn() {
         if ("detail" == this.type) {
-          var detail = cc.instantiate(this.detail);
+          var detail = cc.instantiate(this.deckDetail);
           detail.getComponent("petDetails").init(this.id);
           root().addChild(detail);
-        } else var _detail = cc.instantiate(this.detail);
+        } else {
+          var _detail = cc.instantiate(this.petDetail);
+          _detail.getComponent("creatureDetails").init(this._data);
+          root().addChild(_detail);
+        }
       }
     });
     var _require = require("../battleMiddleWare/gameUtils"), pet = _require.pet;
@@ -33083,7 +33118,7 @@ window.__require = function e(t, n, r) {
         }
         getCurrPlayer().Pets.forEach(function(pet) {
           var clazz = typeDict()[pet.type];
-          var child = initNode(_this.item, "petItem", clazz.id, "pet");
+          var child = initNode(_this.item, "petItem", clazz.id, "pet", pet);
           _this.ownList.node.addChild(child);
         });
       },
