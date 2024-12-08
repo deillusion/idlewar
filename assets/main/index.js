@@ -15421,7 +15421,6 @@ window.__require = function e(t, n, r) {
         }
         var localConfig = JSON.parse(cc.sys.localStorage.getItem("config"));
         Object.assign(config, localConfig);
-        console.log("Vill V: hotupdate code successfully run!!");
         this._splash = cc.find("\u521d\u59cb\u753b\u9762/logo");
         cc.find("\u521d\u59cb\u753b\u9762").active = true;
         this.nextSceneName = null;
@@ -30000,6 +29999,7 @@ window.__require = function e(t, n, r) {
     exports.downloadImg = exports.sendPostForms = exports.sendGetForms = void 0;
     var uiUtils_1 = require("./otherComponents/uiUtils");
     var Globals_1 = require("./Globals");
+    var fetch_1 = require("./netComponenents/fetch");
     var uri = "https://www.idlewar.online";
     var sendPostForms = function(urlApi, paramJson, callback, config) {
       void 0 === config && (config = {});
@@ -30031,7 +30031,7 @@ window.__require = function e(t, n, r) {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
       };
-      fetch(url, body).then(function(response) {
+      fetch_1.fetch(url, body).then(function(response) {
         return __awaiter(this, void 0, void 0, function() {
           var _a, _b, _c;
           var _d;
@@ -30164,6 +30164,7 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "./Globals": "Globals",
+    "./netComponenents/fetch": "fetch",
     "./otherComponents/uiUtils": "uiUtils",
     "crypto-js": 12
   } ],
