@@ -5400,16 +5400,16 @@ window.__require = function e(t, n, r) {
       _proto7.init = function init(owner) {
         _EquipItemsWithListen2.prototype.init.call(this, owner);
         this.listener = new Equip6AttackWeakenListener(owner, ENDLESS_TIME);
-        this.game.listeners.AttackListeners.push(this.listener);
+        this.game.listeners.ChallengeListeners.push(this.listener);
       };
       _proto7.evolve = function evolve() {
-        this.listener.weaken -= .1;
+        this.listener.scope += .5;
       };
       return Equip6;
     }(EquipItemsWithListener);
     Equip6.id = 6;
     Equip6.equip_name = "\u6d45\u6d77";
-    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u5bf9\u624b3*3\u8303\u56f4\u51850.27\u7684\u52bf\u529b";
+    Equip6.description = "\u6bcf\u6b21\u8bba\u5251\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u5bf9\u624b\u53ca\u4e0e\u5bf9\u624b\u8ddd\u79bb\u5c0f\u4e8e2\u7684\u5176\u5b83\u5355\u4f4d0.07\u7684\u52bf\u529b\uff0c\u6301\u7eed5\u5206\u949f";
     Equip6.valid = true;
     Equip6.upgrade_price = new Coin({
       geoCoins: 50
@@ -5423,16 +5423,15 @@ window.__require = function e(t, n, r) {
       var _proto8 = Equip6AttackWeakenListener.prototype;
       _proto8.init = function init() {
         _Listener2.prototype.init.apply(this, arguments);
-        this.weaken = -.17;
+        this.scope = 1.5;
       };
       _proto8.check = function check(player1, player2) {
-        var _this = this;
         if (player1.code != this.owner.code) return;
         this.game.addLog("\u201c\u6d45\u6d77\u201d\u7684\u524a\u5f31\u6548\u679c\u89e6\u53d1", 3);
         var self = this;
-        getItemIn33(player2).forEach(function(item) {
+        getItemInScope(player2, this.scope).forEach(function(item) {
           if (item.code == self.owner.code) return;
-          new DecreaseSpeedBuff(item, ENTER_TIME, _this.weaken);
+          new DecreaseSpeedBuff(item, ENTER_TIME, -.07);
         });
       };
       return Equip6AttackWeakenListener;
@@ -5821,7 +5820,7 @@ window.__require = function e(t, n, r) {
     var typeUtils_1 = require("./utils/typeUtils-clas0.0.3");
     var _require5 = require("./Buffs-clas0.0.3"), DecreaseSpeedBuff = _require5.DecreaseSpeedBuff;
     var _require6 = require("./Spell-clas0.0.3"), Equip14EnhancedMoveSpell = _require6.Equip14EnhancedMoveSpell, MoveSpell = _require6.MoveSpell;
-    var _require7 = require("./utils/mapUtils-clas0.0.3"), getItemIn33 = _require7.getItemIn33;
+    var _require7 = require("./utils/mapUtils-clas0.0.3"), getItemIn33 = _require7.getItemIn33, getLocInScope = _require7.getLocInScope, getItemInScope = _require7.getItemInScope;
     cc._RF.pop();
   }, {
     "./Buffs-clas0.0.3": "Buffs-clas0.0.3",
@@ -6020,16 +6019,16 @@ window.__require = function e(t, n, r) {
       _proto7.init = function init(owner) {
         _EquipItemsWithListen2.prototype.init.call(this, owner);
         this.listener = new Equip6AttackWeakenListener(owner, ENDLESS_TIME);
-        this.game.listeners.AttackListeners.push(this.listener);
+        this.game.listeners.ChallengeListeners.push(this.listener);
       };
       _proto7.evolve = function evolve() {
-        this.listener.weaken -= .1;
+        this.listener.scope += .5;
       };
       return Equip6;
     }(EquipItemsWithListener);
     Equip6.id = 6;
     Equip6.equip_name = "\u6d45\u6d77";
-    Equip6.description = "\u6bcf\u6b21\u653b\u51fb\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u5bf9\u624b3*3\u8303\u56f4\u51850.27\u7684\u52bf\u529b";
+    Equip6.description = "\u6bcf\u6b21\u8bba\u5251\u90fd\u5c06\u77ed\u6682\u964d\u4f4e\u5bf9\u624b\u53ca\u4e0e\u5bf9\u624b\u8ddd\u79bb\u5c0f\u4e8e2\u7684\u5176\u5b83\u5355\u4f4d0.07\u7684\u52bf\u529b\uff0c\u6301\u7eed5\u5206\u949f";
     Equip6.valid = true;
     Equip6.upgrade_price = new Coin({
       geoCoins: 50
@@ -6043,16 +6042,15 @@ window.__require = function e(t, n, r) {
       var _proto8 = Equip6AttackWeakenListener.prototype;
       _proto8.init = function init() {
         _Listener2.prototype.init.apply(this, arguments);
-        this.weaken = -.17;
+        this.scope = 1.5;
       };
       _proto8.check = function check(player1, player2) {
-        var _this = this;
         if (player1.code != this.owner.code) return;
         this.game.addLog("\u201c\u6d45\u6d77\u201d\u7684\u524a\u5f31\u6548\u679c\u89e6\u53d1", 3);
         var self = this;
-        getItemIn33(player2).forEach(function(item) {
+        getItemInScope(player2, this.scope).forEach(function(item) {
           if (item.code == self.owner.code) return;
-          new DecreaseSpeedBuff(item, ENTER_TIME, _this.weaken);
+          new DecreaseSpeedBuff(item, ENTER_TIME, -.07);
         });
       };
       return Equip6AttackWeakenListener;
@@ -6441,7 +6439,7 @@ window.__require = function e(t, n, r) {
     var typeUtils_1 = require("./utils/typeUtils");
     var _require5 = require("./Buffs"), DecreaseSpeedBuff = _require5.DecreaseSpeedBuff;
     var _require6 = require("./Spell"), Equip14EnhancedMoveSpell = _require6.Equip14EnhancedMoveSpell, MoveSpell = _require6.MoveSpell;
-    var _require7 = require("./utils/mapUtils"), getItemIn33 = _require7.getItemIn33;
+    var _require7 = require("./utils/mapUtils"), getItemIn33 = _require7.getItemIn33, getLocInScope = _require7.getLocInScope, getItemInScope = _require7.getItemInScope;
     cc._RF.pop();
   }, {
     "./Buffs": "Buffs",
@@ -11997,7 +11995,7 @@ window.__require = function e(t, n, r) {
       _proto2.expire = function expire() {
         var equip = this.item;
         var clazz = typeDict[equip.type];
-        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 2);
         equip.upgrade();
         equip.level in clazz.evolve_level && equip.evolve();
       };
@@ -12011,7 +12009,7 @@ window.__require = function e(t, n, r) {
       var _proto3 = ForgeSpellListener.prototype;
       _proto3.expire = function expire() {
         var clazz = typeDict[this.item.type];
-        this.game.addLog(logItem(this.owner) + "\u7684\u7075\u7b26\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u7075\u7b26\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 2);
         this.item.num++;
       };
       return ForgeSpellListener;
@@ -12024,7 +12022,7 @@ window.__require = function e(t, n, r) {
       var _proto4 = ForgeEquipListener.prototype;
       _proto4.expire = function expire() {
         var clazz = typeDict[this.item];
-        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 2);
         var equip = new clazz(this.owner);
         this.owner.equipList.push(equip);
         equip.upgrade();
@@ -12086,7 +12084,7 @@ window.__require = function e(t, n, r) {
       _proto2.expire = function expire() {
         var equip = this.item;
         var clazz = typeDict[equip.type];
-        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u5347\u7ea7\u5b8c\u6210", 2);
         equip.upgrade();
         equip.level in clazz.evolve_level && equip.evolve();
       };
@@ -12100,7 +12098,7 @@ window.__require = function e(t, n, r) {
       var _proto3 = ForgeSpellListener.prototype;
       _proto3.expire = function expire() {
         var clazz = typeDict[this.item.type];
-        this.game.addLog(logItem(this.owner) + "\u7684\u7075\u7b26\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u7075\u7b26\u201c" + clazz.spellName + "\u201d\u70bc\u5236\u5b8c\u6210", 2);
         this.item.num++;
       };
       return ForgeSpellListener;
@@ -12113,7 +12111,7 @@ window.__require = function e(t, n, r) {
       var _proto4 = ForgeEquipListener.prototype;
       _proto4.expire = function expire() {
         var clazz = typeDict[this.item];
-        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 1);
+        this.game.addLog(logItem(this.owner) + "\u7684\u201c" + clazz.equip_name + "\u201d\u6253\u9020\u5b8c\u6210", 2);
         var equip = new clazz(this.owner);
         this.owner.equipList.push(equip);
         equip.upgrade();
@@ -17120,7 +17118,8 @@ window.__require = function e(t, n, r) {
       var _proto2 = GeoToAuroPet.prototype;
       _proto2.init = function init(x, y, owner) {
         _GeoSignTransferPetsI.prototype.init.call(this, x, y, owner);
-        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+        var clazz = GeoToAuroSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
       };
       return GeoToAuroPet;
     }(GeoSignTransferPetsItems);
@@ -17130,6 +17129,9 @@ window.__require = function e(t, n, r) {
     GeoToAuroPet.price = new Coin({
       auroCoins: 100
     });
+    GeoToAuroPet.description = function() {
+      return "\u53ef\u4ee5\u5c061\u679a\u571f\u5370\u8bb0\u8f6c\u5316\u4e3a70\u91d1\u7075\u77f3";
+    };
     var GeoToHydroPet = function(_GeoSignTransferPetsI2) {
       _inheritsLoose(GeoToHydroPet, _GeoSignTransferPetsI2);
       function GeoToHydroPet() {
@@ -17138,7 +17140,8 @@ window.__require = function e(t, n, r) {
       var _proto3 = GeoToHydroPet.prototype;
       _proto3.init = function init(x, y, owner) {
         _GeoSignTransferPetsI2.prototype.init.call(this, x, y, owner);
-        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+        var clazz = GeoToHydroSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
       };
       return GeoToHydroPet;
     }(GeoSignTransferPetsItems);
@@ -17148,6 +17151,9 @@ window.__require = function e(t, n, r) {
     GeoToHydroPet.price = new Coin({
       hydroCoins: 100
     });
+    GeoToHydroPet.description = function() {
+      return "\u53ef\u4ee5\u5c061\u679a\u571f\u5370\u8bb0\u8f6c\u5316\u4e3a70\u6c34\u7075\u77f3";
+    };
     var GeoToPyroPet = function(_GeoSignTransferPetsI3) {
       _inheritsLoose(GeoToPyroPet, _GeoSignTransferPetsI3);
       function GeoToPyroPet() {
@@ -17156,7 +17162,8 @@ window.__require = function e(t, n, r) {
       var _proto4 = GeoToPyroPet.prototype;
       _proto4.init = function init(x, y, owner) {
         _GeoSignTransferPetsI3.prototype.init.call(this, x, y, owner);
-        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+        var clazz = GeoToPyroSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
       };
       return GeoToPyroPet;
     }(GeoSignTransferPetsItems);
@@ -17166,6 +17173,9 @@ window.__require = function e(t, n, r) {
     GeoToPyroPet.price = new Coin({
       pyroCoins: 100
     });
+    GeoToPyroPet.description = function() {
+      return "\u53ef\u4ee5\u5c061\u679a\u571f\u5370\u8bb0\u8f6c\u5316\u4e3a70\u706b\u7075\u77f3";
+    };
     var GeoSignTransferListener = function(_Listener) {
       _inheritsLoose(GeoSignTransferListener, _Listener);
       function GeoSignTransferListener() {
@@ -17287,6 +17297,12 @@ window.__require = function e(t, n, r) {
       function DisplacePet() {
         return _PetsItems6.apply(this, arguments) || this;
       }
+      var _proto12 = DisplacePet.prototype;
+      _proto12.init = function init(x, y, owner) {
+        _PetsItems6.prototype.init.call(this, x, y, owner);
+        var clazz = DisplaceToPetSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
+      };
       return DisplacePet;
     }(PetsItems);
     DisplacePet.id = 7;
@@ -17295,13 +17311,16 @@ window.__require = function e(t, n, r) {
     DisplacePet.price = new Coin({
       hydroCoins: 50
     });
+    DisplacePet.description = function() {
+      return "\u4f60\u53ef\u4ee5\u968f\u65f6\u79fb\u52a8\u81f3\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
+    };
     var AddScopePet = function(_PetsItems7) {
       _inheritsLoose(AddScopePet, _PetsItems7);
       function AddScopePet() {
         return _PetsItems7.apply(this, arguments) || this;
       }
-      var _proto12 = AddScopePet.prototype;
-      _proto12.init = function init(x, y, owner) {
+      var _proto13 = AddScopePet.prototype;
+      _proto13.init = function init(x, y, owner) {
         _PetsItems7.prototype.init.call(this, x, y, owner);
         this.game.listeners.InscopeCalculators.push(new AddScopePetListener(this, timeConstants_1.ENDLESS_TIME));
       };
@@ -17321,8 +17340,8 @@ window.__require = function e(t, n, r) {
       function AddScopePetListener() {
         return _Listener5.apply(this, arguments) || this;
       }
-      var _proto13 = AddScopePetListener.prototype;
-      _proto13.check = function check(player, res) {
+      var _proto14 = AddScopePetListener.prototype;
+      _proto14.check = function check(player, res) {
         getLocInScope(this.owner, 1.5).forEach(function(loc) {
           var x = loc[0], y = loc[1];
           res[y][x] = true;
@@ -17335,8 +17354,8 @@ window.__require = function e(t, n, r) {
       function AddDistanceDamagePet() {
         return _PetsItems8.apply(this, arguments) || this;
       }
-      var _proto14 = AddDistanceDamagePet.prototype;
-      _proto14.init = function init(x, y, owner) {
+      var _proto15 = AddDistanceDamagePet.prototype;
+      _proto15.init = function init(x, y, owner) {
         _PetsItems8.prototype.init.call(this, x, y, owner);
         var listener = new AddDistanceDamagePetListener(this, timeConstants_1.ENDLESS_TIME);
         listener.buff = new StrongBuff(owner, timeConstants_1.ENDLESS_TIME, 1);
@@ -17356,8 +17375,8 @@ window.__require = function e(t, n, r) {
       function AddDistanceDamagePetListener() {
         return _Listener6.apply(this, arguments) || this;
       }
-      var _proto15 = AddDistanceDamagePetListener.prototype;
-      _proto15.check = function check(player1) {
+      var _proto16 = AddDistanceDamagePetListener.prototype;
+      _proto16.check = function check(player1) {
         if (player1.code != this.code || player1.code != this.owner.code) return;
         var distance = this.distance(this.owner);
         var ratio = 1 + .1 * distance;
@@ -17383,8 +17402,8 @@ window.__require = function e(t, n, r) {
       function ChasePetListener() {
         return _Listener7.apply(this, arguments) || this;
       }
-      var _proto16 = ChasePetListener.prototype;
-      _proto16.check = function check(player1, x, y) {
+      var _proto17 = ChasePetListener.prototype;
+      _proto17.check = function check(player1, x, y) {
         var _this = this;
         if (this.owner.code != player1.code) return;
         var moved = false;
@@ -17431,9 +17450,11 @@ window.__require = function e(t, n, r) {
     var timeConstants_1 = require("./constants/timeConstants-clas0.0.3");
     var _require5 = require("./utils/mapUtils-clas0.0.3"), getLocInScope = _require5.getLocInScope;
     var _require6 = require("./Buffs-clas0.0.3"), VulnerBuff = _require6.VulnerBuff, StrongBuff = _require6.StrongBuff;
+    var _require7 = require("./Spell-clas0.0.3"), DisplaceToPetSpell = _require7.DisplaceToPetSpell, GeoToAuroSpell = _require7.GeoToAuroSpell, GeoToHydroSpell = _require7.GeoToHydroSpell, GeoToPyroSpell = _require7.GeoToPyroSpell;
     cc._RF.pop();
   }, {
     "./Buffs-clas0.0.3": "Buffs-clas0.0.3",
+    "./Spell-clas0.0.3": "Spell-clas0.0.3",
     "./constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
     "./objects/Coin-clas0.0.3": "Coin-clas0.0.3",
     "./templates/Listeners-clas0.0.3": "Listeners-clas0.0.3",
@@ -17731,7 +17752,8 @@ window.__require = function e(t, n, r) {
       var _proto2 = GeoToAuroPet.prototype;
       _proto2.init = function init(x, y, owner) {
         _GeoSignTransferPetsI.prototype.init.call(this, x, y, owner);
-        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+        var clazz = GeoToAuroSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
       };
       return GeoToAuroPet;
     }(GeoSignTransferPetsItems);
@@ -17741,6 +17763,9 @@ window.__require = function e(t, n, r) {
     GeoToAuroPet.price = new Coin({
       auroCoins: 100
     });
+    GeoToAuroPet.description = function() {
+      return "\u53ef\u4ee5\u5c061\u679a\u571f\u5370\u8bb0\u8f6c\u5316\u4e3a70\u91d1\u7075\u77f3";
+    };
     var GeoToHydroPet = function(_GeoSignTransferPetsI2) {
       _inheritsLoose(GeoToHydroPet, _GeoSignTransferPetsI2);
       function GeoToHydroPet() {
@@ -17749,7 +17774,8 @@ window.__require = function e(t, n, r) {
       var _proto3 = GeoToHydroPet.prototype;
       _proto3.init = function init(x, y, owner) {
         _GeoSignTransferPetsI2.prototype.init.call(this, x, y, owner);
-        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+        var clazz = GeoToHydroSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
       };
       return GeoToHydroPet;
     }(GeoSignTransferPetsItems);
@@ -17759,6 +17785,9 @@ window.__require = function e(t, n, r) {
     GeoToHydroPet.price = new Coin({
       hydroCoins: 100
     });
+    GeoToHydroPet.description = function() {
+      return "\u53ef\u4ee5\u5c061\u679a\u571f\u5370\u8bb0\u8f6c\u5316\u4e3a70\u6c34\u7075\u77f3";
+    };
     var GeoToPyroPet = function(_GeoSignTransferPetsI3) {
       _inheritsLoose(GeoToPyroPet, _GeoSignTransferPetsI3);
       function GeoToPyroPet() {
@@ -17767,7 +17796,8 @@ window.__require = function e(t, n, r) {
       var _proto4 = GeoToPyroPet.prototype;
       _proto4.init = function init(x, y, owner) {
         _GeoSignTransferPetsI3.prototype.init.call(this, x, y, owner);
-        new GeoSignTransferListener(owner, timeConstants_1.ONE_HOUR, this, 1);
+        var clazz = GeoToPyroSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
       };
       return GeoToPyroPet;
     }(GeoSignTransferPetsItems);
@@ -17777,6 +17807,9 @@ window.__require = function e(t, n, r) {
     GeoToPyroPet.price = new Coin({
       pyroCoins: 100
     });
+    GeoToPyroPet.description = function() {
+      return "\u53ef\u4ee5\u5c061\u679a\u571f\u5370\u8bb0\u8f6c\u5316\u4e3a70\u706b\u7075\u77f3";
+    };
     var GeoSignTransferListener = function(_Listener) {
       _inheritsLoose(GeoSignTransferListener, _Listener);
       function GeoSignTransferListener() {
@@ -17898,6 +17931,12 @@ window.__require = function e(t, n, r) {
       function DisplacePet() {
         return _PetsItems6.apply(this, arguments) || this;
       }
+      var _proto12 = DisplacePet.prototype;
+      _proto12.init = function init(x, y, owner) {
+        _PetsItems6.prototype.init.call(this, x, y, owner);
+        var clazz = DisplaceToPetSpell;
+        owner.findSpell(clazz.id) || owner.spellList.push(new clazz(owner));
+      };
       return DisplacePet;
     }(PetsItems);
     DisplacePet.id = 7;
@@ -17906,13 +17945,16 @@ window.__require = function e(t, n, r) {
     DisplacePet.price = new Coin({
       hydroCoins: 50
     });
+    DisplacePet.description = function() {
+      return "\u4f60\u53ef\u4ee5\u968f\u65f6\u79fb\u52a8\u81f3\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
+    };
     var AddScopePet = function(_PetsItems7) {
       _inheritsLoose(AddScopePet, _PetsItems7);
       function AddScopePet() {
         return _PetsItems7.apply(this, arguments) || this;
       }
-      var _proto12 = AddScopePet.prototype;
-      _proto12.init = function init(x, y, owner) {
+      var _proto13 = AddScopePet.prototype;
+      _proto13.init = function init(x, y, owner) {
         _PetsItems7.prototype.init.call(this, x, y, owner);
         this.game.listeners.InscopeCalculators.push(new AddScopePetListener(this, timeConstants_1.ENDLESS_TIME));
       };
@@ -17932,8 +17974,8 @@ window.__require = function e(t, n, r) {
       function AddScopePetListener() {
         return _Listener5.apply(this, arguments) || this;
       }
-      var _proto13 = AddScopePetListener.prototype;
-      _proto13.check = function check(player, res) {
+      var _proto14 = AddScopePetListener.prototype;
+      _proto14.check = function check(player, res) {
         getLocInScope(this.owner, 1.5).forEach(function(loc) {
           var x = loc[0], y = loc[1];
           res[y][x] = true;
@@ -17946,8 +17988,8 @@ window.__require = function e(t, n, r) {
       function AddDistanceDamagePet() {
         return _PetsItems8.apply(this, arguments) || this;
       }
-      var _proto14 = AddDistanceDamagePet.prototype;
-      _proto14.init = function init(x, y, owner) {
+      var _proto15 = AddDistanceDamagePet.prototype;
+      _proto15.init = function init(x, y, owner) {
         _PetsItems8.prototype.init.call(this, x, y, owner);
         var listener = new AddDistanceDamagePetListener(this, timeConstants_1.ENDLESS_TIME);
         listener.buff = new StrongBuff(owner, timeConstants_1.ENDLESS_TIME, 1);
@@ -17967,8 +18009,8 @@ window.__require = function e(t, n, r) {
       function AddDistanceDamagePetListener() {
         return _Listener6.apply(this, arguments) || this;
       }
-      var _proto15 = AddDistanceDamagePetListener.prototype;
-      _proto15.check = function check(player1) {
+      var _proto16 = AddDistanceDamagePetListener.prototype;
+      _proto16.check = function check(player1) {
         if (player1.code != this.code || player1.code != this.owner.code) return;
         var distance = this.distance(this.owner);
         var ratio = 1 + .1 * distance;
@@ -17994,8 +18036,8 @@ window.__require = function e(t, n, r) {
       function ChasePetListener() {
         return _Listener7.apply(this, arguments) || this;
       }
-      var _proto16 = ChasePetListener.prototype;
-      _proto16.check = function check(player1, x, y) {
+      var _proto17 = ChasePetListener.prototype;
+      _proto17.check = function check(player1, x, y) {
         var _this = this;
         if (this.owner.code != player1.code) return;
         var moved = false;
@@ -18042,9 +18084,11 @@ window.__require = function e(t, n, r) {
     var timeConstants_1 = require("./constants/timeConstants");
     var _require5 = require("./utils/mapUtils"), getLocInScope = _require5.getLocInScope;
     var _require6 = require("./Buffs"), VulnerBuff = _require6.VulnerBuff, StrongBuff = _require6.StrongBuff;
+    var _require7 = require("./Spell"), DisplaceToPetSpell = _require7.DisplaceToPetSpell, GeoToAuroSpell = _require7.GeoToAuroSpell, GeoToHydroSpell = _require7.GeoToHydroSpell, GeoToPyroSpell = _require7.GeoToPyroSpell;
     cc._RF.pop();
   }, {
     "./Buffs": "Buffs",
+    "./Spell": "Spell",
     "./constants/timeConstants": "timeConstants",
     "./objects/Coin": "Coin",
     "./templates/Listeners": "Listeners",
@@ -21127,7 +21171,7 @@ window.__require = function e(t, n, r) {
     "use strict";
     cc._RF.push(module, "9f7416kQ5JG0ZiQ6BQUpRsP", "Spell-clas0.0.3");
     "use strict";
-    var _this9 = void 0;
+    var _this12 = void 0;
     function _defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -21171,18 +21215,17 @@ window.__require = function e(t, n, r) {
       };
       return _setPrototypeOf(o, p);
     }
-    var _require = require("./templates/SpellItems-clas0.0.3"), SpellItem = _require.SpellItem;
+    var _require = require("./templates/SpellItems-clas0.0.3"), SpellItem = _require.SpellItem, UnlimitedSpellItem = _require.UnlimitedSpellItem;
     var _require2 = require("./objects/Coin-clas0.0.3"), Coin = _require2.Coin, COIN_KEYS = _require2.COIN_KEYS;
     var _require3 = require("./templates/Listeners-clas0.0.3"), Listener = _require3.Listener;
-    var MoveSpell = function(_SpellItem) {
-      _inheritsLoose(MoveSpell, _SpellItem);
+    var MoveSpell = function(_UnlimitedSpellItem) {
+      _inheritsLoose(MoveSpell, _UnlimitedSpellItem);
       function MoveSpell() {
-        return _SpellItem.apply(this, arguments) || this;
+        return _UnlimitedSpellItem.apply(this, arguments) || this;
       }
       var _proto = MoveSpell.prototype;
       _proto.init = function init(owner) {
-        _SpellItem.prototype.init.call(this, owner);
-        this.num = 999999;
+        _UnlimitedSpellItem.prototype.init.call(this, owner);
       };
       _proto.use = function use(x, y) {
         var player = this.owner;
@@ -21201,7 +21244,7 @@ window.__require = function e(t, n, r) {
         });
       };
       return MoveSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     MoveSpell.id = 0;
     MoveSpell.size = 0;
     MoveSpell.price = new Coin({
@@ -21221,7 +21264,6 @@ window.__require = function e(t, n, r) {
       var _proto2 = Equip14EnhancedMoveSpell.prototype;
       _proto2.init = function init(owner) {
         _MoveSpell.prototype.init.call(this, owner);
-        this.num = 999999;
       };
       _proto2.validLocations = function validLocations() {
         var _this = this;
@@ -21234,10 +21276,10 @@ window.__require = function e(t, n, r) {
       return Equip14EnhancedMoveSpell;
     }(MoveSpell);
     Equip14EnhancedMoveSpell.spellName = "\u3010\u98de\u71d5\u3011\u98de\u884c";
-    var AscendSpell = function(_SpellItem2) {
-      _inheritsLoose(AscendSpell, _SpellItem2);
+    var AscendSpell = function(_SpellItem) {
+      _inheritsLoose(AscendSpell, _SpellItem);
       function AscendSpell() {
-        return _SpellItem2.apply(this, arguments) || this;
+        return _SpellItem.apply(this, arguments) || this;
       }
       var _proto3 = AscendSpell.prototype;
       _proto3.use = function use(x, y) {
@@ -21263,10 +21305,10 @@ window.__require = function e(t, n, r) {
       return null;
     };
     AscendSpell.uiDisplay = true;
-    var PowerSpell = function(_SpellItem3) {
-      _inheritsLoose(PowerSpell, _SpellItem3);
+    var PowerSpell = function(_SpellItem2) {
+      _inheritsLoose(PowerSpell, _SpellItem2);
       function PowerSpell() {
-        return _SpellItem3.apply(this, arguments) || this;
+        return _SpellItem2.apply(this, arguments) || this;
       }
       var _proto4 = PowerSpell.prototype;
       _proto4.use = function use(x, y, extra) {
@@ -21285,10 +21327,10 @@ window.__require = function e(t, n, r) {
     PowerSpell.description = function() {
       return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u7075\u529b\u63d0\u53470.17";
     };
-    var EnergyToPowerSpell = function(_SpellItem4) {
-      _inheritsLoose(EnergyToPowerSpell, _SpellItem4);
+    var EnergyToPowerSpell = function(_SpellItem3) {
+      _inheritsLoose(EnergyToPowerSpell, _SpellItem3);
       function EnergyToPowerSpell() {
-        return _SpellItem4.apply(this, arguments) || this;
+        return _SpellItem3.apply(this, arguments) || this;
       }
       var _proto5 = EnergyToPowerSpell.prototype;
       _proto5.use = function use(x, y, extra) {
@@ -21315,14 +21357,14 @@ window.__require = function e(t, n, r) {
       return null;
     };
     EnergyToPowerSpell.energy_cost = 20;
-    var GeoCoreSpell = function(_SpellItem5) {
-      _inheritsLoose(GeoCoreSpell, _SpellItem5);
+    var GeoCoreSpell = function(_SpellItem4) {
+      _inheritsLoose(GeoCoreSpell, _SpellItem4);
       function GeoCoreSpell() {
-        return _SpellItem5.apply(this, arguments) || this;
+        return _SpellItem4.apply(this, arguments) || this;
       }
       var _proto6 = GeoCoreSpell.prototype;
       _proto6.init = function init() {
-        _SpellItem5.prototype.init.apply(this, arguments);
+        _SpellItem4.prototype.init.apply(this, arguments);
         this.special = [ 7 ];
       };
       _proto6.use = function use(x, y) {
@@ -21355,14 +21397,14 @@ window.__require = function e(t, n, r) {
     GeoCoreSpell.description = function() {
       return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u7075\u529b+0.07\uff0c\u82e5\u6b64\u65f6\u5176\u7075\u529b\u7684\u767e\u5206\u4f4d\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u4f7f\u7075\u529b\u7b2c\u4e09\u4f4d\u6570\u52a00.18+0.05X\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09";
     };
-    var HydroCoreSpell = function(_SpellItem6) {
-      _inheritsLoose(HydroCoreSpell, _SpellItem6);
+    var HydroCoreSpell = function(_SpellItem5) {
+      _inheritsLoose(HydroCoreSpell, _SpellItem5);
       function HydroCoreSpell() {
-        return _SpellItem6.apply(this, arguments) || this;
+        return _SpellItem5.apply(this, arguments) || this;
       }
       var _proto7 = HydroCoreSpell.prototype;
       _proto7.init = function init(player) {
-        _SpellItem6.prototype.init.call(this, player);
+        _SpellItem5.prototype.init.call(this, player);
       };
       _proto7.use = function use(x, y) {
         var _this2 = this;
@@ -21465,10 +21507,10 @@ window.__require = function e(t, n, r) {
         return !map[y][x];
       });
     };
-    var PyroCoreSpell = function(_SpellItem7) {
-      _inheritsLoose(PyroCoreSpell, _SpellItem7);
+    var PyroCoreSpell = function(_SpellItem6) {
+      _inheritsLoose(PyroCoreSpell, _SpellItem6);
       function PyroCoreSpell() {
-        return _SpellItem7.apply(this, arguments) || this;
+        return _SpellItem6.apply(this, arguments) || this;
       }
       var _proto8 = PyroCoreSpell.prototype;
       _proto8.use = function use(x, y) {
@@ -21502,10 +21544,10 @@ window.__require = function e(t, n, r) {
     PyroCoreSpell.description = function() {
       return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u9020\u6210200\u70b9\u4f24\u5bb3\u5e76\u53e0\u52a01\u5c42\u706b\u5370\u8bb0\uff0c\u82e5\u6b64\u65f6\u8be5\u5355\u4f4d\u6709\u8d85\u8fc77\u5c42\u706b\u5370\u8bb0\u5219\u5f15\u53d1\u7206\u70b8\uff0c\u5bf9\u5176\u6240\u57283*3\u8303\u56f4\u5185\u6240\u6709\u5355\u4f4d\u5168\u90e8\u65bd\u52a0\u4e00\u6b21\u3010\u70bd\u7130\u711a\u8bd7\u3011";
     };
-    var DisplaceSpell = function(_SpellItem8) {
-      _inheritsLoose(DisplaceSpell, _SpellItem8);
+    var DisplaceSpell = function(_SpellItem7) {
+      _inheritsLoose(DisplaceSpell, _SpellItem7);
       function DisplaceSpell() {
-        return _SpellItem8.apply(this, arguments) || this;
+        return _SpellItem7.apply(this, arguments) || this;
       }
       var _proto9 = DisplaceSpell.prototype;
       _proto9.use = function use(x, y, extra) {
@@ -21544,10 +21586,10 @@ window.__require = function e(t, n, r) {
         return player.x != axis[0] || player.y != axis[1];
       });
     };
-    var BounceSpell = function(_SpellItem9) {
-      _inheritsLoose(BounceSpell, _SpellItem9);
+    var BounceSpell = function(_SpellItem8) {
+      _inheritsLoose(BounceSpell, _SpellItem8);
       function BounceSpell() {
-        return _SpellItem9.apply(this, arguments) || this;
+        return _SpellItem8.apply(this, arguments) || this;
       }
       var _proto10 = BounceSpell.prototype;
       _proto10.use = function use(x, y) {
@@ -21581,10 +21623,10 @@ window.__require = function e(t, n, r) {
     BounceSpell.validLocations = function() {
       return null;
     };
-    var AttractSpell = function(_SpellItem10) {
-      _inheritsLoose(AttractSpell, _SpellItem10);
+    var AttractSpell = function(_SpellItem9) {
+      _inheritsLoose(AttractSpell, _SpellItem9);
       function AttractSpell() {
-        return _SpellItem10.apply(this, arguments) || this;
+        return _SpellItem9.apply(this, arguments) || this;
       }
       var _proto11 = AttractSpell.prototype;
       _proto11.use = function use(x, y) {
@@ -21618,10 +21660,10 @@ window.__require = function e(t, n, r) {
     AttractSpell.validLocations = function() {
       return null;
     };
-    var HydrateOneDirectionSpell = function(_SpellItem11) {
-      _inheritsLoose(HydrateOneDirectionSpell, _SpellItem11);
+    var HydrateOneDirectionSpell = function(_SpellItem10) {
+      _inheritsLoose(HydrateOneDirectionSpell, _SpellItem10);
       function HydrateOneDirectionSpell() {
-        return _SpellItem11.apply(this, arguments) || this;
+        return _SpellItem10.apply(this, arguments) || this;
       }
       var _proto12 = HydrateOneDirectionSpell.prototype;
       _proto12.use = function use(x, y) {
@@ -21665,10 +21707,10 @@ window.__require = function e(t, n, r) {
         return player.x != axis[0] || player.y != axis[1];
       });
     };
-    var PyrateSpell = function(_SpellItem12) {
-      _inheritsLoose(PyrateSpell, _SpellItem12);
+    var PyrateSpell = function(_SpellItem11) {
+      _inheritsLoose(PyrateSpell, _SpellItem11);
       function PyrateSpell() {
-        return _SpellItem12.apply(this, arguments) || this;
+        return _SpellItem11.apply(this, arguments) || this;
       }
       var _proto13 = PyrateSpell.prototype;
       _proto13.use = function use(x, y) {
@@ -21688,10 +21730,10 @@ window.__require = function e(t, n, r) {
     PyrateSpell.description = function() {
       return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u65bd\u52a0\u4e5d\u5c42\u706b\u5370\u8bb0";
     };
-    var TempPowerSpell = function(_SpellItem13) {
-      _inheritsLoose(TempPowerSpell, _SpellItem13);
+    var TempPowerSpell = function(_SpellItem12) {
+      _inheritsLoose(TempPowerSpell, _SpellItem12);
       function TempPowerSpell() {
-        return _SpellItem13.apply(this, arguments) || this;
+        return _SpellItem12.apply(this, arguments) || this;
       }
       var _proto14 = TempPowerSpell.prototype;
       _proto14.use = function use(x, y, extra) {
@@ -21710,18 +21752,14 @@ window.__require = function e(t, n, r) {
     TempPowerSpell.description = function() {
       return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u77ed\u6682\u83b7\u5f970.27\u7684\u7075\u529b\uff0c70\u70b9\u653b\u51fb\u529b\uff0c\u653b\u901f\u7cfb\u6570\u964d\u4f4e0.7\uff0c\u6301\u7eed5\u5206\u949f";
     };
-    var GeoToPyroSpell = function(_SpellItem14) {
-      _inheritsLoose(GeoToPyroSpell, _SpellItem14);
+    var GeoToPyroSpell = function(_UnlimitedSpellItem2) {
+      _inheritsLoose(GeoToPyroSpell, _UnlimitedSpellItem2);
       function GeoToPyroSpell() {
-        return _SpellItem14.apply(this, arguments) || this;
+        return _UnlimitedSpellItem2.apply(this, arguments) || this;
       }
       var _proto15 = GeoToPyroSpell.prototype;
       _proto15.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u70ec\u706b\u7075\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u70ec\u706b\u5370\u8bb0\u4e0d\u8db3");
         if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
         this.owner.geoSign--;
         this.owner.changeCoins({
           pyroCoins: 70
@@ -21737,112 +21775,98 @@ window.__require = function e(t, n, r) {
         });
       };
       return GeoToPyroSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     GeoToPyroSpell.id = 13;
     GeoToPyroSpell.size = 0;
     GeoToPyroSpell.price = new Coin({});
     GeoToPyroSpell.spellName = "\u7075\u94f8\xb7\u70ec\u706b";
     GeoToPyroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u70ec\u706b\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u706b\u7075\u77f3";
+      return "\u6d88\u8017\u4e00\u5c42\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u706b\u7075\u77f3";
     };
-    GeoToPyroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
+    GeoToPyroSpell.validLocations = function() {
+      return null;
     };
-    var GeoToHydroSpell = function(_SpellItem15) {
-      _inheritsLoose(GeoToHydroSpell, _SpellItem15);
+    GeoToPyroSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + GeoToPyroPet.pet_name + "\u540e\u89e3\u9501";
+    };
+    var GeoToHydroSpell = function(_UnlimitedSpellItem3) {
+      _inheritsLoose(GeoToHydroSpell, _UnlimitedSpellItem3);
       function GeoToHydroSpell() {
-        return _SpellItem15.apply(this, arguments) || this;
+        return _UnlimitedSpellItem3.apply(this, arguments) || this;
       }
       var _proto16 = GeoToHydroSpell.prototype;
       _proto16.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToHydroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u6d41\u6e0a\u517d\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u6d41\u6e0a\u5370\u8bb0\u4e0d\u8db3");
         if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
         this.owner.geoSign--;
         this.owner.changeCoins({
           hydroCoins: 70
         });
       };
       _proto16.validLocations = function validLocations() {
-        var _this10 = this;
+        var _this9 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
-          var target = _this10.game.map[y][x];
-          if (!target || "GeoToHydroPet" != target.type || target.owner.code != _this10.owner.code) return false;
+          var target = _this9.game.map[y][x];
+          if (!target || "GeoToHydroPet" != target.type || target.owner.code != _this9.owner.code) return false;
           return true;
         });
       };
       return GeoToHydroSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     GeoToHydroSpell.id = 14;
     GeoToHydroSpell.size = 0;
     GeoToHydroSpell.price = new Coin({});
     GeoToHydroSpell.spellName = "\u7075\u94f8\xb7\u6d41\u6e0a";
     GeoToHydroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u6d41\u6e0a\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u6c34\u7075\u77f3";
+      return "\u6d88\u8017\u4e00\u5c42\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u6c34\u7075\u77f3";
     };
-    GeoToHydroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToHydroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
+    GeoToHydroSpell.validLocations = function() {
+      return null;
     };
-    var GeoToAuroSpell = function(_SpellItem16) {
-      _inheritsLoose(GeoToAuroSpell, _SpellItem16);
+    GeoToHydroSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + GeoToHydroPet.pet_name + "\u540e\u89e3\u9501";
+    };
+    var GeoToAuroSpell = function(_UnlimitedSpellItem4) {
+      _inheritsLoose(GeoToAuroSpell, _UnlimitedSpellItem4);
       function GeoToAuroSpell() {
-        return _SpellItem16.apply(this, arguments) || this;
+        return _UnlimitedSpellItem4.apply(this, arguments) || this;
       }
       var _proto17 = GeoToAuroSpell.prototype;
       _proto17.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u5764\u91d1\u517d\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u5764\u91d1\u5370\u8bb0\u4e0d\u8db3");
         if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
         this.owner.geoSign--;
         this.owner.changeCoins({
           auroCoins: 70
         });
       };
       _proto17.validLocations = function validLocations() {
-        var _this11 = this;
+        var _this10 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
-          var target = _this11.game.map[y][x];
-          if (!target || "GeoToAuroPet" != target.type || target.owner.code != _this11.owner.code) return false;
+          var target = _this10.game.map[y][x];
+          if (!target || "GeoToAuroPet" != target.type || target.owner.code != _this10.owner.code) return false;
           return true;
         });
       };
       return GeoToAuroSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     GeoToAuroSpell.id = 15;
     GeoToAuroSpell.size = 0;
     GeoToAuroSpell.price = new Coin({});
     GeoToAuroSpell.spellName = "\u7075\u94f8\xb7\u5764\u91d1";
     GeoToAuroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u5764\u91d1\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u91d1\u7075\u77f3";
+      return "\u6d88\u8017\u4e00\u5c42\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u91d1\u7075\u77f3";
     };
-    GeoToAuroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToAuroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
+    GeoToAuroSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + GeoToAuroPet.pet_name + "\u540e\u89e3\u9501";
     };
-    var DisplaceToPetSpell = function(_SpellItem17) {
-      _inheritsLoose(DisplaceToPetSpell, _SpellItem17);
+    GeoToAuroSpell.validLocations = function() {
+      return null;
+    };
+    var DisplaceToPetSpell = function(_UnlimitedSpellItem5) {
+      _inheritsLoose(DisplaceToPetSpell, _UnlimitedSpellItem5);
       function DisplaceToPetSpell() {
-        return _SpellItem17.apply(this, arguments) || this;
+        return _UnlimitedSpellItem5.apply(this, arguments) || this;
       }
       var _proto18 = DisplaceToPetSpell.prototype;
       _proto18.use = function use(x, y, extra) {
@@ -21858,32 +21882,35 @@ window.__require = function e(t, n, r) {
       _createClass(DisplaceToPetSpell, [ {
         key: "scope",
         get: function get() {
-          var _this12 = this;
+          var _this11 = this;
           var res = emptyMap();
           this.game.allMapElements.forEach(function(item) {
             if ("DisplacePet" != item.type) return;
-            if (item.owner.code != _this12.owner.code) return;
+            if (item.owner.code != _this11.owner.code) return;
             getLocInScope(item, 1.5).forEach(function(loc) {
               var x = loc[0], y = loc[1];
-              _this12.game.map[y][x] || (res[y][x] = true);
+              _this11.game.map[y][x] || (res[y][x] = true);
             });
           });
           return res;
         }
       } ]);
       return DisplaceToPetSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     DisplaceToPetSpell.id = 16;
     DisplaceToPetSpell.size = 0;
     DisplaceToPetSpell.spellName = "\u7075\u9e64\xb7\u5f52\u9014";
     DisplaceToPetSpell.description = function() {
       return "\u79fb\u52a8\u81f3\u4efb\u610f\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
     };
+    DisplaceToPetSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + DisplacePet.pet_name + "\u540e\u89e3\u9501";
+    };
     DisplaceToPetSpell.validLocations = function(player) {
       var spell = new DisplaceToPetSpell();
       spell.owner = player;
       spell.game = player.game;
-      var scope = _this9.scope;
+      var scope = _this12.scope;
       return iter_36().filter(function(axis) {
         return scope[axis[1]][scope[axis[0]]];
       });
@@ -21934,9 +21961,11 @@ window.__require = function e(t, n, r) {
     var _require10 = require("./utils/iterationUtils-clas0.0.3"), iter_36 = _require10.iter_36;
     var _require11 = require("./animations/spellAnimation-clas0.0.3"), ShowIconAnimation = _require11.ShowIconAnimation, InkAnimation = _require11.InkAnimation, DisplaceSpellAnimation = _require11.DisplaceSpellAnimation, GeoCoreSpellAnimation = _require11.GeoCoreSpellAnimation;
     var _require12 = require("./loggers/logUtils-clas0.0.3"), logVertex = _require12.logVertex, logItem = _require12.logItem;
+    var _require13 = require("./Pets-clas0.0.3"), GeoToPyroPet = _require13.GeoToPyroPet, GeoToHydroPet = _require13.GeoToHydroPet, GeoToAuroPet = _require13.GeoToAuroPet, DisplacePet = _require13.DisplacePet;
     cc._RF.pop();
   }, {
     "./Buffs-clas0.0.3": "Buffs-clas0.0.3",
+    "./Pets-clas0.0.3": "Pets-clas0.0.3",
     "./animations/spellAnimation-clas0.0.3": "spellAnimation-clas0.0.3",
     "./constants/gameConstants-clas0.0.3": "gameConstants-clas0.0.3",
     "./constants/timeConstants-clas0.0.3": "timeConstants-clas0.0.3",
@@ -22134,13 +22163,29 @@ window.__require = function e(t, n, r) {
     SpellItem.description = function() {
       return "";
     };
+    SpellItem.specialUnlockCondition = function(player) {
+      return null;
+    };
     SpellItem.validLocations = function(player) {
       return player.game.allMapElements.map(function(item) {
         return [ item.x, item.y ];
       });
     };
+    var UnlimitedSpellItem = function(_SpellItem) {
+      _inheritsLoose(UnlimitedSpellItem, _SpellItem);
+      function UnlimitedSpellItem() {
+        return _SpellItem.apply(this, arguments) || this;
+      }
+      var _proto2 = UnlimitedSpellItem.prototype;
+      _proto2.init = function init(owner) {
+        _SpellItem.prototype.init.call(this, owner);
+        this.num = 1e8;
+      };
+      return UnlimitedSpellItem;
+    }(SpellItem);
     module.exports = {
-      SpellItem: SpellItem
+      SpellItem: SpellItem,
+      UnlimitedSpellItem: UnlimitedSpellItem
     };
     cc._RF.pop();
   }, {
@@ -22196,13 +22241,29 @@ window.__require = function e(t, n, r) {
     SpellItem.description = function() {
       return "";
     };
+    SpellItem.specialUnlockCondition = function(player) {
+      return null;
+    };
     SpellItem.validLocations = function(player) {
       return player.game.allMapElements.map(function(item) {
         return [ item.x, item.y ];
       });
     };
+    var UnlimitedSpellItem = function(_SpellItem) {
+      _inheritsLoose(UnlimitedSpellItem, _SpellItem);
+      function UnlimitedSpellItem() {
+        return _SpellItem.apply(this, arguments) || this;
+      }
+      var _proto2 = UnlimitedSpellItem.prototype;
+      _proto2.init = function init(owner) {
+        _SpellItem.prototype.init.call(this, owner);
+        this.num = 1e8;
+      };
+      return UnlimitedSpellItem;
+    }(SpellItem);
     module.exports = {
-      SpellItem: SpellItem
+      SpellItem: SpellItem,
+      UnlimitedSpellItem: UnlimitedSpellItem
     };
     cc._RF.pop();
   }, {
@@ -22213,7 +22274,7 @@ window.__require = function e(t, n, r) {
     "use strict";
     cc._RF.push(module, "a7ddcb0FKdOzr+A7N+yrVHM", "Spell");
     "use strict";
-    var _this9 = void 0;
+    var _this12 = void 0;
     function _defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -22257,18 +22318,17 @@ window.__require = function e(t, n, r) {
       };
       return _setPrototypeOf(o, p);
     }
-    var _require = require("./templates/SpellItems"), SpellItem = _require.SpellItem;
+    var _require = require("./templates/SpellItems"), SpellItem = _require.SpellItem, UnlimitedSpellItem = _require.UnlimitedSpellItem;
     var _require2 = require("./objects/Coin"), Coin = _require2.Coin, COIN_KEYS = _require2.COIN_KEYS;
     var _require3 = require("./templates/Listeners"), Listener = _require3.Listener;
-    var MoveSpell = function(_SpellItem) {
-      _inheritsLoose(MoveSpell, _SpellItem);
+    var MoveSpell = function(_UnlimitedSpellItem) {
+      _inheritsLoose(MoveSpell, _UnlimitedSpellItem);
       function MoveSpell() {
-        return _SpellItem.apply(this, arguments) || this;
+        return _UnlimitedSpellItem.apply(this, arguments) || this;
       }
       var _proto = MoveSpell.prototype;
       _proto.init = function init(owner) {
-        _SpellItem.prototype.init.call(this, owner);
-        this.num = 999999;
+        _UnlimitedSpellItem.prototype.init.call(this, owner);
       };
       _proto.use = function use(x, y) {
         var player = this.owner;
@@ -22287,7 +22347,7 @@ window.__require = function e(t, n, r) {
         });
       };
       return MoveSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     MoveSpell.id = 0;
     MoveSpell.size = 0;
     MoveSpell.price = new Coin({
@@ -22307,7 +22367,6 @@ window.__require = function e(t, n, r) {
       var _proto2 = Equip14EnhancedMoveSpell.prototype;
       _proto2.init = function init(owner) {
         _MoveSpell.prototype.init.call(this, owner);
-        this.num = 999999;
       };
       _proto2.validLocations = function validLocations() {
         var _this = this;
@@ -22320,10 +22379,10 @@ window.__require = function e(t, n, r) {
       return Equip14EnhancedMoveSpell;
     }(MoveSpell);
     Equip14EnhancedMoveSpell.spellName = "\u3010\u98de\u71d5\u3011\u98de\u884c";
-    var AscendSpell = function(_SpellItem2) {
-      _inheritsLoose(AscendSpell, _SpellItem2);
+    var AscendSpell = function(_SpellItem) {
+      _inheritsLoose(AscendSpell, _SpellItem);
       function AscendSpell() {
-        return _SpellItem2.apply(this, arguments) || this;
+        return _SpellItem.apply(this, arguments) || this;
       }
       var _proto3 = AscendSpell.prototype;
       _proto3.use = function use(x, y) {
@@ -22349,10 +22408,10 @@ window.__require = function e(t, n, r) {
       return null;
     };
     AscendSpell.uiDisplay = true;
-    var PowerSpell = function(_SpellItem3) {
-      _inheritsLoose(PowerSpell, _SpellItem3);
+    var PowerSpell = function(_SpellItem2) {
+      _inheritsLoose(PowerSpell, _SpellItem2);
       function PowerSpell() {
-        return _SpellItem3.apply(this, arguments) || this;
+        return _SpellItem2.apply(this, arguments) || this;
       }
       var _proto4 = PowerSpell.prototype;
       _proto4.use = function use(x, y, extra) {
@@ -22371,10 +22430,10 @@ window.__require = function e(t, n, r) {
     PowerSpell.description = function() {
       return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u7075\u529b\u63d0\u53470.17";
     };
-    var EnergyToPowerSpell = function(_SpellItem4) {
-      _inheritsLoose(EnergyToPowerSpell, _SpellItem4);
+    var EnergyToPowerSpell = function(_SpellItem3) {
+      _inheritsLoose(EnergyToPowerSpell, _SpellItem3);
       function EnergyToPowerSpell() {
-        return _SpellItem4.apply(this, arguments) || this;
+        return _SpellItem3.apply(this, arguments) || this;
       }
       var _proto5 = EnergyToPowerSpell.prototype;
       _proto5.use = function use(x, y, extra) {
@@ -22401,14 +22460,14 @@ window.__require = function e(t, n, r) {
       return null;
     };
     EnergyToPowerSpell.energy_cost = 20;
-    var GeoCoreSpell = function(_SpellItem5) {
-      _inheritsLoose(GeoCoreSpell, _SpellItem5);
+    var GeoCoreSpell = function(_SpellItem4) {
+      _inheritsLoose(GeoCoreSpell, _SpellItem4);
       function GeoCoreSpell() {
-        return _SpellItem5.apply(this, arguments) || this;
+        return _SpellItem4.apply(this, arguments) || this;
       }
       var _proto6 = GeoCoreSpell.prototype;
       _proto6.init = function init() {
-        _SpellItem5.prototype.init.apply(this, arguments);
+        _SpellItem4.prototype.init.apply(this, arguments);
         this.special = [ 7 ];
       };
       _proto6.use = function use(x, y) {
@@ -22441,14 +22500,14 @@ window.__require = function e(t, n, r) {
     GeoCoreSpell.description = function() {
       return "\u4ee4\u4e00\u540d\u89d2\u8272\u6216\u4e00\u540d\u5df1\u65b9\u9635\u8425\u4ed9\u517d\u7075\u529b+0.07\uff0c\u82e5\u6b64\u65f6\u5176\u7075\u529b\u7684\u767e\u5206\u4f4d\u4e3a7\uff0c\u5219\u4f60\u83b7\u5f97\u4e00\u5c42\u571f\u5370\u8bb0\u5e76\u4f7f\u7075\u529b\u7b2c\u4e09\u4f4d\u6570\u52a00.18+0.05X\uff08X\u4e3a\u571f\u5370\u8bb0\u5c42\u6570\uff09";
     };
-    var HydroCoreSpell = function(_SpellItem6) {
-      _inheritsLoose(HydroCoreSpell, _SpellItem6);
+    var HydroCoreSpell = function(_SpellItem5) {
+      _inheritsLoose(HydroCoreSpell, _SpellItem5);
       function HydroCoreSpell() {
-        return _SpellItem6.apply(this, arguments) || this;
+        return _SpellItem5.apply(this, arguments) || this;
       }
       var _proto7 = HydroCoreSpell.prototype;
       _proto7.init = function init(player) {
-        _SpellItem6.prototype.init.call(this, player);
+        _SpellItem5.prototype.init.call(this, player);
       };
       _proto7.use = function use(x, y) {
         var _this2 = this;
@@ -22551,10 +22610,10 @@ window.__require = function e(t, n, r) {
         return !map[y][x];
       });
     };
-    var PyroCoreSpell = function(_SpellItem7) {
-      _inheritsLoose(PyroCoreSpell, _SpellItem7);
+    var PyroCoreSpell = function(_SpellItem6) {
+      _inheritsLoose(PyroCoreSpell, _SpellItem6);
       function PyroCoreSpell() {
-        return _SpellItem7.apply(this, arguments) || this;
+        return _SpellItem6.apply(this, arguments) || this;
       }
       var _proto8 = PyroCoreSpell.prototype;
       _proto8.use = function use(x, y) {
@@ -22588,10 +22647,10 @@ window.__require = function e(t, n, r) {
     PyroCoreSpell.description = function() {
       return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u9020\u6210200\u70b9\u4f24\u5bb3\u5e76\u53e0\u52a01\u5c42\u706b\u5370\u8bb0\uff0c\u82e5\u6b64\u65f6\u8be5\u5355\u4f4d\u6709\u8d85\u8fc77\u5c42\u706b\u5370\u8bb0\u5219\u5f15\u53d1\u7206\u70b8\uff0c\u5bf9\u5176\u6240\u57283*3\u8303\u56f4\u5185\u6240\u6709\u5355\u4f4d\u5168\u90e8\u65bd\u52a0\u4e00\u6b21\u3010\u70bd\u7130\u711a\u8bd7\u3011";
     };
-    var DisplaceSpell = function(_SpellItem8) {
-      _inheritsLoose(DisplaceSpell, _SpellItem8);
+    var DisplaceSpell = function(_SpellItem7) {
+      _inheritsLoose(DisplaceSpell, _SpellItem7);
       function DisplaceSpell() {
-        return _SpellItem8.apply(this, arguments) || this;
+        return _SpellItem7.apply(this, arguments) || this;
       }
       var _proto9 = DisplaceSpell.prototype;
       _proto9.use = function use(x, y, extra) {
@@ -22630,10 +22689,10 @@ window.__require = function e(t, n, r) {
         return player.x != axis[0] || player.y != axis[1];
       });
     };
-    var BounceSpell = function(_SpellItem9) {
-      _inheritsLoose(BounceSpell, _SpellItem9);
+    var BounceSpell = function(_SpellItem8) {
+      _inheritsLoose(BounceSpell, _SpellItem8);
       function BounceSpell() {
-        return _SpellItem9.apply(this, arguments) || this;
+        return _SpellItem8.apply(this, arguments) || this;
       }
       var _proto10 = BounceSpell.prototype;
       _proto10.use = function use(x, y) {
@@ -22667,10 +22726,10 @@ window.__require = function e(t, n, r) {
     BounceSpell.validLocations = function() {
       return null;
     };
-    var AttractSpell = function(_SpellItem10) {
-      _inheritsLoose(AttractSpell, _SpellItem10);
+    var AttractSpell = function(_SpellItem9) {
+      _inheritsLoose(AttractSpell, _SpellItem9);
       function AttractSpell() {
-        return _SpellItem10.apply(this, arguments) || this;
+        return _SpellItem9.apply(this, arguments) || this;
       }
       var _proto11 = AttractSpell.prototype;
       _proto11.use = function use(x, y) {
@@ -22704,10 +22763,10 @@ window.__require = function e(t, n, r) {
     AttractSpell.validLocations = function() {
       return null;
     };
-    var HydrateOneDirectionSpell = function(_SpellItem11) {
-      _inheritsLoose(HydrateOneDirectionSpell, _SpellItem11);
+    var HydrateOneDirectionSpell = function(_SpellItem10) {
+      _inheritsLoose(HydrateOneDirectionSpell, _SpellItem10);
       function HydrateOneDirectionSpell() {
-        return _SpellItem11.apply(this, arguments) || this;
+        return _SpellItem10.apply(this, arguments) || this;
       }
       var _proto12 = HydrateOneDirectionSpell.prototype;
       _proto12.use = function use(x, y) {
@@ -22751,10 +22810,10 @@ window.__require = function e(t, n, r) {
         return player.x != axis[0] || player.y != axis[1];
       });
     };
-    var PyrateSpell = function(_SpellItem12) {
-      _inheritsLoose(PyrateSpell, _SpellItem12);
+    var PyrateSpell = function(_SpellItem11) {
+      _inheritsLoose(PyrateSpell, _SpellItem11);
       function PyrateSpell() {
-        return _SpellItem12.apply(this, arguments) || this;
+        return _SpellItem11.apply(this, arguments) || this;
       }
       var _proto13 = PyrateSpell.prototype;
       _proto13.use = function use(x, y) {
@@ -22774,10 +22833,10 @@ window.__require = function e(t, n, r) {
     PyrateSpell.description = function() {
       return "\u5bf9\u4e00\u4e2a\u5355\u4f4d\u65bd\u52a0\u4e5d\u5c42\u706b\u5370\u8bb0";
     };
-    var TempPowerSpell = function(_SpellItem13) {
-      _inheritsLoose(TempPowerSpell, _SpellItem13);
+    var TempPowerSpell = function(_SpellItem12) {
+      _inheritsLoose(TempPowerSpell, _SpellItem12);
       function TempPowerSpell() {
-        return _SpellItem13.apply(this, arguments) || this;
+        return _SpellItem12.apply(this, arguments) || this;
       }
       var _proto14 = TempPowerSpell.prototype;
       _proto14.use = function use(x, y, extra) {
@@ -22796,18 +22855,14 @@ window.__require = function e(t, n, r) {
     TempPowerSpell.description = function() {
       return "\u4f7f\u4e00\u4e2a\u5355\u4f4d\u77ed\u6682\u83b7\u5f970.27\u7684\u7075\u529b\uff0c70\u70b9\u653b\u51fb\u529b\uff0c\u653b\u901f\u7cfb\u6570\u964d\u4f4e0.7\uff0c\u6301\u7eed5\u5206\u949f";
     };
-    var GeoToPyroSpell = function(_SpellItem14) {
-      _inheritsLoose(GeoToPyroSpell, _SpellItem14);
+    var GeoToPyroSpell = function(_UnlimitedSpellItem2) {
+      _inheritsLoose(GeoToPyroSpell, _UnlimitedSpellItem2);
       function GeoToPyroSpell() {
-        return _SpellItem14.apply(this, arguments) || this;
+        return _UnlimitedSpellItem2.apply(this, arguments) || this;
       }
       var _proto15 = GeoToPyroSpell.prototype;
       _proto15.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u70ec\u706b\u7075\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u70ec\u706b\u5370\u8bb0\u4e0d\u8db3");
         if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
         this.owner.geoSign--;
         this.owner.changeCoins({
           pyroCoins: 70
@@ -22823,112 +22878,98 @@ window.__require = function e(t, n, r) {
         });
       };
       return GeoToPyroSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     GeoToPyroSpell.id = 13;
     GeoToPyroSpell.size = 0;
     GeoToPyroSpell.price = new Coin({});
     GeoToPyroSpell.spellName = "\u7075\u94f8\xb7\u70ec\u706b";
     GeoToPyroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u70ec\u706b\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u706b\u7075\u77f3";
+      return "\u6d88\u8017\u4e00\u5c42\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9750\u679a\u706b\u7075\u77f3";
     };
-    GeoToPyroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
+    GeoToPyroSpell.validLocations = function() {
+      return null;
     };
-    var GeoToHydroSpell = function(_SpellItem15) {
-      _inheritsLoose(GeoToHydroSpell, _SpellItem15);
+    GeoToPyroSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + GeoToPyroPet.pet_name + "\u540e\u89e3\u9501";
+    };
+    var GeoToHydroSpell = function(_UnlimitedSpellItem3) {
+      _inheritsLoose(GeoToHydroSpell, _UnlimitedSpellItem3);
       function GeoToHydroSpell() {
-        return _SpellItem15.apply(this, arguments) || this;
+        return _UnlimitedSpellItem3.apply(this, arguments) || this;
       }
       var _proto16 = GeoToHydroSpell.prototype;
       _proto16.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToHydroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u6d41\u6e0a\u517d\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u6d41\u6e0a\u5370\u8bb0\u4e0d\u8db3");
         if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
         this.owner.geoSign--;
         this.owner.changeCoins({
           hydroCoins: 70
         });
       };
       _proto16.validLocations = function validLocations() {
-        var _this10 = this;
+        var _this9 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
-          var target = _this10.game.map[y][x];
-          if (!target || "GeoToHydroPet" != target.type || target.owner.code != _this10.owner.code) return false;
+          var target = _this9.game.map[y][x];
+          if (!target || "GeoToHydroPet" != target.type || target.owner.code != _this9.owner.code) return false;
           return true;
         });
       };
       return GeoToHydroSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     GeoToHydroSpell.id = 14;
     GeoToHydroSpell.size = 0;
     GeoToHydroSpell.price = new Coin({});
     GeoToHydroSpell.spellName = "\u7075\u94f8\xb7\u6d41\u6e0a";
     GeoToHydroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u6d41\u6e0a\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u6c34\u7075\u77f3";
+      return "\u6d88\u8017\u4e00\u5c42\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u6c34\u7075\u77f3";
     };
-    GeoToHydroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToHydroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
+    GeoToHydroSpell.validLocations = function() {
+      return null;
     };
-    var GeoToAuroSpell = function(_SpellItem16) {
-      _inheritsLoose(GeoToAuroSpell, _SpellItem16);
+    GeoToHydroSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + GeoToHydroPet.pet_name + "\u540e\u89e3\u9501";
+    };
+    var GeoToAuroSpell = function(_UnlimitedSpellItem4) {
+      _inheritsLoose(GeoToAuroSpell, _UnlimitedSpellItem4);
       function GeoToAuroSpell() {
-        return _SpellItem16.apply(this, arguments) || this;
+        return _UnlimitedSpellItem4.apply(this, arguments) || this;
       }
       var _proto17 = GeoToAuroSpell.prototype;
       _proto17.use = function use(x, y, extra) {
-        var target = this.game.map[y][x];
-        if (!target || "GeoToPyroPet" != target.type || target.owner.code != this.owner.code) throw new GameLogicError("\u53ea\u80fd\u5bf9\u5df1\u65b9\u5764\u91d1\u517d\u4f7f\u7528");
-        if (target.transfer_time <= 0) throw new GameLogicError("\u5764\u91d1\u5370\u8bb0\u4e0d\u8db3");
         if (this.owner.geoSign <= 0) throw new GameLogicError("\u571f\u5370\u8bb0\u4e0d\u8db3");
-        target.transfer_time--;
         this.owner.geoSign--;
         this.owner.changeCoins({
           auroCoins: 70
         });
       };
       _proto17.validLocations = function validLocations() {
-        var _this11 = this;
+        var _this10 = this;
         return iter_36().filter(function(axis) {
           var x = axis[0], y = axis[1];
-          var target = _this11.game.map[y][x];
-          if (!target || "GeoToAuroPet" != target.type || target.owner.code != _this11.owner.code) return false;
+          var target = _this10.game.map[y][x];
+          if (!target || "GeoToAuroPet" != target.type || target.owner.code != _this10.owner.code) return false;
           return true;
         });
       };
       return GeoToAuroSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     GeoToAuroSpell.id = 15;
     GeoToAuroSpell.size = 0;
     GeoToAuroSpell.price = new Coin({});
     GeoToAuroSpell.spellName = "\u7075\u94f8\xb7\u5764\u91d1";
     GeoToAuroSpell.description = function() {
-      return "\u6d88\u8017\u4e00\u5c42\u5764\u91d1\u5370\u8bb0\u548c\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u91d1\u7075\u77f3";
+      return "\u6d88\u8017\u4e00\u5c42\u571f\u5370\u8bb0\uff0c\u7136\u540e\u83b7\u5f9770\u679a\u91d1\u7075\u77f3";
     };
-    GeoToAuroSpell.validLocations = function(player) {
-      return iter_36().filter(function(axis) {
-        var x = axis[0], y = axis[1];
-        var target = _this9.game.map[y][x];
-        if (!target || "GeoToAuroPet" != target.type || target.owner.code != player.code) return false;
-        return true;
-      });
+    GeoToAuroSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + GeoToAuroPet.pet_name + "\u540e\u89e3\u9501";
     };
-    var DisplaceToPetSpell = function(_SpellItem17) {
-      _inheritsLoose(DisplaceToPetSpell, _SpellItem17);
+    GeoToAuroSpell.validLocations = function() {
+      return null;
+    };
+    var DisplaceToPetSpell = function(_UnlimitedSpellItem5) {
+      _inheritsLoose(DisplaceToPetSpell, _UnlimitedSpellItem5);
       function DisplaceToPetSpell() {
-        return _SpellItem17.apply(this, arguments) || this;
+        return _UnlimitedSpellItem5.apply(this, arguments) || this;
       }
       var _proto18 = DisplaceToPetSpell.prototype;
       _proto18.use = function use(x, y, extra) {
@@ -22944,32 +22985,35 @@ window.__require = function e(t, n, r) {
       _createClass(DisplaceToPetSpell, [ {
         key: "scope",
         get: function get() {
-          var _this12 = this;
+          var _this11 = this;
           var res = emptyMap();
           this.game.allMapElements.forEach(function(item) {
             if ("DisplacePet" != item.type) return;
-            if (item.owner.code != _this12.owner.code) return;
+            if (item.owner.code != _this11.owner.code) return;
             getLocInScope(item, 1.5).forEach(function(loc) {
               var x = loc[0], y = loc[1];
-              _this12.game.map[y][x] || (res[y][x] = true);
+              _this11.game.map[y][x] || (res[y][x] = true);
             });
           });
           return res;
         }
       } ]);
       return DisplaceToPetSpell;
-    }(SpellItem);
+    }(UnlimitedSpellItem);
     DisplaceToPetSpell.id = 16;
     DisplaceToPetSpell.size = 0;
     DisplaceToPetSpell.spellName = "\u7075\u9e64\xb7\u5f52\u9014";
     DisplaceToPetSpell.description = function() {
       return "\u79fb\u52a8\u81f3\u4efb\u610f\u3010\u5f52\u9014\u7075\u9e64\u3011\u7684\u8eab\u8fb9";
     };
+    DisplaceToPetSpell.specialUnlockCondition = function() {
+      return "\u62e5\u6709" + DisplacePet.pet_name + "\u540e\u89e3\u9501";
+    };
     DisplaceToPetSpell.validLocations = function(player) {
       var spell = new DisplaceToPetSpell();
       spell.owner = player;
       spell.game = player.game;
-      var scope = _this9.scope;
+      var scope = _this12.scope;
       return iter_36().filter(function(axis) {
         return scope[axis[1]][scope[axis[0]]];
       });
@@ -23020,9 +23064,11 @@ window.__require = function e(t, n, r) {
     var _require10 = require("./utils/iterationUtils"), iter_36 = _require10.iter_36;
     var _require11 = require("./animations/spellAnimation"), ShowIconAnimation = _require11.ShowIconAnimation, InkAnimation = _require11.InkAnimation, DisplaceSpellAnimation = _require11.DisplaceSpellAnimation, GeoCoreSpellAnimation = _require11.GeoCoreSpellAnimation;
     var _require12 = require("./loggers/logUtils"), logVertex = _require12.logVertex, logItem = _require12.logItem;
+    var _require13 = require("./Pets"), GeoToPyroPet = _require13.GeoToPyroPet, GeoToHydroPet = _require13.GeoToHydroPet, GeoToAuroPet = _require13.GeoToAuroPet, DisplacePet = _require13.DisplacePet;
     cc._RF.pop();
   }, {
     "./Buffs": "Buffs",
+    "./Pets": "Pets",
     "./animations/spellAnimation": "spellAnimation",
     "./constants/gameConstants": "gameConstants",
     "./constants/timeConstants": "timeConstants",
@@ -25938,15 +25984,18 @@ window.__require = function e(t, n, r) {
   }, {} ],
   commonUtils: [ function(require, module, exports) {
     "use strict";
-    cc._RF.push(module, "098c191IQNAWoM0Hi/U4roN", "commonUtils");
+    cc._RF.push(module, "bdb84xpySVK/6k/WJWoOQyc", "commonUtils");
     "use strict";
-    module.exports = {
-      fillWithZero: function fillWithZero(num, digits) {
-        var zeros = "000000000000000000000000000";
-        var numStr = num.toString();
-        return zeros.substring(0, digits - numStr.length) + numStr;
-      }
-    };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.fillWithZero = void 0;
+    function fillWithZero(num, digits) {
+      var zeros = "000000000000000000000000000";
+      var numStr = num.toString();
+      return zeros.substring(0, digits - numStr.length) + numStr;
+    }
+    exports.fillWithZero = fillWithZero;
     cc._RF.pop();
   }, {} ],
   common: [ function(require, module, exports) {
@@ -27502,8 +27551,25 @@ window.__require = function e(t, n, r) {
         this.list.node.removeAllChildren();
         var self = this;
         var currTime = gameGlobals.currTime;
+        var aggregated = [];
         forgeList.forEach(function(forge) {
-          console.log(forge);
+          var item = forge.item, className;
+          className = "string" == typeof item ? item : item.type;
+          var key = forge.type + "-" + className + "-" + forge.end_time;
+          if (aggregated.find(function(stat) {
+            return stat.key == key;
+          })) {
+            var stat = aggregated.find(function(stat) {
+              return stat.key == key;
+            });
+            stat.list.push(forge);
+          } else aggregated.push({
+            key: key,
+            list: [ forge ]
+          });
+        });
+        aggregated.forEach(function(stat) {
+          var forge = stat.list[0];
           var item = forge.item, className;
           className = "string" == typeof item ? item : item.type;
           var clazz = gameUtils_1.typeDict()[className];
@@ -27519,7 +27585,13 @@ window.__require = function e(t, n, r) {
           var minutes = remainMinutes % 60;
           var hours = (remainMinutes - minutes) / 60;
           var label = node.getChildByName("time Label").getComponent(cc.Label);
-          label.string = hours + ":" + minutes + ":" + seconds;
+          label.string = hours + ":" + commonUtils_js_1.fillWithZero(seconds, 2) + ":" + commonUtils_js_1.fillWithZero(seconds, 2);
+          var size = stat.list.length;
+          if (size > 1) {
+            var countLbl = node.getChildByName("count").getComponent(cc.Label);
+            countLbl.node.active = true;
+            countLbl.string = size + "x";
+          }
           self.list.node.addChild(node);
           self.list.updateLayout();
           self.list.node.x = self.list.node.width / 2 - 315;
@@ -27537,10 +27609,12 @@ window.__require = function e(t, n, r) {
     exports.default = NewClass;
     var gameGlobals = require("../battleMiddleWare/gameGlobals.js");
     var gameUtils_1 = require("../battleMiddleWare/gameUtils");
+    var commonUtils_js_1 = require("../otherComponents/commonUtils.js");
     cc._RF.pop();
   }, {
     "../battleMiddleWare/gameGlobals.js": "gameGlobals",
-    "../battleMiddleWare/gameUtils": "gameUtils"
+    "../battleMiddleWare/gameUtils": "gameUtils",
+    "../otherComponents/commonUtils.js": void 0
   } ],
   "gameConstants-clas0.0.1": [ function(require, module, exports) {
     "use strict";
@@ -28720,6 +28794,7 @@ window.__require = function e(t, n, r) {
         history: cc.Node,
         send: cc.Node,
         calculator: cc.Node,
+        mockingSign: cc.Node,
         players: cc.Node,
         map: cc.Node,
         tiles: cc.Prefab,
@@ -28740,7 +28815,12 @@ window.__require = function e(t, n, r) {
           0 == config.bgm && cc.audioEngine.pauseMusic();
           music.playingType = "journey";
         });
-        if (gameGlobals.isTrying) ; else switch (user.userid) {
+        if (gameGlobals.isMocking) {
+          this.mockingSign.active = true;
+          this.observe.active = false;
+          this.entry.active = false;
+          this.send.active = false;
+        } else switch (user.userid) {
          case gameGlobals.gameInfo.player1id:
           gameGlobals.currPLayerIndex = 1;
           break;
@@ -31690,6 +31770,15 @@ window.__require = function e(t, n, r) {
       var checkBoundary;
       var res;
     }
+    function getItemInScope(center, scope) {
+      var locs = getLocInScope(center, scope);
+      var game = center.game;
+      return locs.map(function(loc) {
+        return game.map[loc[1]][loc[0]];
+      }).filter(function(item) {
+        return item;
+      });
+    }
     function getLocInScope(center, scope) {
       var res = [];
       return iter_36().filter(function(loc) {
@@ -31755,7 +31844,8 @@ window.__require = function e(t, n, r) {
       oneDirection: oneDirection,
       eightDirections: eightDirections,
       emptyMap: emptyMap,
-      edgeIndexs: edgeIndexs
+      edgeIndexs: edgeIndexs,
+      getItemInScope: getItemInScope
     };
     var _require = require("../constants/gameConstants-clas0.0.3"), MAP_SIZE = _require.MAP_SIZE;
     var _require2 = require("./iterationUtils-clas0.0.3"), iter_36 = _require2.iter_36;
@@ -31782,6 +31872,15 @@ window.__require = function e(t, n, r) {
       var checkBoundary;
       var res;
     }
+    function getItemInScope(center, scope) {
+      var locs = getLocInScope(center, scope);
+      var game = center.game;
+      return locs.map(function(loc) {
+        return game.map[loc[1]][loc[0]];
+      }).filter(function(item) {
+        return item;
+      });
+    }
     function getLocInScope(center, scope) {
       var res = [];
       return iter_36().filter(function(loc) {
@@ -31847,7 +31946,8 @@ window.__require = function e(t, n, r) {
       oneDirection: oneDirection,
       eightDirections: eightDirections,
       emptyMap: emptyMap,
-      edgeIndexs: edgeIndexs
+      edgeIndexs: edgeIndexs,
+      getItemInScope: getItemInScope
     };
     var _require = require("../constants/gameConstants"), MAP_SIZE = _require.MAP_SIZE;
     var _require2 = require("./iterationUtils"), iter_36 = _require2.iter_36;
@@ -32211,9 +32311,11 @@ window.__require = function e(t, n, r) {
           level: level
         });
         routers.initForCocos();
+        gameService.resetGameGlobals();
         gameService.initGame(commands, versionSelected);
         Object.assign(gameGlobal.gameInfo, MOCKING_GAME_INFO);
         gameGlobal.isTrying = true;
+        gameGlobal.isMocking = true;
         cc.director.loadScene("gameMain");
       };
       NewClass.prototype.close = function() {
@@ -32816,7 +32918,8 @@ window.__require = function e(t, n, r) {
           page: cc.Node,
           actionType: "",
           commonBtns: cc.Node,
-          specialCase: cc.Node
+          specialCase: cc.Node,
+          timer: cc.Node
         },
         start: function start() {
           this.node.zIndex = 201;
@@ -32834,7 +32937,7 @@ window.__require = function e(t, n, r) {
           var actionName = "observing" == this.actionType ? "\u89c2\u6d4b" : "\u4fee\u884c";
           this.observedTimesLbl.string = "\u4eca\u65e5\u5df2" + actionName + "\uff1a" + observed + "\u6b21";
           this.remainTimesLbl.string = "\u5269\u4f59" + actionName + "\u6b21\u6570\uff1a" + remain + "\u6b21";
-          this.node.active = 3 != info.status && 4 != info.status && !gameGlobals.isTrying;
+          this.node.active = 3 != info.status && 4 != info.status && !gameGlobals.isMocking;
           this.commonBtns.active = 2 != info.status;
           this.specialCase.active = 2 == info.status;
         },
@@ -32872,8 +32975,10 @@ window.__require = function e(t, n, r) {
           });
         },
         refreshGame: function refreshGame(response) {
+          resetGameGlobals();
           initGame(response.split("\n"));
-          if ("observing" == this.actionType) {
+          var actionType = this.actionType;
+          if ("observing" == actionType) {
             var startTime = new Date(gameGlobals.gameInfo.startTime).valueOf(), now = Date.now();
             var secondDiff = Math.floor((now - startTime) / 1e3);
             var days = Math.floor(secondDiff / 86400);
@@ -32881,9 +32986,14 @@ window.__require = function e(t, n, r) {
             global.currTime = days * constant().ONE_JOURNEY_DAY + seconds;
             makeOperation("ct");
           }
-          var minutes = "observing" == this.actionType ? 30 : 5;
-          gameGlobals.gameInfo.refreshTime = Date.now() + 60 * minutes * 1e3;
-          gameGlobals.gameInfo[this.actionType].status = 3;
+          var minutes = "observing" == actionType ? 30 : 5;
+          var actionName = "observing" == actionType ? "\u89c2\u6d4b" : "\u4fee\u884c";
+          gameGlobals.gameInfo[actionType].status = 4;
+          this.timer.getComponent("timer").startTiming(Date.now() + 60 * minutes * 1e3, function() {
+            danMu("\u672c\u6b21" + actionName + "\u5df2\u7ed3\u675f");
+            gameGlobals.gameInfo[actionType].status = 1;
+            refreshPage();
+          });
           refreshPage();
           this.page.active = false;
         },
@@ -32897,10 +33007,11 @@ window.__require = function e(t, n, r) {
       var gameGlobals = require("../battleMiddleWare/gameGlobals");
       var _require = require("../AnyThinkAds/AdsManager"), runAds = _require.runAds;
       var _require2 = require("../http"), sendGetForms = _require2.sendGetForms, sendPostForms = _require2.sendPostForms;
-      var _require3 = require("../battleMiddleWare/gameService"), initGame = _require3.initGame, makeOperation = _require3.makeOperation;
+      var _require3 = require("../battleMiddleWare/gameService"), initGame = _require3.initGame, makeOperation = _require3.makeOperation, resetGameGlobals = _require3.resetGameGlobals;
       var _require4 = require("../battleMiddleWare/gameUtils"), refreshPage = _require4.refreshPage, constant = _require4.constant;
       var _require5 = require("../xjfz-journey/classic-latest/gameLogicRoutes"), updateGame = _require5.updateGame;
       var _require6 = require("../otherComponents/commonUtils"), fillWithZero = _require6.fillWithZero;
+      var _require7 = require("../otherComponents/uiUtils"), danMu = _require7.danMu;
       cc._RF.pop();
     }).call(this, "undefined" !== typeof global ? global : "undefined" !== typeof self ? self : "undefined" !== typeof window ? window : {});
   }, {
@@ -32910,6 +33021,7 @@ window.__require = function e(t, n, r) {
     "../battleMiddleWare/gameUtils": "gameUtils",
     "../http": "http",
     "../otherComponents/commonUtils": "commonUtils",
+    "../otherComponents/uiUtils": "uiUtils",
     "../xjfz-journey/classic-latest/gameLogicRoutes": "gameLogicRoutes"
   } ],
   overviewTemplate: [ function(require, module, exports) {
@@ -34486,11 +34598,15 @@ window.__require = function e(t, n, r) {
         detail: cc.Label,
         price: cc.Node,
         energyLabel: cc.Label,
+        commonBottom: cc.Node,
+        specialBottom: cc.Node,
+        specialConditionLabel: cc.Label,
         _spellDeck: null,
         _mode: 0
       },
       init: function init(id, deckNode, learned) {
         this._spellDeck = deckNode;
+        this.reset();
         var player = getCurrPlayer();
         var Spell = spell()[id];
         this.id = id;
@@ -34509,11 +34625,18 @@ window.__require = function e(t, n, r) {
         if (learned) {
           this.buyLbl.string = "\u4f7f\u7528";
           this._mode = 3;
-        } else if (player.findSpell(id)) {
+        } else if (player.findSpell(id)) if (player.findSpell(id).num > 1e7) {
+          this.activateSpecialBottom();
+          this.specialConditionLabel.string = "\u65e0\u9700\u70bc\u5236";
+        } else {
           this.buyLbl.string = "\u70bc\u5236";
           this._mode = 2;
         } else {
-          this.buyLbl.string = "\u5b66\u4e60";
+          var specialUnlockCondition = Spell.specialUnlockCondition(player);
+          if (specialUnlockCondition) {
+            this.activateSpecialBottom();
+            this.specialConditionLabel.string = specialUnlockCondition;
+          } else this.buyLbl.string = "\u5b66\u4e60";
           this._mode = 1;
         }
       },
@@ -34539,6 +34662,14 @@ window.__require = function e(t, n, r) {
         }) : makeOperation("us99" + fillWithZero(id, 2));
         this._spellDeck.removeFromParent();
         this.node.removeFromParent();
+      },
+      reset: function reset() {
+        this.specialBottom.active = false;
+        this.commonBottom.active = true;
+      },
+      activateSpecialBottom: function activateSpecialBottom() {
+        this.specialBottom.active = true;
+        this.commonBottom.active = false;
       },
       closeBtn: function closeBtn() {
         this.node.removeFromParent();
@@ -34587,7 +34718,7 @@ window.__require = function e(t, n, r) {
           self.iconSF.spriteFrame = spriteFrame;
         });
         var spellObj = getCurrPlayer().findSpell(id);
-        if (spellObj && learned) {
+        if (spellObj && learned && spellObj.num < 1e7) {
           this.numLbl.node.active = true;
           this.numLbl.string = spellObj.num;
         }
@@ -35001,6 +35132,79 @@ window.__require = function e(t, n, r) {
     };
     cc._RF.pop();
   }, {} ],
+  timer: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "8ea96l7i7VF066MPmspwGxW", "timer");
+    "use strict";
+    var __extends = this && this.__extends || function() {
+      var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || {
+          __proto__: []
+        } instanceof Array && function(d, b) {
+          d.__proto__ = b;
+        } || function(d, b) {
+          for (var p in b) Object.prototype.hasOwnProperty.call(b, p) && (d[p] = b[p]);
+        };
+        return extendStatics(d, b);
+      };
+      return function(d, b) {
+        extendStatics(d, b);
+        function __() {
+          this.constructor = d;
+        }
+        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }();
+    var __decorate = this && this.__decorate || function(decorators, target, key, desc) {
+      var c = arguments.length, r = c < 3 ? target : null === desc ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+      if ("object" === typeof Reflect && "function" === typeof Reflect.decorate) r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) (d = decorators[i]) && (r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r);
+      return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    var commonUtils_1 = require("../otherComponents/commonUtils");
+    var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
+    var NewClass = function(_super) {
+      __extends(NewClass, _super);
+      function NewClass() {
+        var _this = null !== _super && _super.apply(this, arguments) || this;
+        _this.label = null;
+        _this.endTime = 0;
+        _this.callback = null;
+        _this.isTiming = false;
+        return _this;
+      }
+      NewClass.prototype.startTiming = function(endTime, callback) {
+        this.endTime = endTime;
+        this.callback = callback;
+        this.isTiming = true;
+        this.node.active = true;
+      };
+      NewClass.prototype.update = function() {
+        if (!this.isTiming) return;
+        var currTime = Date.now();
+        var remainTime = Math.floor((this.endTime - currTime) / 1e3);
+        if (remainTime < 0) {
+          this.isTiming = false;
+          this.callback();
+          this.node.active = false;
+          return;
+        }
+        var remainMinutes = Math.floor(remainTime / 60);
+        var remainSeconds = remainTime % 60;
+        this.label.string = remainMinutes + ":" + commonUtils_1.fillWithZero(remainSeconds, 2);
+        remainTime < 30 && (this.label.node.color = cc.Color.RED);
+      };
+      __decorate([ property(cc.Label) ], NewClass.prototype, "label", void 0);
+      NewClass = __decorate([ ccclass ], NewClass);
+      return NewClass;
+    }(cc.Component);
+    exports.default = NewClass;
+    cc._RF.pop();
+  }, {
+    "../otherComponents/commonUtils": "commonUtils"
+  } ],
   topTemplate: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "9d99f4iXghBnLuyK5HRs9Cl", "topTemplate");
@@ -35692,4 +35896,4 @@ window.__require = function e(t, n, r) {
   }, {
     "../http": "http"
   } ]
-}, {}, [ "ATJSSDK", "ATRewardedAutoVideoTSSDK", "AdsManager", "AndroidAds", "ATAndroidBannerTS", "ATAndroidIntersitialAutoTS", "ATAndroidIntersitialTS", "ATAndroidJS", "ATAndroidNativeTS", "ATAndroidRewardedVideoAutoTS", "ATAndroidRewardedVideoTS", "ATiOSBannerTS", "ATiOSIntersitiaAutolTS", "ATiOSIntersitialTS", "ATiOSJS", "ATiOSNativeTS", "ATiOSRewardedAutoVideoTS", "ATiOSRewardedVideoTS", "Constants", "Globals", "LoadingLogic", "Login", "gameGlobals", "gameService", "gameUtils", "deck", "decoration", "calculatorManager", "mathCalculator", "sevenCalSelectItem", "sevenCalculator", "temp", "auction", "entryTemplate", "gameEntry", "gameHistory", "gameTV", "itemOverview", "overviewTemplate", "startJourney", "console", "creatureDetails", "fightUI", "forge", "getCoins", "gridIcon", "history", "history2", "historyLog", "map", "observeAndEntry", "playerDetails", "playerPanel", "submit", "buffDetails", "buffItem", "equipDetails", "equipItem", "equips", "petDetails", "petItem", "pets", "price", "spellDetails", "spellItem", "spells", "gameMain", "labelToggle", "mockConsole", "hall", "background", "board", "email", "inkRenderManager", "inkRendering", "setting", "top", "topTemplate", "userDetail", "http", "instruction", "mocking", "fetch", "alert", "commonUtils", "decorationItem", "icon", "twoFontLabel", "uiUtils", "viewTemplate", "stoarge", "gameLogicRoutes", "Buffs", "Creature", "Equips", "Game", "OriginMonitors", "Pets", "Player", "Spell", "animationPlayer", "animationUtils", "animeConstant", "challengeAnimation", "moveAnimation", "spellAnimation", "gameConstants", "timeConstants", "AttackListeners", "DamageListeners", "ForgeListeners", "ListenerDict", "ListenerList", "ListenerPriorities", "baseLoggers", "logUtils", "AttackStatus", "Coin", "Damage", "BuffItems", "EquipItems", "Listeners", "PetsItems", "SpellItems", "iterationUtils", "mapUtils", "numberUtils", "typeUtils", "TypeDict", "TypeList", "common", "interfaces", "gameLogger-clas0.0.1", "gameLogicRoutes-clas0.0.1", "Buffs-clas0.0.1", "Creature-clas0.0.1", "Equips-clas0.0.1", "Game-clas0.0.1", "OriginMonitors-clas0.0.1", "Pets-clas0.0.1", "Player-clas0.0.1", "Spell-clas0.0.1", "animationPlayer-clas0.0.1", "animationUtils-clas0.0.1", "animeConstant-clas0.0.1", "challengeAnimation-clas0.0.1", "moveAnimation-clas0.0.1", "spellAnimation-clas0.0.1", "gameConstants-clas0.0.1", "timeConstants-clas0.0.1", "AttackListeners-clas0.0.1", "DamageListeners-clas0.0.1", "ListenerDict-clas0.0.1", "ListenerList-clas0.0.1", "ListenerPriorities-clas0.0.1", "baseLoggers-clas0.0.1", "logUtils-clas0.0.1", "AttackStatus-clas0.0.1", "Coin-clas0.0.1", "Damage-clas0.0.1", "BuffItems-clas0.0.1", "EquipItems-clas0.0.1", "Listeners-clas0.0.1", "PetsItems-clas0.0.1", "SpellItems-clas0.0.1", "iterationUtils-clas0.0.1", "mapUtils-clas0.0.1", "numberUtils-clas0.0.1", "typeUtils-clas0.0.1", "TypeDict-clas0.0.1", "TypeList-clas0.0.1", "common-clas0.0.1", "interfaces-clas0.0.1", "gameLogicRoutes-clas0.0.2", "Buffs-clas0.0.2", "Creature-clas0.0.2", "Equips-clas0.0.2", "Game-clas0.0.2", "OriginMonitors-clas0.0.2", "Pets-clas0.0.2", "Player-clas0.0.2", "Spell-clas0.0.2", "animationPlayer-clas0.0.2", "animationUtils-clas0.0.2", "animeConstant-clas0.0.2", "challengeAnimation-clas0.0.2", "moveAnimation-clas0.0.2", "spellAnimation-clas0.0.2", "gameConstants-clas0.0.2", "timeConstants-clas0.0.2", "AttackListeners-clas0.0.2", "DamageListeners-clas0.0.2", "ForgeListeners-clas0.0.2", "ListenerDict-clas0.0.2", "ListenerList-clas0.0.2", "ListenerPriorities-clas0.0.2", "baseLoggers-clas0.0.2", "logUtils-clas0.0.2", "AttackStatus-clas0.0.2", "Coin-clas0.0.2", "Damage-clas0.0.2", "BuffItems-clas0.0.2", "EquipItems-clas0.0.2", "Listeners-clas0.0.2", "PetsItems-clas0.0.2", "SpellItems-clas0.0.2", "iterationUtils-clas0.0.2", "mapUtils-clas0.0.2", "numberUtils-clas0.0.2", "typeUtils-clas0.0.2", "TypeDict-clas0.0.2", "TypeList-clas0.0.2", "common-clas0.0.2", "interfaces-clas0.0.2", "gameLogicRoutes-clas0.0.3", "Buffs-clas0.0.3", "Creature-clas0.0.3", "Equips-clas0.0.3", "Game-clas0.0.3", "OriginMonitors-clas0.0.3", "Pets-clas0.0.3", "Player-clas0.0.3", "Spell-clas0.0.3", "animationPlayer-clas0.0.3", "animationUtils-clas0.0.3", "animeConstant-clas0.0.3", "challengeAnimation-clas0.0.3", "moveAnimation-clas0.0.3", "spellAnimation-clas0.0.3", "gameConstants-clas0.0.3", "timeConstants-clas0.0.3", "AttackListeners-clas0.0.3", "DamageListeners-clas0.0.3", "ForgeListeners-clas0.0.3", "ListenerDict-clas0.0.3", "ListenerList-clas0.0.3", "ListenerPriorities-clas0.0.3", "baseLoggers-clas0.0.3", "logUtils-clas0.0.3", "AttackStatus-clas0.0.3", "Coin-clas0.0.3", "Damage-clas0.0.3", "BuffItems-clas0.0.3", "EquipItems-clas0.0.3", "Listeners-clas0.0.3", "PetsItems-clas0.0.3", "SpellItems-clas0.0.3", "iterationUtils-clas0.0.3", "mapUtils-clas0.0.3", "numberUtils-clas0.0.3", "typeUtils-clas0.0.3", "TypeDict-clas0.0.3", "TypeList-clas0.0.3", "common-clas0.0.3", "interfaces-clas0.0.3", "index" ]);
+}, {}, [ "ATJSSDK", "ATRewardedAutoVideoTSSDK", "AdsManager", "AndroidAds", "ATAndroidBannerTS", "ATAndroidIntersitialAutoTS", "ATAndroidIntersitialTS", "ATAndroidJS", "ATAndroidNativeTS", "ATAndroidRewardedVideoAutoTS", "ATAndroidRewardedVideoTS", "ATiOSBannerTS", "ATiOSIntersitiaAutolTS", "ATiOSIntersitialTS", "ATiOSJS", "ATiOSNativeTS", "ATiOSRewardedAutoVideoTS", "ATiOSRewardedVideoTS", "Constants", "Globals", "LoadingLogic", "Login", "gameGlobals", "gameService", "gameUtils", "deck", "decoration", "calculatorManager", "mathCalculator", "sevenCalSelectItem", "sevenCalculator", "temp", "auction", "entryTemplate", "gameEntry", "gameHistory", "gameTV", "itemOverview", "overviewTemplate", "startJourney", "timer", "console", "creatureDetails", "fightUI", "forge", "getCoins", "gridIcon", "history", "history2", "historyLog", "map", "observeAndEntry", "playerDetails", "playerPanel", "submit", "buffDetails", "buffItem", "equipDetails", "equipItem", "equips", "petDetails", "petItem", "pets", "price", "spellDetails", "spellItem", "spells", "gameMain", "labelToggle", "mockConsole", "hall", "background", "board", "email", "inkRenderManager", "inkRendering", "setting", "top", "topTemplate", "userDetail", "http", "instruction", "mocking", "fetch", "alert", "commonUtils", "decorationItem", "icon", "twoFontLabel", "uiUtils", "viewTemplate", "stoarge", "gameLogicRoutes", "Buffs", "Creature", "Equips", "Game", "OriginMonitors", "Pets", "Player", "Spell", "animationPlayer", "animationUtils", "animeConstant", "challengeAnimation", "moveAnimation", "spellAnimation", "gameConstants", "timeConstants", "AttackListeners", "DamageListeners", "ForgeListeners", "ListenerDict", "ListenerList", "ListenerPriorities", "baseLoggers", "logUtils", "AttackStatus", "Coin", "Damage", "BuffItems", "EquipItems", "Listeners", "PetsItems", "SpellItems", "iterationUtils", "mapUtils", "numberUtils", "typeUtils", "TypeDict", "TypeList", "common", "interfaces", "gameLogger-clas0.0.1", "gameLogicRoutes-clas0.0.1", "Buffs-clas0.0.1", "Creature-clas0.0.1", "Equips-clas0.0.1", "Game-clas0.0.1", "OriginMonitors-clas0.0.1", "Pets-clas0.0.1", "Player-clas0.0.1", "Spell-clas0.0.1", "animationPlayer-clas0.0.1", "animationUtils-clas0.0.1", "animeConstant-clas0.0.1", "challengeAnimation-clas0.0.1", "moveAnimation-clas0.0.1", "spellAnimation-clas0.0.1", "gameConstants-clas0.0.1", "timeConstants-clas0.0.1", "AttackListeners-clas0.0.1", "DamageListeners-clas0.0.1", "ListenerDict-clas0.0.1", "ListenerList-clas0.0.1", "ListenerPriorities-clas0.0.1", "baseLoggers-clas0.0.1", "logUtils-clas0.0.1", "AttackStatus-clas0.0.1", "Coin-clas0.0.1", "Damage-clas0.0.1", "BuffItems-clas0.0.1", "EquipItems-clas0.0.1", "Listeners-clas0.0.1", "PetsItems-clas0.0.1", "SpellItems-clas0.0.1", "iterationUtils-clas0.0.1", "mapUtils-clas0.0.1", "numberUtils-clas0.0.1", "typeUtils-clas0.0.1", "TypeDict-clas0.0.1", "TypeList-clas0.0.1", "common-clas0.0.1", "interfaces-clas0.0.1", "gameLogicRoutes-clas0.0.2", "Buffs-clas0.0.2", "Creature-clas0.0.2", "Equips-clas0.0.2", "Game-clas0.0.2", "OriginMonitors-clas0.0.2", "Pets-clas0.0.2", "Player-clas0.0.2", "Spell-clas0.0.2", "animationPlayer-clas0.0.2", "animationUtils-clas0.0.2", "animeConstant-clas0.0.2", "challengeAnimation-clas0.0.2", "moveAnimation-clas0.0.2", "spellAnimation-clas0.0.2", "gameConstants-clas0.0.2", "timeConstants-clas0.0.2", "AttackListeners-clas0.0.2", "DamageListeners-clas0.0.2", "ForgeListeners-clas0.0.2", "ListenerDict-clas0.0.2", "ListenerList-clas0.0.2", "ListenerPriorities-clas0.0.2", "baseLoggers-clas0.0.2", "logUtils-clas0.0.2", "AttackStatus-clas0.0.2", "Coin-clas0.0.2", "Damage-clas0.0.2", "BuffItems-clas0.0.2", "EquipItems-clas0.0.2", "Listeners-clas0.0.2", "PetsItems-clas0.0.2", "SpellItems-clas0.0.2", "iterationUtils-clas0.0.2", "mapUtils-clas0.0.2", "numberUtils-clas0.0.2", "typeUtils-clas0.0.2", "TypeDict-clas0.0.2", "TypeList-clas0.0.2", "common-clas0.0.2", "interfaces-clas0.0.2", "gameLogicRoutes-clas0.0.3", "Buffs-clas0.0.3", "Creature-clas0.0.3", "Equips-clas0.0.3", "Game-clas0.0.3", "OriginMonitors-clas0.0.3", "Pets-clas0.0.3", "Player-clas0.0.3", "Spell-clas0.0.3", "animationPlayer-clas0.0.3", "animationUtils-clas0.0.3", "animeConstant-clas0.0.3", "challengeAnimation-clas0.0.3", "moveAnimation-clas0.0.3", "spellAnimation-clas0.0.3", "gameConstants-clas0.0.3", "timeConstants-clas0.0.3", "AttackListeners-clas0.0.3", "DamageListeners-clas0.0.3", "ForgeListeners-clas0.0.3", "ListenerDict-clas0.0.3", "ListenerList-clas0.0.3", "ListenerPriorities-clas0.0.3", "baseLoggers-clas0.0.3", "logUtils-clas0.0.3", "AttackStatus-clas0.0.3", "Coin-clas0.0.3", "Damage-clas0.0.3", "BuffItems-clas0.0.3", "EquipItems-clas0.0.3", "Listeners-clas0.0.3", "PetsItems-clas0.0.3", "SpellItems-clas0.0.3", "iterationUtils-clas0.0.3", "mapUtils-clas0.0.3", "numberUtils-clas0.0.3", "typeUtils-clas0.0.3", "TypeDict-clas0.0.3", "TypeList-clas0.0.3", "common-clas0.0.3", "interfaces-clas0.0.3", "index" ]);
